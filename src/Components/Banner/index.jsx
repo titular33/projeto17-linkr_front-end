@@ -40,7 +40,7 @@ const Container = styled.div`
         line-height: 64px;
         color: #FFFFFF;
     }
-    @media (max-width: 963px) {	  
+    @media (max-width: 1009px) {	  
         h2{
             width: 390px;
         }   
@@ -48,6 +48,7 @@ const Container = styled.div`
     @media (max-width: 823px) {	  
         width: 100%;
         height: 175px; 
+        margin-bottom: 29px;
         align-items: center;
 
         h1{

@@ -27,8 +27,8 @@ const SignUp = () => {
             setLoad(false);
             navigate('/')
         }); requisicaoPost.catch(error => {
-            if(error.response.status === 409){
-                 setAlert('Email já cadastrado!');
+            if (error.response.status === 409) {
+                setAlert('Email já cadastrado!');
             }
             setLoad(false);
         });
@@ -65,6 +65,11 @@ const SignUp = () => {
 const Container = styled.div`
     display: flex;
     width: 100vw;
+
+    @media (max-width: 823px) {	  
+        flex-direction:  column;
+        align-items: center;
+    }
 `
 const RegisterContainer = styled.form`
     display: flex;
@@ -72,7 +77,8 @@ const RegisterContainer = styled.form`
     justify-content: center;
     align-items: center;
     width: 429px;
-    margin-left: 52px;
+    margin-left: 51px;
+    margin-right: 51px;
 
     input{
         padding-left: 17px;
@@ -88,6 +94,19 @@ const RegisterContainer = styled.form`
         font-size: 27px;
         line-height: 40px;
         color: #9F9F9F;
+    }
+
+    @media (max-width: 500px) {	  
+        width: 88%;
+        margin-left: 0;
+        margin-right: 0;
+
+        input{
+            height: 55px;
+            margin-top: 11px;
+            font-size: 22px;
+            line-height: 33px;
+        }
     }
 `
 const Button = styled.button`
@@ -110,6 +129,10 @@ const Button = styled.button`
         color: #FFFFFF;
         cursor: pointer;
         margin-top: 14px;
+
+        @media (max-width: 500px) {	  
+            height: 55px;
+        }
 `
 const Div = styled.div`
         width: 100%;
@@ -126,6 +149,13 @@ const Div = styled.div`
         line-height: 24px;
         text-decoration-line: underline;
         cursor: pointer;
+    }
+
+    @media (max-width: 390px) {	  
+        span{
+            font-size: 17px;
+            line-height: 20px;
+        }
     }
 `
 const Label = styled.label`

@@ -22,15 +22,15 @@ const SignIn = () => {
         setAlert(null);
         event.preventDefault();
         setLoad(true);
-        const requisicaoPost = axios.post(URL, loginData); 
+        const requisicaoPost = axios.post(URL, loginData);
         requisicaoPost.then(response => {
-            const {data} = response;
-            localStorage.setItem("userData", JSON.stringify({token:data.token, userName: data.userName, picture: data.picture}))
-            setUserData ({token:data.token, userName: data.userName, picture: data.picture});
+            const { data } = response;
+            localStorage.setItem("userData", JSON.stringify({ token: data.token, userName: data.userName, picture: data.picture }))
+            setUserData({ token: data.token, userName: data.userName, picture: data.picture });
             setLoad(false);
             navigate('/')
         }); requisicaoPost.catch(error => {
-            if(error.response.status === 401){
+            if (error.response.status === 401) {
                 setAlert('Email ou senha incorreto(s)');
             }
             setLoad(false);
@@ -74,8 +74,8 @@ const RegisterContainer = styled.form`
     justify-content: center;
     align-items: center;
     width: 429px;
-    margin-left: 23px;
-    margin-right: 22px;
+    margin-left: 51px;
+    margin-right: 51px;
 
     input{
         padding-left: 17px;
@@ -96,6 +96,13 @@ const RegisterContainer = styled.form`
         width: 88%;
         margin-left: 0;
         margin-right: 0;
+
+        input{
+            height: 55px;
+            margin-top: 11px;
+            font-size: 22px;
+            line-height: 33px;
+        }
     }
 `
 const Button = styled.button`
@@ -118,6 +125,10 @@ const Button = styled.button`
         color: #FFFFFF;
         cursor: pointer;
         margin-top: 14px;
+
+        @media (max-width: 500px) {	  
+            height: 55px;
+        }
 `
 const Div = styled.div`
         width: 100%;
