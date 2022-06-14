@@ -11,10 +11,12 @@ const SignUp = () => {
     const navigate = useNavigate();
     const [register, setRegister] = useState({ email: "", password: "", userName: "", picture: "" });
     const [load, setLoad] = useState(false);
+    const [alert, setAlert] = useState(null);
     const URL = "http://127.0.0.1:4000/signup";
 
     function registerUser(event) {
         event.preventDefault();
+        setAlert(null);
         setLoad(true);
         const requisicaoPost = axios.post(URL, {
             email: register.email,
@@ -26,7 +28,7 @@ const SignUp = () => {
             navigate('/')
         }); requisicaoPost.catch(error => {
             if(error.response.status === 409){
-                alert("O email já está cadastrado");
+                 setAlert('Email já cadastrado!');
             }
             setLoad(false);
         });
@@ -39,16 +41,17 @@ const SignUp = () => {
                 <input type="email" name="email" placeholder='email'
                     onChange={e => setRegister({ ...register, email: e.target.value })}
                     disabled={load ? true : false} required />
-                <input type="password" minlength="4" name="password" placeholder='password'
+                <input type="password" minLength="4" name="password" placeholder='password'
                     onChange={e => setRegister({ ...register, password: e.target.value })}
                     disabled={load ? true : false} required />
-                <input type="name" name="name" minlength="4" placeholder='username'
+                <input type="name" name="name" minLength="4" placeholder='username'
                     onChange={e => setRegister({ ...register, userName: e.target.value })}
                     disabled={load ? true : false} required />
                 <input type="url" name="url" pattern="https://.*" placeholder='picture url'
                     onChange={e => setRegister({ ...register, picture: e.target.value })}
                     disabled={load ? true : false} required />
-                <Button load={load} disabled={load ? true : false} type="submit">{load ? <ThreeDots color="#fff" height={13} /> : "Cadastrar"}</Button>
+                <Label>{alert}</Label>
+                <Button load={load} disabled={load ? true : false} type="submit">{load ? <ThreeDots color="#fff" height={13} /> : "Sign Up"}</Button>
                 <Div>
                     <Link to={`/`}>
                         <span>Switch back to log in</span>
@@ -67,11 +70,13 @@ const RegisterContainer = styled.form`
     display: flex;
     flex-direction: column;
     justify-content: center;
+    align-items: center;
     width: 429px;
     margin-left: 52px;
 
     input{
         padding-left: 17px;
+        width: 100%;
         height: 65px;
         margin-top: 13px;
         background: #FFFFFF;
@@ -90,6 +95,7 @@ const Button = styled.button`
         display: flex;
         justify-content: center;
         align-items: center;
+        width: 100%;
         height: 65px;
         align-items: center;
         justify-content: center;
@@ -121,5 +127,10 @@ const Div = styled.div`
         text-decoration-line: underline;
         cursor: pointer;
     }
+`
+const Label = styled.label`
+    font-size: 12px;
+    color: red;  
+    padding-top: 5px;
 `
 export default SignUp;
