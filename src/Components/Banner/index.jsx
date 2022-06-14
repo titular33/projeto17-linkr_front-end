@@ -14,7 +14,7 @@ const Container = styled.div`
     flex-direction: column;
     justify-content: center;
     width: 62.84%;
-    min-height: 100vh;
+    height: 100vh;
     background: #151515;
     box-shadow: 4px 0px 4px rgba(0, 0, 0, 0.25);
 
@@ -39,6 +39,29 @@ const Container = styled.div`
         font-size: 43px;
         line-height: 64px;
         color: #FFFFFF;
+    }
+    @media (max-width: 963px) {	  
+        h2{
+            width: 390px;
+        }   
+    }
+    @media (max-width: 823px) {	  
+        width: 100%;
+        height: 175px; 
+        align-items: center;
+
+        h1{
+            font-size: 76px;
+            line-height: 84px;
+            margin-left: 0;
+        }
+        h2{
+            margin-left: 0;
+            width: 250px;
+            height: 68px;
+            font-size: 23px;
+            line-height: 34px;
+        }
     }
 `
 export default Banner;

@@ -62,6 +62,11 @@ const SignIn = () => {
 const Container = styled.div`
     display: flex;
     width: 100vw;
+
+    @media (max-width: 823px) {	  
+        flex-direction:  column;
+        align-items: center;
+    }
 `
 const RegisterContainer = styled.form`
     display: flex;
@@ -69,7 +74,8 @@ const RegisterContainer = styled.form`
     justify-content: center;
     align-items: center;
     width: 429px;
-    margin-left: 52px;
+    margin-left: 23px;
+    margin-right: 22px;
 
     input{
         padding-left: 17px;
@@ -85,6 +91,11 @@ const RegisterContainer = styled.form`
         font-size: 27px;
         line-height: 40px;
         color: #9F9F9F;
+    }
+    @media (max-width: 500px) {	  
+        width: 88%;
+        margin-left: 0;
+        margin-right: 0;
     }
 `
 const Button = styled.button`
@@ -123,6 +134,13 @@ const Div = styled.div`
         line-height: 24px;
         text-decoration-line: underline;
         cursor: pointer;
+    }
+
+    @media (max-width: 390px) {	  
+        span{
+            font-size: 17px;
+            line-height: 20px;
+        }
     }
 `
 const Label = styled.label`
