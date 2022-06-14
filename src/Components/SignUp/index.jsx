@@ -35,7 +35,7 @@ const SignUp = () => {
     return (
         <Container>
             <Banner></Banner>
-            <RegisterContainer onSubmit={registerUser}>
+            <RegisterContainer load={load} onSubmit={registerUser}>
                 <input type="email" name="email" placeholder='email'
                     onChange={e => setRegister({ ...register, email: e.target.value })}
                     disabled={load ? true : false} required />
@@ -48,7 +48,7 @@ const SignUp = () => {
                 <input type="url" name="url" pattern="https://.*" placeholder='picture url'
                     onChange={e => setRegister({ ...register, picture: e.target.value })}
                     disabled={load ? true : false} required />
-                <button disabled={load ? true : false} type="submit">{load ? <ThreeDots color="#fff" height={13} /> : "Cadastrar"}</button>
+                <Button load={load} disabled={load ? true : false} type="submit">{load ? <ThreeDots color="#fff" height={13} /> : "Cadastrar"}</Button>
                 <Div>
                     <Link to={`/`}>
                         <span>Switch back to log in</span>
@@ -67,17 +67,16 @@ const RegisterContainer = styled.form`
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: center;
-    width: 37.15%;
+    width: 429px;
+    margin-left: 52px;
 
     input{
         padding-left: 17px;
-        width: 80%;
         height: 65px;
         margin-top: 13px;
         background: #FFFFFF;
         border-radius: 6px;
-
+        opacity:${props => props.load ? 0.2 : 1};
         font-family: 'Oswald';
         font-style: normal;
         font-weight: 700;
@@ -85,12 +84,12 @@ const RegisterContainer = styled.form`
         line-height: 40px;
         color: #9F9F9F;
     }
-
-    button{
+`
+const Button = styled.button`
+        opacity:${props => props.load ? 0.2 : 1};
         display: flex;
         justify-content: center;
         align-items: center;
-        width: 80%;
         height: 65px;
         align-items: center;
         justify-content: center;
@@ -105,9 +104,7 @@ const RegisterContainer = styled.form`
         color: #FFFFFF;
         cursor: pointer;
         margin-top: 14px;
-    }
 `
-
 const Div = styled.div`
         width: 100%;
         margin-top: 14px;
