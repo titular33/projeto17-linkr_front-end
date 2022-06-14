@@ -26,7 +26,7 @@ const SignIn = () => {
         requisicaoPost.then(response => {
             const { data } = response;
             localStorage.setItem("userData", JSON.stringify({ token: data.token, userName: data.userName, picture: data.picture }))
-            setUserData({ token: data.token, userName: data.userName, picture: data.picture });
+            setUserData({ token: data.token, userId: data.id, userName: data.userName, picture: data.picture });
             setLoad(false);
             navigate('/')
         }); requisicaoPost.catch(error => {
