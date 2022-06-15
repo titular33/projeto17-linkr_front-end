@@ -4,22 +4,67 @@ import { useEffect, useState } from "react";
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 
-export default function GetTimeline(){
-    const URL = "http://127.0.0.1:4000/timeline"
+import RenderPosts from './RenderPosts';
 
-    let navigate =  useNavigate()
+export default function GetTimeline() {
 
-    const [posts, setPosts] = useState(null)
 
-    useEffect(() =>{
-        const requestPosts = axios.get(URL)
-        requestPosts.then(res => {setPosts(res.data)})
-        requestPosts.catch( e => {alert("algo deu errado, recarregue a página!")})
-    }, [])
-
-    return(
+    return (
         <>
-            {posts === null ? "Teste 1" : posts}
+            <Header />
+            <$AuxBody>
+                <h1>
+                    timeline
+                </h1>
+                <$Section>
+                    <CreatePost />
+                    <RenderPosts />
+
+                </$Section>
+                <Navbar />
+
+            </$AuxBody>
         </>
     )
 }
+
+const Header = styled.div``
+const CreatePost = styled.div``
+
+
+const $AuxBody = styled.div`
+    margin-top: 200px;
+    width: 100%;
+    min-height: 100vw;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    grid-template-rows: 50px fit-content(10%) fit-content(10%);
+    justify-content: center;
+    gap: 25px;
+
+    h1{
+        grid-column-start: 2;
+        grid-column-end: 4;
+        font-family: 'Oswald';
+        font-weight: 700;
+        font-size: 43px;
+        color: white;
+    }
+    
+`
+
+
+const $Section = styled.div`
+    grid-column-start: 2;
+    grid-column-end: 4;
+    
+`
+
+
+const Navbar = styled.div`
+    background-color: #171717;
+    width: 300px;
+    height: 400px;
+    grid-column-start: 4;
+    grid-column-end: 5;
+`

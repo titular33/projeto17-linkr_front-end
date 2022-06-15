@@ -24,8 +24,9 @@ const SignUp = () => {
             userName: register.userName,
             picture: register.picture,
         }); requisicaoPost.then(response => {
+            console.log(response.data)
             setLoad(false);
-            navigate('/')
+            navigate('/timeline')
         }); requisicaoPost.catch(error => {
             if (error.response.status === 409) {
                 setAlert('Email já cadastrado!');
