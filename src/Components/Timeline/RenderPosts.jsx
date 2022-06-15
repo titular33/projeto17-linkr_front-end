@@ -3,6 +3,10 @@ import { useEffect, useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
+const urlMetadata = require("url-metadata");
+
+//import urlMetadata from 'url-metadata';
+
 export default function RenderPosts() {
     const URL = "http://127.0.0.1:4000/timeline"
 
@@ -98,9 +102,19 @@ function AllPosts(props) {
 }
 
 function EachPost(props) {
+    
+
     const { infos } = props;
 
     console.log(infos)
+
+    urlMetadata('https://www.figma.com').then(
+        function (metadata) { // success handler
+          console.log(metadata)
+        },
+        function (error) { // failure handler
+          console.log(error)
+        })
 
     return (
 
@@ -122,7 +136,10 @@ function EachPost(props) {
                     <p>
                         {infos.text}
                     </p>
-                    <a href="Link"> {infos.link}</a>
+                    <p>
+
+                        infosMetaData
+                    </p>
                 </$InfosRight>
             </$Box>
         </$EachPost>
@@ -163,6 +180,7 @@ const $InfosLeft = styled.div`
 
     ion-icon[name="heart-outline"]{
         color: white;
+        background-color: red;
     }
 `
 
