@@ -3,11 +3,15 @@ import { useEffect, useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
-const urlMetadata = require("url-metadata");
+//const urlMetadata = require("url-metadata");
 
 //import urlMetadata from 'url-metadata';
 
 export default function RenderPosts() {
+
+    let {token} = JSON.parse(localStorage.getItem('userData'))
+    console.log(token)
+
     const URL = "http://127.0.0.1:4000/timeline"
 
     let navigate = useNavigate()
@@ -15,50 +19,54 @@ export default function RenderPosts() {
     const [posts, setPosts] = useState(null)
 
     useEffect(() => {
-        //const requestPosts = axios.get(URL)
-        //requestPosts.then(res => {setPosts(res.data)})
-        //requestPosts.catch( e => {alert("algo deu errado, recarregue a página!")})
-        setPosts([
 
-            {
-                "linkId": 7,
-                "text": "olha só dvn",
-                "link": "https://www.globo.com/",
-                "createdAt": "2022-06-15T05:54:51.644Z",
-                "userId": 5,
-                "userName": "bruno",
-                "picture": "https://aventurasnahistoria.uol.com.br/media/uploads/entretenimento/bob_esponja_capa.jpg"
-            },
-            {
-                "linkId": 6,
-                "text": "olha só",
-                "link": "https://www.globo.com/",
-                "createdAt": "2022-06-15T05:05:33.671Z",
-                "userId": 5,
-                "userName": "bruno",
-                "picture": "https://aventurasnahistoria.uol.com.br/media/uploads/entretenimento/bob_esponja_capa.jpg"
-            },
-            {
-                "linkId": 3,
-                "text": "figma",
-                "link": "https://www.figma.com/",
-                "createdAt": "2022-06-15T04:38:33.567Z",
-                "userId": 5,
-                "userName": "bruno",
-                "picture": "https://aventurasnahistoria.uol.com.br/media/uploads/entretenimento/bob_esponja_capa.jpg"
-            },
-            {
-                "linkId": 1,
-                "text": "olha só esse link",
-                "link": "https://reactnative.dev/",
-                "createdAt": "2022-06-15T04:37:16.175Z",
-                "userId": 5,
-                "userName": "bruno",
-                "picture": "https://aventurasnahistoria.uol.com.br/media/uploads/entretenimento/bob_esponja_capa.jpg"
-            }
+        const config = {
+            headers: { authorization: token }
+        }
+        const requestPosts = axios.get(URL, config)
+        requestPosts.then(res => {setPosts(res.data)})
+        requestPosts.catch( e => {console.log(e);alert("algo deu errado, recarregue a página!")})
+        // setPosts([
+
+        //     {
+        //         "linkId": 7,
+        //         "text": "olha só dvn",
+        //         "link": "https://www.globo.com/",
+        //         "createdAt": "2022-06-15T05:54:51.644Z",
+        //         "userId": 5,
+        //         "userName": "bruno",
+        //         "picture": "https://aventurasnahistoria.uol.com.br/media/uploads/entretenimento/bob_esponja_capa.jpg"
+        //     },
+        //     {
+        //         "linkId": 6,
+        //         "text": "olha só",
+        //         "link": "https://www.globo.com/",
+        //         "createdAt": "2022-06-15T05:05:33.671Z",
+        //         "userId": 5,
+        //         "userName": "bruno",
+        //         "picture": "https://aventurasnahistoria.uol.com.br/media/uploads/entretenimento/bob_esponja_capa.jpg"
+        //     },
+        //     {
+        //         "linkId": 3,
+        //         "text": "figma",
+        //         "link": "https://www.figma.com/",
+        //         "createdAt": "2022-06-15T04:38:33.567Z",
+        //         "userId": 5,
+        //         "userName": "bruno",
+        //         "picture": "https://aventurasnahistoria.uol.com.br/media/uploads/entretenimento/bob_esponja_capa.jpg"
+        //     },
+        //     {
+        //         "linkId": 1,
+        //         "text": "olha só esse link",
+        //         "link": "https://reactnative.dev/",
+        //         "createdAt": "2022-06-15T04:37:16.175Z",
+        //         "userId": 5,
+        //         "userName": "bruno",
+        //         "picture": "https://aventurasnahistoria.uol.com.br/media/uploads/entretenimento/bob_esponja_capa.jpg"
+        //     }
 
 
-        ])
+        // ])
     }, [])
 
 
@@ -107,14 +115,6 @@ function EachPost(props) {
     const { infos } = props;
 
     console.log(infos)
-
-    urlMetadata('https://www.figma.com').then(
-        function (metadata) { // success handler
-          console.log(metadata)
-        },
-        function (error) { // failure handler
-          console.log(error)
-        })
 
     return (
 
