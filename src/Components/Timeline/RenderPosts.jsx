@@ -78,7 +78,6 @@ function EachPost(props) {
 
     const { infos } = props;
 
-    console.log(infos)
 
     return (
 
