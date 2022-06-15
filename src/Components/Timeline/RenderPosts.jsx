@@ -7,13 +7,15 @@ import styled from 'styled-components';
 
 //import urlMetadata from 'url-metadata';
 
+import NewPost from './NewPost';
+
 export default function RenderPosts() {
-
-    let {token} = JSON.parse(localStorage.getItem('userData'))
-
     const URL = "http://127.0.0.1:4000/timeline"
-
     let navigate = useNavigate()
+
+    let { token } = JSON.parse(localStorage.getItem('userData'))
+    let errorMessage = "";
+
 
     const [posts, setPosts] = useState(null)
 
@@ -23,38 +25,34 @@ export default function RenderPosts() {
             headers: { authorization: token }
         }
         const requestPosts = axios.get(URL, config)
-        requestPosts.then(res => {setPosts(res.data)})
-        requestPosts.catch( e => {setPosts({e})})
+        requestPosts.then(res => { setPosts(res.data) })
+        requestPosts.catch(e => { setPosts({ e }) })
     }, [])
 
-
+    console.log(posts)
 
     if (posts === null) {
-        return (
-            <>
-                Loading...
-            </>
-        )
+        errorMessage = "Loading..."
     }
 
-    if (posts.length === 0) {
-        return (
-            <>
-                There are no posts yet
-            </>
-        )
+    else if (posts.length === 0) {
+        errorMessage = " There are no posts yet."
     }
 
-    if(posts.e){
-        return (
-            <>
-               An error occured while trying to fetch the posts, please refresh the page
-            </>
-        )
+    else if (posts.e) {
+        errorMessage = "An error occured while trying to fetch the posts, please refresh the page"
     }
 
     return (
-        <AllPosts posts={posts} />
+        <>
+            <NewPost />
+            {
+                posts === null ||  posts.length === 0 || posts.e ?
+                errorMessage :
+                <AllPosts posts={posts} /> 
+            }
+        </>
+
     )
 
 }
@@ -74,7 +72,7 @@ function AllPosts(props) {
 }
 
 function EachPost(props) {
-    
+
 
     const { infos } = props;
 
