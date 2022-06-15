@@ -28,7 +28,7 @@ const SignIn = () => {
             localStorage.setItem("userData", JSON.stringify({ token: data.token, userName: data.userName, picture: data.picture }))
             setUserData({ token: data.token, userId: data.id, userName: data.userName, picture: data.picture });
             setLoad(false);
-            navigate('/')
+            navigate('/timeline')
         }); requisicaoPost.catch(error => {
             if (error.response.status === 401) {
                 setAlert('Email ou senha incorreto(s)');
