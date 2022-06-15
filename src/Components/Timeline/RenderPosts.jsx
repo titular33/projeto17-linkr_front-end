@@ -10,7 +10,6 @@ import styled from 'styled-components';
 export default function RenderPosts() {
 
     let {token} = JSON.parse(localStorage.getItem('userData'))
-    console.log(token)
 
     const URL = "http://127.0.0.1:4000/timeline"
 
@@ -25,48 +24,7 @@ export default function RenderPosts() {
         }
         const requestPosts = axios.get(URL, config)
         requestPosts.then(res => {setPosts(res.data)})
-        requestPosts.catch( e => {console.log(e);alert("algo deu errado, recarregue a página!")})
-        // setPosts([
-
-        //     {
-        //         "linkId": 7,
-        //         "text": "olha só dvn",
-        //         "link": "https://www.globo.com/",
-        //         "createdAt": "2022-06-15T05:54:51.644Z",
-        //         "userId": 5,
-        //         "userName": "bruno",
-        //         "picture": "https://aventurasnahistoria.uol.com.br/media/uploads/entretenimento/bob_esponja_capa.jpg"
-        //     },
-        //     {
-        //         "linkId": 6,
-        //         "text": "olha só",
-        //         "link": "https://www.globo.com/",
-        //         "createdAt": "2022-06-15T05:05:33.671Z",
-        //         "userId": 5,
-        //         "userName": "bruno",
-        //         "picture": "https://aventurasnahistoria.uol.com.br/media/uploads/entretenimento/bob_esponja_capa.jpg"
-        //     },
-        //     {
-        //         "linkId": 3,
-        //         "text": "figma",
-        //         "link": "https://www.figma.com/",
-        //         "createdAt": "2022-06-15T04:38:33.567Z",
-        //         "userId": 5,
-        //         "userName": "bruno",
-        //         "picture": "https://aventurasnahistoria.uol.com.br/media/uploads/entretenimento/bob_esponja_capa.jpg"
-        //     },
-        //     {
-        //         "linkId": 1,
-        //         "text": "olha só esse link",
-        //         "link": "https://reactnative.dev/",
-        //         "createdAt": "2022-06-15T04:37:16.175Z",
-        //         "userId": 5,
-        //         "userName": "bruno",
-        //         "picture": "https://aventurasnahistoria.uol.com.br/media/uploads/entretenimento/bob_esponja_capa.jpg"
-        //     }
-
-
-        // ])
+        requestPosts.catch( e => {setPosts({e})})
     }, [])
 
 
@@ -87,6 +45,14 @@ export default function RenderPosts() {
         )
     }
 
+    if(posts.e){
+        return (
+            <>
+               An error occured while trying to fetch the posts, please refresh the page
+            </>
+        )
+    }
+
     return (
         <AllPosts posts={posts} />
     )
@@ -95,8 +61,6 @@ export default function RenderPosts() {
 
 function AllPosts(props) {
     const { posts } = props;
-
-    console.log(posts)
 
     return (
         posts.map(infos => {
