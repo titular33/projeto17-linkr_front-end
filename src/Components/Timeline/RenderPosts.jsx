@@ -3,10 +3,6 @@ import { useEffect, useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
-//const urlMetadata = require("url-metadata");
-
-//import urlMetadata from 'url-metadata';
-
 import NewPost from './NewPost';
 
 export default function RenderPosts() {
@@ -18,6 +14,7 @@ export default function RenderPosts() {
 
 
     const [posts, setPosts] = useState(null)
+    console.log("setPosts", setPosts)
 
     useEffect(() => {
 
@@ -29,7 +26,6 @@ export default function RenderPosts() {
         requestPosts.catch(e => { setPosts({ e }) })
     }, [])
 
-    console.log(posts)
 
     if (posts === null) {
         errorMessage = "Loading..."
@@ -45,7 +41,7 @@ export default function RenderPosts() {
 
     return (
         <>
-            <NewPost />
+            <NewPost setPosts={setPosts}/>
             {
                 posts === null ||  posts.length === 0 || posts.e ?
                 errorMessage :
