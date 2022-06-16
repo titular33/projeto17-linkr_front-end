@@ -18,6 +18,7 @@ export default function NewPost({setPosts}) {
 
     const [infosTopost, setInfosToPost] = useState({ link: "", text: "" })
     const [disabled, setDisabled] = useState(false) 
+    const [errorPost, setErrorPost] = useState(false)
 
 
     async function tryPost() {
@@ -27,12 +28,15 @@ export default function NewPost({setPosts}) {
         } catch (e) {
             error = true
             console.log(e)
+            setErrorPost(true)
         }
 
         if (!error) {
+            setInfosToPost({ link: "", text: "" })
             const requestPosts = axios.get(URL_GET, config)
-            requestPosts.then(res => { setPosts(res.data) })
+            requestPosts.then(res => { setPosts(res.data); setErrorPost(false) })
             requestPosts.catch(e => { setPosts({ e }) })
+            
         }
         setDisabled(false)
     }
@@ -55,8 +59,9 @@ export default function NewPost({setPosts}) {
                         disabled={disabled}
                         type="url"
                         placeholder="http(s)://..."
+                        required
                         value={infosTopost.link}
-                        onChange={e => { setInfosToPost({ ...infosTopost, link: e.target.value }) }}
+                        onChange={e => { setInfosToPost({ ...infosTopost, link: e.target.value }); setErrorPost(false) }}
                     />
                     <textarea
                                             className={`${disabled}`}
@@ -65,7 +70,7 @@ export default function NewPost({setPosts}) {
                         name="cometario-link"
                         placeholder="Awesome article about #javascript"
                         value={infosTopost.text}
-                        onChange={e => { setInfosToPost({ ...infosTopost, text: e.target.value }) }}
+                        onChange={e => { setInfosToPost({ ...infosTopost, text: e.target.value }); setErrorPost(false) }}
                     >
                     </textarea>
                     <button
@@ -75,6 +80,7 @@ export default function NewPost({setPosts}) {
                         {disabled ?  <ThreeDots color="#fff" height={13}/> : "Publish"}
                     </button>
                 </$Form>
+                {errorPost ? <$Error> There was an error posting your link </$Error> : ""}
             </$InfosRight>
         </$AuxBody>
     )
@@ -194,7 +200,12 @@ const $Form = styled.form`
             cursor: pointer;
         }
         &.true{
+            cursor: default;
             filter: brightness(80%);
         }
    }
+`
+
+const $Error = styled.p`
+    color: red;
 `
