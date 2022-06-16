@@ -1,27 +1,79 @@
-import styled from "styled-components"
+import axios from "axios";
+import { useState } from "react";
+import styled from "styled-components";
+import { ThreeDots } from 'react-loader-spinner';
 
-export default function NewPost() {
 
-    const { token, userName, picture } = JSON.parse(localStorage.getItem('userData'))
 
+export default function NewPost({setPosts}) {
+    const URL_POST = "http://127.0.0.1:4000/post"
+    const URL_GET = "http://127.0.0.1:4000/timeline"
+
+
+    const { token, picture } = JSON.parse(localStorage.getItem('userData'))
+    const config = {
+        headers: { authorization: token }
+    }
+
+
+    const [infosTopost, setInfosToPost] = useState({ link: "", text: "" })
+    const [disabled, setDisabled] = useState(false) 
+
+
+    async function tryPost() {
+        let error = false;
+        try {
+            await axios.post(URL_POST, infosTopost, config);
+        } catch (e) {
+            error = true
+            console.log(e)
+        }
+
+        if (!error) {
+            const requestPosts = axios.get(URL_GET, config)
+            requestPosts.then(res => { setPosts(res.data) })
+            requestPosts.catch(e => { setPosts({ e }) })
+        }
+        setDisabled(false)
+    }
 
     return (
         <$AuxBody>
 
             <$InfosLeft>
                 <$Img img={picture} />
-                <p>
-                </p>
             </$InfosLeft>
 
             <$InfosRight>
                 <h6>
                     What are you going to share today?
                 </h6>
-                <$Form action="">
-                    <input type="url" placeholder="http(s)://..." />
-                    <textarea name="cometario-link" placeholder="Awesome article about #javascript"></textarea>
-                    <button type="submit"> Publish </button>
+                <$Form onSubmit={(e) => { e.preventDefault(); setDisabled(true);tryPost(); }}>
+                    <input
+                                            className={`${disabled}`}
+
+                        disabled={disabled}
+                        type="url"
+                        placeholder="http(s)://..."
+                        value={infosTopost.link}
+                        onChange={e => { setInfosToPost({ ...infosTopost, link: e.target.value }) }}
+                    />
+                    <textarea
+                                            className={`${disabled}`}
+
+                        disabled={disabled}
+                        name="cometario-link"
+                        placeholder="Awesome article about #javascript"
+                        value={infosTopost.text}
+                        onChange={e => { setInfosToPost({ ...infosTopost, text: e.target.value }) }}
+                    >
+                    </textarea>
+                    <button
+                        className={`${disabled}`}
+                        disabled={disabled}
+                        type="submit">
+                        {disabled ?  <ThreeDots color="#fff" height={13}/> : "Publish"}
+                    </button>
                 </$Form>
             </$InfosRight>
         </$AuxBody>
@@ -94,6 +146,9 @@ const $Form = styled.form`
         &:hover{
             filter: brightness(95%);
         }
+        &.true{
+            filter: brightness(80%);
+        }
     }
 
     textarea{
@@ -118,6 +173,9 @@ const $Form = styled.form`
         &:hover{
             filter: brightness(95%);
         }
+        &.true{
+            filter: brightness(80%);
+        }
     }
 
     button{
@@ -133,6 +191,10 @@ const $Form = styled.form`
         font-size: 14px;
         &:hover{
             filter: brightness(95%);
+            cursor: pointer;
+        }
+        &.true{
+            filter: brightness(80%);
         }
    }
 `
