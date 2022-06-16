@@ -1,4 +1,6 @@
+import ReactHashtag from 'react-hashtag';
 import styled from 'styled-components';
+import { Link } from 'react-router-dom';
 
 const trending = ['javascript', 'react', 'react-native', 'material', 'web-dev', 'mobile', 'css', 'html', 'node', 'sql']
 
@@ -11,7 +13,16 @@ return (
               </h1>
             </div>
             <div className='line'/>
-            {trending.map(themes => <h2>#{themes}</h2>)}
+            <div> 
+            {trending.map(themes => <h2 >
+              <Link to={`/hashtag/${themes}`}>
+              <ReactHashtag renderHashtag={(hashtagValue) => (
+                <Hashtag >{hashtagValue}</Hashtag>
+            )}>{'#'+themes}</ReactHashtag>
+             </Link>
+             </h2>)}
+           
+            </div>
         </Container>
     );  
 }
@@ -49,4 +60,22 @@ const Container = styled.div`
     color: white;
     margin-bottom: 7px;
   }
+  a:link {
+  text-decoration: none;
+}
+
+a:visited {
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: none;
+}
+
+a:active {
+  text-decoration: none;
+}
  `
+ const Hashtag = styled.span`
+    color: white;
+`;
