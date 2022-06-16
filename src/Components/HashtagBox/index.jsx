@@ -1,6 +1,11 @@
 import ReactHashtag from 'react-hashtag';
 import styled from 'styled-components';
+<<<<<<< HEAD
 import { Link } from 'react-router-dom';
+=======
+import ReactHashtag from "react-hashtag";
+import {Link} from "react-router-dom"
+>>>>>>> master
 
 const trending = ['javascript', 'react', 'react-native', 'material', 'web-dev', 'mobile', 'css', 'html', 'node', 'sql']
 
@@ -21,7 +26,10 @@ return (
             )}>{'#'+themes}</ReactHashtag>
              </Link>
              </h2>)}
+<<<<<<< HEAD
            
+=======
+>>>>>>> master
             </div>
         </Container>
     );  
@@ -29,6 +37,21 @@ return (
     
 const Container = styled.div`
   
+  a:link {
+  text-decoration: none;
+}
+
+a:visited {
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: none;
+}
+
+a:active {
+  text-decoration: none;
+}
   background-color: #171717;
   border-radius: 16px;
   width: 301px;
@@ -60,6 +83,7 @@ const Container = styled.div`
     color: white;
     margin-bottom: 7px;
   }
+<<<<<<< HEAD
   a:link {
   text-decoration: none;
 }
@@ -78,4 +102,14 @@ a:active {
  `
  const Hashtag = styled.span`
     color: white;
+=======
+ `
+ const Hashtag = styled.span`
+  font-family: 'Lato';
+  font-weight:bold;
+  color: white;
+  :hover{
+ cursor: pointer;
+  }
+>>>>>>> master
 `;
