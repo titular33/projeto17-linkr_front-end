@@ -6,14 +6,13 @@ import {
     QuickAccess,
     InputBox,
     BoxIconInput,
-} from "./styles";
-import Search  from "../search";
+} from "./styled";
 
 import { AiOutlineSearch } from 'react-icons/ai';
 
 import { useState, useRef, useEffect, createContext } from "react";
 import { Link } from "react-router-dom";
-
+import {SearchBar} from "../SearchBar";
 
 export default function Header() {
     const [quickAccess, setQuickAccess] = useState(false);
@@ -45,7 +44,7 @@ export default function Header() {
             <Logo to="/timeline">Linkr</Logo>
 
             <InputBox>
-                <Search/>
+                <SearchBar/>
                 <BoxIconInput><AiOutlineSearch /></BoxIconInput>
             </InputBox>
 
