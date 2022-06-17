@@ -55,6 +55,7 @@ const $AuxBody = styled.div`
 
 
 const $Section = styled.div`
+    width: 100%;
     grid-column-start: 2;
     grid-column-end: 4;
     
