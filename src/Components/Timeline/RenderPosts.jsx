@@ -7,7 +7,6 @@ import NewPost from './NewPost';
 
 export default function RenderPosts() {
     const URL = "http://127.0.0.1:4000/timeline"
-    let navigate = useNavigate()
 
     let { token } = JSON.parse(localStorage.getItem('userData'))
     let errorMessage = "";
@@ -38,7 +37,6 @@ export default function RenderPosts() {
         errorMessage = "An error occured while trying to fetch the posts, please refresh the page"
     }
 
-    console.log(posts)
 
     return (
         <>
@@ -69,15 +67,23 @@ function AllPosts(props) {
 }
 
 function EachPost(props) {
-
+    let navigate = useNavigate()
 
     const { infos } = props;
 
-    if(infos.image === ""){
+    if (infos.image === "") {
         infos.image = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAO0AAADVCAMAAACMuod9AAAAXVBMVEXv7+9mZmbs7OxfX1/39/d+fn6np6fX19fz8/POzs55eXlbW1uDg4PS0tJkZGRhYWFqamrn5+eLi4tWVlbh4eGUlJSqqqqhoaH7+/u+vr5vb2/Jycm/v7+Ojo6wsLDYus8vAAADXElEQVR4nO3b6XLiOhCGYWshtG0siWVCljNz/5c5LQhhiWAyFacO8rzPv2Bw1eeW1LIJTQMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADcYMXKCKfRs4gd4TzfbT7MxzFUkFY6F3v3devYt2MMku/lZ6GbjWCR+uH+02ptR6mJLMY5z/eSbpQRKJq2itqOM99Ie39Ie4u91lUnmPZq1kmmFZHmSuDppZXN0G6ubIgnltbKZuvi2vzYSGlATyytn3frZFIMaVMq7sTSNj+jCSlq3lVT+MS00srcGZNCSsa4eeH4xNI+uxQ1qta3f55+bZ9dfNGwOpLjP5B23ufK5rjrtnC86rTiP7y0iPu0oZtWB7LWv66WFyuvH2La5Q2vpVgVp/Wvyc2Wl28dOuN699L6afVbaVN86WcXoazY/349vi7FyuWFaCpOK63J3SZ254+areb1XrfJxTuhWtP6IUQTc9zZ6cv27W7A7p6V7+prT26IKk0rw9vau1t9S5tEtRvOZ3d/daaVoQ+HtMl11743kW0n9ddW2vAeVjeJujIXM/itc4s8pt9fqTGtNtWYjrUtxc3zVx7WenOwypU91LfCtNp6jpXdi7O8zThZh2VpZRvy3Har/PfbgerSWhlMNJfiru+edZ0HF0Me5+uf9n2pri6tb81lZQ9xT3usf3RBB7ne2afdYN5/vLa0MiQX0se0eWU+dCLJq3EurDbkoIl1MNva0tpcOh3GpcruqtsdMlldjU/fFsLK79eputLqpuLjnD1w3X52Wvu07c/f5xa+vrR+cLEwio/V3Rc3h81z9jjMjVlIPlRTWtGw17O+x9VNRZ7Zx+uSH7m6RS58NWlz67md1bz13e2Hqa25damSmtLqLd4f0+oEXe777KWQd1X1fKPp2+RuzNlDFcNLviShlDeumlUlaeeD3rxfaz5nY1ZbbGEQpD7F+GPRz+8/re/MQxfMrfX4mLYs5EsVQ6ygtr5zn5izn1FDWulKm8Wppn3qPjGIJ5NW5+1ISHtv/r20I0zcVEva3sWv/3uynmJdQdrm18Moto/bzf8d5RPEy5MfQeEL3/sjdpxfP4zzY4zvZhu7zE8Uv2pZ/uYPAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADg7/0G6cMyGr/MjwcAAAAASUVORK5CYII="
-    }
+    } // isso aqui pode vir do back já
 
     let liked = infos.liked
+    let { userId } = JSON.parse(localStorage.getItem('userData'))
+    let isUserPost = false;
+
+    if (userId === infos.userId) {
+        isUserPost = true;
+    }
+
+    console.log("isUserPost:", isUserPost)
 
     return (
 
@@ -86,14 +92,19 @@ function EachPost(props) {
 
                 <$InfosLeft>
                     <$Img img={infos.picture} />
-                    { liked ?  <ion-icon name="heart"></ion-icon> : <ion-icon name="heart-outline"></ion-icon> }
+                    {liked ? <ion-icon name="heart"></ion-icon> : <ion-icon name="heart-outline"></ion-icon>}
                     <p>
                         {infos.likes} likes
                     </p>
                 </$InfosLeft>
 
                 <$InfosRight>
-                    <h6>
+                    {isUserPost ? <$CanEdit>
+                        <ion-icon name="create-outline" onClick={(e) =>{console.log("Editar");}}></ion-icon>
+                        <ion-icon name="trash-outline" onClick={(e) =>{console.log("Excluir");}}></ion-icon>
+                    </$CanEdit> : <></>}
+
+                    <h6 onClick={() => { navigate(`/user/${infos.userId}`) }}>
                         {infos.userName}
                     </h6>
                     <p>
@@ -119,6 +130,26 @@ function EachPost(props) {
     )
 }
 
+const $CanEdit = styled.div`
+    position: absolute;
+    top: 5px;
+    right: 15px;
+
+    ion-icon[name="create-outline"]{
+        color: white;
+        font-size: 20px;
+        padding: 5px;
+
+    }
+    ion-icon[name="trash-outline"]{
+        color: white;
+        font-size: 20px;
+        padding: 5px;
+
+    }
+`
+
+
 const $EachPost = styled.div`
     width: 100%;
     padding: 15px;
@@ -127,7 +158,6 @@ const $EachPost = styled.div`
     display: flex;
     flex-direction: column;
     background-color: #171717;
-
 `
 
 const $Box = styled.div`
@@ -158,25 +188,33 @@ const $InfosLeft = styled.div`
     ion-icon[name="heart"]{
         color: red;
     }
-`
+    `
 
 
 const $InfosRight = styled.div`
     width: 85%;
+    position: relative;
 
-    h6{
+    & > h6{
+        max-width: 80%;
         color: white;
         font-family: 'Lato';
         font-size: 19px;
         padding: 7px 0px;
+        cursor: pointer;
+        &:hover{
+            filter: brightness(90%);
+        }
     }
 
-    p{
+    & > p{
         color: white;
         font-family: 'Lato';
         font-size: 17px;
         padding: 7px 0px;
     }
+
+    
 
 `
 
@@ -190,30 +228,41 @@ const $Embed = styled.div`
 
     display: grid;
     grid-template-columns: 7fr 3fr;
-    grid-template-rows: 2fr 4fr 1fr;
+    grid-template-rows: 2fr 2fr 1fr;
     align-items: center;
-    gap: 5px;
 
     position: relative;
     overflow: hidden;
 
+    &:hover{
+        filter: brightness(90%);
+    }
+
 `
 
 const $EmbedTitle = styled.h6`
-    width: 100%;
     grid-column-start: 1;
     text-overflow: ellipsis;
-
+    margin: 10px 20px;
+    font-family: 'Lato';
+    font-size: 16px;
+    color: #CECECE;
 `
 
 const $EmbedDescription = styled.p`
-    width: 100%;
+    margin: 10px 20px;
     grid-column-start: 1;
+    font-family: 'Lato';
+    font-size: 11px;
+    color: #9B9595;
 `
 
 const $EmbedLink = styled.p`
-    width: 100%;
+    margin: 10px 20px;
     grid-column-start: 1;
+    font-family: 'Lato';
+    font-size: 11px;
+    color: #CECECE;
 `
 
 const $EmbedImg = styled.div`
