@@ -14,17 +14,15 @@ import SearchBar from "../SearchBar";
 export default function Header() {
     const [quickAccess, setQuickAccess] = useState(false);
     const [userData, setUserData] = useState({});
-    const URL = 'http://127.0.0.1:4000/usernames'
-    let ref = useRef();
-    
     const logoff = () => {
         setUserData('');
         localStorage.removeItem('userData');
     }
+    const { token, picture } = JSON.parse(localStorage.getItem('userData'))
 
     useEffect(() => {
         function OutsideClick(e) {
-            if (quickAccess && ref.current && !ref.current.contains(e.target)) {
+            if (quickAccess && token.current && !token.current.contains(e.target)) {
               setQuickAccess(false)
             }
         }
@@ -38,7 +36,7 @@ export default function Header() {
 
 
     return(
-        <Container ref={ref}>
+        <Container token={token}>
             <Logo to="/timeline">Linkr</Logo>
 
             <InputBox>
@@ -46,7 +44,7 @@ export default function Header() {
             </InputBox>
 
             <ImageUser 
-                src={userData.photoUrl}
+                src={picture}
                 onClick={() => setQuickAccess(!quickAccess)}
                 alt="profile picture"
             />
@@ -57,7 +55,7 @@ export default function Header() {
                 size="30px"
             />
 
-            <QuickAccess to="#" ref={ref} display={quickAccess ? "inherit" : "none"}>
+            <QuickAccess to="#" token={token} display={quickAccess ? "inherit" : "none"}>
                 <Link to="/">
                     <span onClick={() => logoff()} >Logout</span>
                 </Link>
