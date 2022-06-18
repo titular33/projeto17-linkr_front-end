@@ -1,9 +1,40 @@
 import styled from 'styled-components';
 import {Link} from "react-router-dom"
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 
-const trending = ['javascript', 'react', 'react-native', 'material', 'web-dev', 'mobile', 'css', 'html', 'node', 'sql']
 
-export default function hashtagContainer() {
+
+
+export default function HashtagContainer() {
+
+const [trending, setTrending] = useState()
+const URL = `http://127.0.0.1:4000/hashtags`
+useEffect(getData, []) 
+
+
+function getData(){
+  axios.get(URL)
+  .then(res => {console.log(res.data); 
+    let hashtags = []
+    for(let i = 0; i < res.data.length; i++){
+      hashtags.push(res.data[i].hashtag)
+    } 
+    setTrending(hashtags)
+  })
+}
+
+if (!trending){
+  return (
+  <Container>
+    <Loading>
+    <div className='loading'/>
+    </Loading>
+  </Container>
+  )
+}
+
+
 return (
         <Container>
             <div>
@@ -16,7 +47,7 @@ return (
               {trending.map(themes => 
                 <h2 >
                   <Link to={`/hashtag/${themes}`}>
-                    {'#'+themes}
+                    { themes}
                   </Link>
                 </h2>)}
             </div>
@@ -78,3 +109,24 @@ const Container = styled.div`
     margin-bottom: 7px;
   }
  `
+ const Loading = styled.div`
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  padding-top: 150px;
+  
+  .loading{
+    animation: is-rotating 1s infinite;
+    width: 50px;
+    height: 50px;
+    border: 6px solid gray;
+    border-top-color: #fff;
+    border-radius: 50%;
+  }
+
+@keyframes is-rotating { 
+    to {
+        transform: rotate(1turn);
+    }
+}`
