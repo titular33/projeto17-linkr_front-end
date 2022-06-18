@@ -98,13 +98,13 @@ const $AuxBody = styled.div`
 
 
 const $InfosLeft = styled.div`
-    grid-column-start:0;
     grid-column-start:1;
+    grid-column-end:2;
 
 `
 const $InfosRight = styled.div`
-    grid-column-start:1;
     grid-column-start:2;
+    grid-column-end:3;
 
     h6{
         font-family: 'Lato';

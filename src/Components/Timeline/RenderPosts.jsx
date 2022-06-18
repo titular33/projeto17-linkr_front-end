@@ -6,24 +6,13 @@ import styled from 'styled-components';
 import NewPost from './NewPost';
 
 export default function RenderPosts() {
-    const URL = "http://127.0.0.1:4000/timeline"
-    let navigate = useNavigate()
 
-    let { token } = JSON.parse(localStorage.getItem('userData'))
     let errorMessage = "";
 
-
     const [posts, setPosts] = useState(null)
-    console.log("setPosts", setPosts)
 
     useEffect(() => {
-
-        const config = {
-            headers: { authorization: token }
-        }
-        const requestPosts = axios.get(URL, config)
-        requestPosts.then(res => { setPosts(res.data) })
-        requestPosts.catch(e => { setPosts({ e }) })
+        getPosts(setPosts)
     }, [])
 
 
@@ -39,13 +28,14 @@ export default function RenderPosts() {
         errorMessage = "An error occured while trying to fetch the posts, please refresh the page"
     }
 
+
     return (
         <>
-            <NewPost setPosts={setPosts}/>
+            <NewPost setPosts={setPosts} />
             {
-                posts === null ||  posts.length === 0 || posts.e ?
-                errorMessage :
-                <AllPosts posts={posts} /> 
+                posts === null || posts.length === 0 || posts.e ?
+                    errorMessage :
+                    <AllPosts posts={posts} setPosts={setPosts} />
             }
         </>
 
@@ -53,14 +43,30 @@ export default function RenderPosts() {
 
 }
 
+
+async function getPosts(setPosts) {
+    const URL = "http://127.0.0.1:4000/timeline"
+
+    let { token } = JSON.parse(localStorage.getItem('userData'))
+
+    const config = {
+        headers: { authorization: token }
+    }
+
+    const requestPosts = axios.get(URL, config)
+    requestPosts.then(res => { setPosts(res.data) })
+    requestPosts.catch(e => { setPosts({ e }) })
+
+}
+
 function AllPosts(props) {
-    const { posts } = props;
+    const { posts, setPosts } = props;
 
     return (
         posts.map(infos => {
             return (
 
-                <EachPost infos={infos} key={infos.id + infos.createdAt} />
+                <EachPost key={infos.id + infos.createdAt} infos={infos} setPosts={setPosts} />
 
             )
         })
@@ -68,10 +74,30 @@ function AllPosts(props) {
 }
 
 function EachPost(props) {
+    let navigate = useNavigate()
 
+    const { infos, setPosts } = props;
 
-    const { infos } = props;
+    if (infos.image === "") {
+        infos.image = "https://archive.org/download/no-photo-available/no-photo-available.png"
+    } // isso aqui pode vir do back já
 
+    let liked = infos.liked
+    let { userId, token } = JSON.parse(localStorage.getItem('userData'))
+    let isUserPost = false;
+
+    if (userId === infos.userId) {
+        isUserPost = true;
+    }
+
+    function deletePost(){
+        const config = {
+            headers: { id: infos.id,  authorization: token}
+        }
+        const requet = axios.delete("http://127.0.0.1:4000/post", config);
+        requet.then(() =>{getPosts(setPosts)});
+        requet.catch(() =>{alert("Não foi possível deletar o post")})
+    }
 
     return (
 
@@ -80,28 +106,71 @@ function EachPost(props) {
 
                 <$InfosLeft>
                     <$Img img={infos.picture} />
-                    <ion-icon name="heart-outline"></ion-icon>
+                    {liked ? <ion-icon name="heart"></ion-icon> : <ion-icon name="heart-outline"></ion-icon>}
                     <p>
-                        XX likes
+                        {infos.likes} likes
                     </p>
                 </$InfosLeft>
 
                 <$InfosRight>
-                    <h6>
+                    {isUserPost ? <$CanEdit>
+                        <ion-icon name="create-outline" onClick={(e) => {
+                            console.log("Editar");
+                        }}>
+
+                        </ion-icon>
+                        <ion-icon name="trash-outline" onClick={(e) => {
+                            deletePost();
+                        }}>
+
+                        </ion-icon>
+                    </$CanEdit> : <></>}
+
+                    <h6 onClick={() => { navigate(`/user/${infos.userId}`) }}>
                         {infos.userName}
                     </h6>
                     <p>
                         {infos.text}
                     </p>
-                    <p>
+                    <$Embed onClick={() => { window.open(infos.link, "_blank"); }}>
+                        <$EmbedTitle>
+                            {infos.title}
+                        </$EmbedTitle>
+                        <$EmbedDescription>
+                            {infos.description}
+                        </$EmbedDescription>
+                        <$EmbedLink>
+                            {infos.link}
+                        </$EmbedLink>
+                        <$EmbedImg img={infos.image}>
+                        </$EmbedImg>
 
-                        infosMetaData
-                    </p>
+                    </$Embed>
                 </$InfosRight>
             </$Box>
         </$EachPost>
     )
 }
+
+const $CanEdit = styled.div`
+    position: absolute;
+    top: 5px;
+    right: 15px;
+
+    ion-icon[name="create-outline"]{
+        color: white;
+        font-size: 20px;
+        padding: 5px;
+
+    }
+    ion-icon[name="trash-outline"]{
+        color: white;
+        font-size: 20px;
+        padding: 5px;
+
+    }
+`
+
 
 const $EachPost = styled.div`
     width: 100%;
@@ -111,13 +180,12 @@ const $EachPost = styled.div`
     display: flex;
     flex-direction: column;
     background-color: #171717;
-
 `
 
 const $Box = styled.div`
     width: 100%;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
     gap: 10px;
 `
@@ -128,6 +196,7 @@ const $InfosLeft = styled.div`
     flex-direction: column;
     gap: 5px;
     align-items: center;
+    justify-content: flex-start;
 
     p{
         color: white;
@@ -137,29 +206,120 @@ const $InfosLeft = styled.div`
 
     ion-icon[name="heart-outline"]{
         color: white;
-        background-color: red;
     }
-`
+    ion-icon[name="heart"]{
+        color: red;
+    }
+    `
 
 
 const $InfosRight = styled.div`
     width: 85%;
+    position: relative;
 
-    h6{
+    & > h6{
+        max-width: 80%;
         color: white;
         font-family: 'Lato';
         font-size: 19px;
         padding: 7px 0px;
+        cursor: pointer;
+        &:hover{
+            filter: brightness(90%);
+        }
     }
 
-    p{
+    & > p{
         color: white;
         font-family: 'Lato';
         font-size: 17px;
         padding: 7px 0px;
     }
 
+    
+
 `
+
+const $Embed = styled.div`
+    width: 100%;
+    min-height: 150px;
+    border: 1px solid #4D4D4D;
+    border-radius: 10px;
+    box-sizing: border-box;
+    cursor: pointer;
+
+    display: grid;
+    grid-template-columns: 7fr 3fr;
+    grid-template-rows: 2fr 2fr 1fr;
+    align-items: center;
+
+    position: relative;
+    overflow: hidden;
+
+    &:hover{
+        filter: brightness(90%);
+    }
+
+`
+
+const $EmbedTitle = styled.h6`
+    grid-column-start: 1;
+    text-overflow: ellipsis;
+    margin: 10px 20px;
+    font-family: 'Lato';
+    font-size: 16px;
+    color: #CECECE;
+`
+
+const $EmbedDescription = styled.p`
+    margin: 10px 20px;
+    grid-column-start: 1;
+    font-family: 'Lato';
+    font-size: 11px;
+    color: #9B9595;
+`
+
+const $EmbedLink = styled.p`
+    margin: 10px 20px;
+    grid-column-start: 1;
+    font-family: 'Lato';
+    font-size: 11px;
+    color: #CECECE;
+`
+
+const $EmbedImg = styled.div`
+    grid-column-start: 2;
+    grid-row-start:1;
+    grid-row-end: 4;
+    width: 100%;
+    min-height: 150px;
+    background-color: grey;
+
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    bottom: 0px;
+
+    background-image: url(${props => props.img});
+    background-size: cover;
+    background-position: center; 
+`
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 const $Img = styled.div`
     width: 50px;
     height: 50px;

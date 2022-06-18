@@ -25,7 +25,7 @@ const SignIn = () => {
         const requisicaoPost = axios.post(URL, loginData);
         requisicaoPost.then(response => {
             const { data } = response;
-            localStorage.setItem("userData", JSON.stringify({ token: data.token, userName: data.userName, picture: data.picture }))
+            localStorage.setItem("userData", JSON.stringify({ userId: data.id, token: data.token, userName: data.userName, picture: data.picture }))
             setUserData({ token: data.token, userId: data.id, userName: data.userName, picture: data.picture });
             setLoad(false);
             navigate('/timeline')
