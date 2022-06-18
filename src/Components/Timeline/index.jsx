@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import Header from '../Header';
 import RenderPosts from './RenderPosts';
+import HashtagContainer from '../HashtagBox'
 
 export default function GetTimeline() {
 
@@ -21,7 +22,7 @@ export default function GetTimeline() {
                     <RenderPosts />
 
                 </$Section>
-                <Navbar />
+                <HashtagContainer />
 
             </$AuxBody>
         </>
