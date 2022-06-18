@@ -1,11 +1,7 @@
-import ReactHashtag from 'react-hashtag';
 import styled from 'styled-components';
-import ReactHashtag from "react-hashtag";
 import {Link} from "react-router-dom"
-
 const trending = ['javascript', 'react', 'react-native', 'material', 'web-dev', 'mobile', 'css', 'html', 'node', 'sql']
-
-export default function hashtagContainer() {
+export default function HashtagContainer() {
 return (
         <Container>
             <div>
@@ -15,13 +11,12 @@ return (
             </div>
             <div className='line'/>
             <div> 
-            {trending.map(themes => <h2 >
-              <Link to={`/hashtag/${themes}`}>
-              <ReactHashtag renderHashtag={(hashtagValue) => (
-                <Hashtag >{hashtagValue}</Hashtag>
-            )}>{'#'+themes}</ReactHashtag>
-             </Link>
-             </h2>)}
+              {trending.map(themes => 
+                <h2 >
+                  <Link to={`/hashtag/${themes}`}>
+                    {'#'+themes}
+                  </Link>
+                </h2>)}
             </div>
         </Container>
     );  
@@ -31,24 +26,24 @@ const Container = styled.div`
   
   a:link {
   text-decoration: none;
-}
-
-a:visited {
-  text-decoration: none;
-}
-
-a:hover {
-  text-decoration: none;
-}
-
-a:active {
-  text-decoration: none;
-}
+  color: white;
+  }
+  a:visited {
+    text-decoration: none;
+    color: white;
+  }
+  a:hover {
+    text-decoration: none;
+    color: white;
+  }
+  a:active {
+    text-decoration: none;
+    color: white;
+  }
   background-color: #171717;
   border-radius: 16px;
   width: 301px;
   height: 406px;
-
   h1 {
     font-family: 'Oswald';
     font-style: normal;
