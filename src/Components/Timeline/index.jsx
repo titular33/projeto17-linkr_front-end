@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useEffect, useState } from "react";
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
-
+import Header from '../Header';
 import RenderPosts from './RenderPosts';
 
 export default function GetTimeline() {
@@ -28,7 +28,6 @@ export default function GetTimeline() {
     )
 }
 
-const Header = styled.div``
 const CreatePost = styled.div``
 
 

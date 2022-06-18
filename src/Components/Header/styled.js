@@ -5,6 +5,21 @@ import { IoChevronDownSharp } from "react-icons/io5";
 import { Link } from 'react-router-dom';
 
 const Container = styled.div`
+    a:link {
+  text-decoration: none;
+}
+
+a:visited {
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: none;
+}
+
+a:active {
+  text-decoration: none;
+}
     width: 100%;
     height: 72px;
     background-color: #151515;
@@ -16,6 +31,7 @@ const Container = styled.div`
     top: 0;
     left: 0;
     z-index: 3;
+    
 `;
 
 const Logo = styled(Link)`
@@ -75,7 +91,7 @@ const BoxIconInput = styled.div`
     font-size: 19px;
     line-height: 23px;
     color: #C6C6C6;
-    position: absolute;
+    position: relative;
     right: 10px;
     top: 12px;
 `;
