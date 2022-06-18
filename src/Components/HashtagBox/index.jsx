@@ -61,27 +61,22 @@ const Container = styled.div`
   text-decoration: none;
   color: white;
   }
-
   a:visited {
     text-decoration: none;
     color: white;
   }
-
   a:hover {
     text-decoration: none;
     color: white;
   }
-
   a:active {
     text-decoration: none;
     color: white;
   }
-
   background-color: #171717;
   border-radius: 16px;
   width: 301px;
   height: 406px;
-
   h1 {
     font-family: 'Oswald';
     font-style: normal;
