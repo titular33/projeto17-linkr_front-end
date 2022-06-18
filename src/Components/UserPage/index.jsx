@@ -8,7 +8,7 @@ export default function UserPage() {
 
 const params = useParams()
 const URL = `http://127.0.0.1:4000/user/${params.id}`
-const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzZXNzaW9uSWQiOjIwLCJpYXQiOjE2NTU0MDI2NTcsImV4cCI6MTY1NTQ4OTA1N30.yrze_EVU1DinWg-3kFzjupMTVdISx2izcwlKFrg4bI0'
+const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzZXNzaW9uSWQiOjU3LCJpYXQiOjE2NTU1ODA3MTQsImV4cCI6MTY1NTc1MzUxNH0.KhQe5-abUmnA3qD-1w17_APfoUwByzzn3tPRBzn0qcI'
 const [userData, setUserData] = useState()
 useEffect(getData, [])
 

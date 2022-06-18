@@ -8,6 +8,7 @@ import GetTimeline from "../Timeline";
 import SearchBar from "../SearchBar";
 import Header from "../Header";
 import UserPage from "../UserPage";
+import HashtagBox from "../HashtagBox"
 
 export default function App() {
     const [userData, setUserData] = useState(JSON.parse(localStorage.getItem("userData")));
@@ -20,6 +21,7 @@ export default function App() {
                     <Route path="/timeline" element={<GetTimeline />} />
                     <Route path="/test" element={<SearchBar />} />
                     <Route path="/test2" element={<Header />} />
+                    <Route path="/test3" element={<HashtagBox />} />
                     <Route path="/test/:id" element={<UserPage />} />
                 </Routes>
             </BrowserRouter>
