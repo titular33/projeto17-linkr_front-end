@@ -4,22 +4,23 @@ import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import Post from './post.jsx'
 import Header from '../Header'
+import HashtagBox from '../HashtagBox/index.jsx';
 
-export default function UserPage() {
+export default function HashtagPage() {
 
 const params = useParams()
-const URL = `http://127.0.0.1:4000/user/${params.id}`
+const URL = `http://127.0.0.1:4000/hashtags/${params.hashtag}`
 const token = JSON.parse(localStorage.getItem('userData')).token
-const [userData, setUserData] = useState()
-useEffect(getData, [])
+const [hashtagData, setHashtagData] = useState()
+useEffect(getData, [URL, token])
 
 function getData(){
   const config = {headers: {Authorization: `Bearer ${token}`}}
   axios.get(URL, config)
-  .then(res => {setUserData(res.data); console.log(res.data)})
+  .then(res => {setHashtagData(res.data)})
 }
 
-if (!userData) {
+if (!hashtagData) {
   return (
   <Loading>
     <div className='loading'/>
@@ -27,13 +28,16 @@ if (!userData) {
   )
 }
 
-if (userData) return (
+if (hashtagData) return (
+      <OuterWrapper>
+        <h6>#{params.hashtag}</h6>
+        <Wrapper>
         <Container>
             <Header/>
-            <h1>{userData.userName}'s Posts</h1>
-            {userData.posts.map((post) => <Post 
-            picture={userData.picture}
-            userName={userData.userName}
+            
+            {hashtagData.map((post) => <Post 
+            picture={post.picture}
+            userName={post.userName}
             link={post.link}
             text={post.text}
             title={post.title}
@@ -42,10 +46,39 @@ if (userData) return (
             likes={post.likes}
             liked={post.liked}
             />)}
+            
         </Container>
+        <HashtagBox/>
+        </Wrapper>
+      </OuterWrapper>
     );  
 }
+  
+const OuterWrapper = styled.div`
+margin-top: 160px;
+margin-left: 241px; 
+
+h6{  
+    color: white;
+    font-family: Oswald;
+    font-size: 43px;
+    font-weight: 700;
+    line-height: 64px;
+    letter-spacing: 0em;
+    text-align: left;
+    margin-bottom: 40px;
+  }
+`
+
+const Wrapper = styled.div`
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    grid-template-rows: 50px fit-content(10%) fit-content(10%);
+    justify-content: center;
+    gap: 25px;
     
+`
+
 const Loading = styled.div`
   width: 100%;
   height: 100vh;
@@ -72,8 +105,7 @@ const Loading = styled.div`
 const Container = styled.div`
   display: flex;
   flex-direction: column;
-  margin-left: 241px;
-  margin-top: 160px;
+  
   h1{
     color: white;
     font-family: Oswald;

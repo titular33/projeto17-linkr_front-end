@@ -46,7 +46,7 @@ return (
             <div> 
               {trending.map(themes => 
                 <h2 >
-                  <Link to={`/hashtag/${themes}`}>
+                  <Link to={`/hashtag/${themes.replace('#','')}`}>
                     { themes}
                   </Link>
                 </h2>)}

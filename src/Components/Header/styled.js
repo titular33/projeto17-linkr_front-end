@@ -21,17 +21,15 @@ a:active {
   text-decoration: none;
 }
     width: 100%;
-    height: 72px;
+    height: 90px;
     background-color: #151515;
-    padding: 0px 20px;
+    padding: 20px;
     display: flex;
     justify-content: space-between;
-    align-items: center;
     position: fixed;
     top: 0;
     left: 0;
     z-index: 3;
-    
 `;
 
 const Logo = styled(Link)`
@@ -73,7 +71,7 @@ const InputBox = styled.div`
     width: 563px;
     max-width: 60vw;
     
-    position: relative;
+    /* position: relative; */
     @media (max-width: 650px) {
         display: none;
     }
@@ -96,7 +94,7 @@ const BoxIconInput = styled.div`
     top: 12px;
 `;
 
-const ChevronIcon = styled(IoChevronDownSharp )`
+const ChevronIcon = styled(IoChevronDownSharp)`
     position: absolute;
     right: 85px;
     top: 25px;
@@ -108,7 +106,7 @@ const ChevronIcon = styled(IoChevronDownSharp )`
     }
 `
 
-const QuickAccess= styled.div`
+const QuickAccess = styled.div`
     width: 135px;
     height: 47px;
     background-color: #171717;

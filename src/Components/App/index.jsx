@@ -9,6 +9,7 @@ import SearchBar from "../SearchBar";
 import Header from "../Header";
 import UserPage from "../UserPage";
 import HashtagBox from "../HashtagBox"
+import HashtagPage from "../HashtagPage"
 
 export default function App() {
     const [userData, setUserData] = useState(JSON.parse(localStorage.getItem("userData")));
@@ -20,8 +21,7 @@ export default function App() {
                     <Route path="/signup" element={<SignUp />} />
                     <Route path="/timeline" element={<GetTimeline />} />
                     <Route path="/user/:id" element={<UserPage />} />
-                    <Route path="/test" element={<SearchBar />} />
-                    <Route path="/test2" element={<Header />} />
+                    <Route path="/hashtag/:hashtag" element={<HashtagPage />} />
                 </Routes>
             </BrowserRouter>
         </UserContext.Provider>

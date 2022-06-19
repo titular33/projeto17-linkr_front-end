@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 
 
 
@@ -29,12 +30,15 @@ return (
           <input type={Text} id="placeholder-text" placeholder={'Search for people'} onChange={handleChange}/>
           <ion-icon name="search-outline"/>
           {response.map(userInfo => 
+          <Link to ={`/user/${userInfo.id}`}>
           <div className='user'>
             <div className='profilePicture'>
               <img src={userInfo.picture}  alt='profilePicture'/>
             </div>
             <h1>{userInfo.userName}</h1>
-          </div>)}
+          </div>
+          </Link>
+          )}
         </Container>
     );  
 }

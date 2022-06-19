@@ -48,7 +48,6 @@ export default function Post({picture, userName,link,text,title,description,imag
 const PostWrapper = styled.div`
     margin-bottom: 16px;
     width: 611px;
-    /* height: 209px; */
     background-color: #171717;
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
     border-radius: 16px;
@@ -70,7 +69,7 @@ const PostWrapper = styled.div`
     text-decoration: none;
     color: white;
   }
-  
+
   .right{
     padding-left: 15px;
   }

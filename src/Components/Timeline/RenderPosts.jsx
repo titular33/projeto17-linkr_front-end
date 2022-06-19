@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { useEffect, useState } from "react";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import styled from 'styled-components';
 
 import NewPost from './NewPost';
@@ -17,7 +17,7 @@ export default function RenderPosts() {
 
 
     if (posts === null) {
-        errorMessage = "Loading..."
+        errorMessage = <Loading><div className='loading'/></Loading>
     }
 
     else if (posts.length === 0) {
@@ -80,7 +80,7 @@ function EachPost(props) {
 
     if (infos.image === "") {
         infos.image = "https://archive.org/download/no-photo-available/no-photo-available.png"
-    } // isso aqui pode vir do back já
+    }
 
     let liked = infos.liked
     let { userId, token } = JSON.parse(localStorage.getItem('userData'))
@@ -97,6 +97,21 @@ function EachPost(props) {
         const requet = axios.delete("http://127.0.0.1:4000/post", config);
         requet.then(() =>{getPosts(setPosts)});
         requet.catch(() =>{alert("Não foi possível deletar o post")})
+    }
+
+    function findHashtags(text){
+    text = text.split(' ')
+    let html = []
+    for (let i = 0; i < text.length; i++){
+      if (text[i][0] === '#'){
+        html.push(<Link to={`/hashtag/${text[i].replace('#','')}`}> {text[i]}</Link>)
+      } else {
+        html.push(' ' + text[i])
+      }
+    }
+    return (
+      html
+    )
     }
 
     return (
@@ -130,7 +145,7 @@ function EachPost(props) {
                         {infos.userName}
                     </h6>
                     <p>
-                        {infos.text}
+                        {findHashtags(infos.text)}
                     </p>
                     <$Embed onClick={() => { window.open(infos.link, "_blank"); }}>
                         <$EmbedTitle>
@@ -151,6 +166,28 @@ function EachPost(props) {
         </$EachPost>
     )
 }
+
+const Loading = styled.div`
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  
+  .loading{
+    animation: is-rotating 1s infinite;
+    width: 50px;
+    height: 50px;
+    border: 6px solid gray;
+    border-top-color: #fff;
+    border-radius: 50%;
+  }
+
+@keyframes is-rotating { 
+    to {
+        transform: rotate(1turn);
+    }
+}
+`
 
 const $CanEdit = styled.div`
     position: absolute;
@@ -234,8 +271,30 @@ const $InfosRight = styled.div`
         font-family: 'Lato';
         font-size: 17px;
         padding: 7px 0px;
+        color: #B7B7B7;
+        font-weight: 400;
     }
 
+        a:link {
+    text-decoration: none;
+    color: white;
+    font-weight: 700;
+    }
+    a:visited {
+        text-decoration: none;
+        color: white;
+        font-weight: 700;
+    }
+    a:hover {
+        text-decoration: none;
+        color: white;
+        font-weight: 700;
+    }
+    a:active {
+        text-decoration: none;
+        color: white;
+        font-weight: 700;
+    }
     
 
 `
