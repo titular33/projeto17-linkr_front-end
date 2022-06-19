@@ -75,7 +75,6 @@ function AllPosts(props) {
 
 function EachPost(props) {
     let navigate = useNavigate()
-    const textEdit = useRef(null)
 
 
     const { infos, setPosts } = props;
@@ -136,7 +135,7 @@ function EachPost(props) {
                             {infos.userName}
                         </h6>
 
-                        {canEditPost ? <EditPost infos={infos} setCanEditPost={setCanEditPost} setPosts={setPosts} textEdit={textEdit}/> : <p> {infos.text} </p>}
+                        {canEditPost ? <EditPost infos={infos} setCanEditPost={setCanEditPost} setPosts={setPosts}/> : <p> {infos.text} </p>}
 
                         <$Embed onClick={() => { window.open(infos.link, "_blank"); }}>
                             <$EmbedTitle>
@@ -160,9 +159,11 @@ function EachPost(props) {
     )
 }
 
-function EditPost({ infos, setCanEditPost, setPosts, textEdit }) {
+function EditPost({ infos, setCanEditPost, setPosts }) {
     const [infosToEdit, setInfosToEdit] = useState({})
     let { token } = JSON.parse(localStorage.getItem('userData'))
+    const textEdit = useRef(null)
+
 
 
     useEffect(() =>{
