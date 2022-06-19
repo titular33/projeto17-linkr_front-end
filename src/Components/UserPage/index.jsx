@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
-import Post from './post.jsx'
+import Post from '../Post/Post.jsx'
 import Header from '../Header'
 
 export default function UserPage() {
