@@ -9,7 +9,6 @@ export default function UserPage() {
 const params = useParams()
 const URL = `http://127.0.0.1:4000/user/${params.id}`
 const token = JSON.parse(localStorage.getItem('userData')).token
-// const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzZXNzaW9uSWQiOjY0LCJpYXQiOjE2NTU2NjA2MjIsImV4cCI6MTY1NTgzMzQyMn0.wsuNYKF8mUIDvaZ_PDI3WHOY9bujdjNx1C0FPSdO8ts'
 const [userData, setUserData] = useState()
 useEffect(getData, [])
 

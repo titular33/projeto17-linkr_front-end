@@ -8,6 +8,7 @@ import GetTimeline from "../Timeline";
 import SearchBar from "../SearchBar";
 import Header from "../Header";
 import UserPage from "../UserPage";
+import HashtagBox from "../HashtagBox"
 
 export default function App() {
     const [userData, setUserData] = useState(JSON.parse(localStorage.getItem("userData")));
