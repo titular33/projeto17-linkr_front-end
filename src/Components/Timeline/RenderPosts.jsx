@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
@@ -75,6 +75,8 @@ function AllPosts(props) {
 
 function EachPost(props) {
     let navigate = useNavigate()
+    const textEdit = useRef(null)
+
 
     const { infos, setPosts } = props;
 
@@ -86,92 +88,161 @@ function EachPost(props) {
     let { userId, token } = JSON.parse(localStorage.getItem('userData'))
     let isUserPost = false;
 
-    const [canDetePost, setCanDeletePost] = useState(false)
+    const [canDeletePost, setCanDeletePost] = useState(false)
+    const [canEditPost, setCanEditPost] = useState(false)
 
     if (userId === infos.userId) {
         isUserPost = true;
     }
 
+
     
 
     return (
+        <>
+            <$EachPost >
 
-        <$EachPost>
+                {canDeletePost ? <ModalDelete infos={infos} setCanDeletePost={setCanDeletePost} setPosts={setPosts} /> : ""}
+                <$Box >
 
-        {canDetePost ? <ModalDelete infos={infos} setCanDeletePost={setCanDeletePost} setPosts={setPosts}/> : ""}
-            <$Box >
+                    <$InfosLeft>
+                        <$Img img={infos.picture} />
+                        {liked ? <ion-icon name="heart"></ion-icon> : <ion-icon name="heart-outline"></ion-icon>}
+                        <p>
+                            {infos.likes} likes
+                        </p>
+                    </$InfosLeft>
 
-                <$InfosLeft>
-                    <$Img img={infos.picture} />
-                    {liked ? <ion-icon name="heart"></ion-icon> : <ion-icon name="heart-outline"></ion-icon>}
-                    <p>
-                        {infos.likes} likes
-                    </p>
-                </$InfosLeft>
+                    <$InfosRight>
+                        {isUserPost ? <$CanEdit>
+                            <ion-icon name="create-outline" onClick={(e) => {
+                                if(canEditPost){
+                                    setCanEditPost(false)
+                                }else{
+                                    setCanEditPost(true);
+                                    //textEdit.current.focus()
+                                }                               
+                            }}>
 
-                <$InfosRight>
-                    {isUserPost ? <$CanEdit>
-                        <ion-icon name="create-outline" onClick={(e) => {
-                            console.log("Editar");
-                        }}>
+                            </ion-icon>
+                            <ion-icon name="trash-outline" onClick={(e) => {
+                                setCanDeletePost(true)
+                            }}>
 
-                        </ion-icon>
-                        <ion-icon name="trash-outline" onClick={(e) => {
-                            setCanDeletePost(true)
-                        }}>
+                            </ion-icon>
+                        </$CanEdit> : <></>}
 
-                        </ion-icon>
-                    </$CanEdit> : <></>}
+                        <h6 onClick={() => { navigate(`/user/${infos.userId}`) }}>
+                            {infos.userName}
+                        </h6>
 
-                    <h6 onClick={() => { navigate(`/user/${infos.userId}`) }}>
-                        {infos.userName}
-                    </h6>
-                    <p>
-                        {infos.text}
-                    </p>
-                    <$Embed onClick={() => { window.open(infos.link, "_blank"); }}>
-                        <$EmbedTitle>
-                            {infos.title}
-                        </$EmbedTitle>
-                        <$EmbedDescription>
-                            {infos.description}
-                        </$EmbedDescription>
-                        <$EmbedLink>
-                            {infos.link}
-                        </$EmbedLink>
-                        <$EmbedImg img={infos.image}>
-                        </$EmbedImg>
+                        {canEditPost ? <EditPost infos={infos} setCanEditPost={setCanEditPost} setPosts={setPosts} textEdit={textEdit}/> : <p> {infos.text} </p>}
 
-                    </$Embed>
-                </$InfosRight>
-            </$Box>
-        </$EachPost>
+                        <$Embed onClick={() => { window.open(infos.link, "_blank"); }}>
+                            <$EmbedTitle>
+                                {infos.title}
+                            </$EmbedTitle>
+                            <$EmbedDescription>
+                                {infos.description}
+                            </$EmbedDescription>
+                            <$EmbedLink>
+                                {infos.link}
+                            </$EmbedLink>
+                            <$EmbedImg img={infos.image}>
+                            </$EmbedImg>
+
+                        </$Embed>
+                    </$InfosRight>
+                </$Box>
+            </$EachPost>
+
+        </>
     )
 }
 
-function ModalDelete({infos, setCanDeletePost, setPosts}){
+function EditPost({ infos, setCanEditPost, setPosts, textEdit }) {
+    const [infosToEdit, setInfosToEdit] = useState({})
+    let { token } = JSON.parse(localStorage.getItem('userData'))
+
+
+    useEffect(() =>{
+        setInfosToEdit({ link: infos.link, text: infos.text })
+        textEdit.current.focus()
+    }, [])
+
+    function putPost() {
+        const config = {
+            headers: { id: infos.id, authorization: token }
+        }
+        const requet = axios.put("http://127.0.0.1:4000/post", infosToEdit, config);
+        requet.then(() => { setCanEditPost(false); getPosts(setPosts) });
+        requet.catch(() => { alert("Não foi possível editar o post") })
+    }
+
+    return (
+        <$InputEditPost onKeyUp={(e) =>{
+            if(e.key === "Escape" || e.key === "Esc"){
+                setCanEditPost(false)
+            }
+            if(e.key === "Enter"){
+                putPost()
+            }
+            }}>
+            <textarea 
+            ref={textEdit}
+            name="text" 
+            value={infosToEdit.text} 
+            onChange={(e) => {setInfosToEdit({...infosToEdit, text: e.target.value})}}
+            >
+            </textarea>
+          
+        </$InputEditPost>
+    )
+}
+
+function ModalDelete({ infos, setCanDeletePost, setPosts }) {
 
     let { token } = JSON.parse(localStorage.getItem('userData'))
 
 
 
-    function deletePost(){
+    function deletePost() {
         const config = {
-            headers: { id: infos.id,  authorization: token}
+            headers: { id: infos.id, authorization: token }
         }
         const requet = axios.delete("http://127.0.0.1:4000/post", config);
-        requet.then(() =>{ setCanDeletePost(false); getPosts(setPosts)});
-        requet.catch(() =>{alert("Não foi possível deletar o post")})
+        requet.then(() => { setCanDeletePost(false); getPosts(setPosts) });
+        requet.catch(() => { alert("Não foi possível deletar o post") })
     }
 
-    return(
+    return (
         <$ModalDeletePost>
             <p>Deseja deletar este post?</p>
-            <button onClick={() =>{deletePost()}} >sim</button>
-            <button onClick={() =>{setCanDeletePost(false)}}>não</button>
+            <button onClick={() => { deletePost() }} >sim</button>
+            <button onClick={() => { setCanDeletePost(false) }}>não</button>
         </$ModalDeletePost>
     )
 }
+
+const $InputEditPost = styled.div`
+    width: 100%;
+    
+    textarea{
+        height: 80px;
+        width: 100%;
+        border: none;
+        border-radius: 7px;
+        margin: 8px 0px;
+        -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+        -moz-box-sizing: border-box;    /* Firefox, other Gecko */
+        box-sizing: border-box;         /* Opera/IE 8+ */
+        padding: 5px;
+        resize: vertical;
+        font-family: 'Lato';
+        font-weight: 300;
+        font-size: 15px;
+    }
+`
 
 const $CanEdit = styled.div`
     position: absolute;
