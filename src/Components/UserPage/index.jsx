@@ -8,7 +8,7 @@ export default function UserPage() {
 
 const params = useParams()
 const URL = `http://127.0.0.1:4000/user/${params.id}`
-const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzZXNzaW9uSWQiOjU3LCJpYXQiOjE2NTU1ODA3MTQsImV4cCI6MTY1NTc1MzUxNH0.KhQe5-abUmnA3qD-1w17_APfoUwByzzn3tPRBzn0qcI'
+const token = JSON.parse(localStorage.getItem('userData')).token
 const [userData, setUserData] = useState()
 useEffect(getData, [])
 
@@ -16,7 +16,6 @@ function getData(){
   const config = {headers: {Authorization: `Bearer ${token}`}}
   axios.get(URL, config)
   .then(res => {setUserData(res.data); console.log(res.data)})
-  console.log(params.id)
 }
 
 if (!userData) {
