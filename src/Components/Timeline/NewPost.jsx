@@ -167,7 +167,7 @@ const $Form = styled.form`
         color: #707070;
         border: none;
         border-radius: 5px;
-        resize: none;
+        resize: vertical;
         padding: 5px;
         font-family: 'Lato';
         font-weight: 300;

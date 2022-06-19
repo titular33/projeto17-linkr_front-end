@@ -1,6 +1,6 @@
 import axios from 'axios';
-import { useEffect, useState } from "react";
-import { useNavigate, Link } from 'react-router-dom';
+import { useEffect, useRef, useState } from "react";
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 import NewPost from './NewPost';
@@ -17,7 +17,7 @@ export default function RenderPosts() {
 
 
     if (posts === null) {
-        errorMessage = <Loading><div className='loading'/></Loading>
+        errorMessage = "Loading..."
     }
 
     else if (posts.length === 0) {
@@ -76,117 +76,173 @@ function AllPosts(props) {
 function EachPost(props) {
     let navigate = useNavigate()
 
+
     const { infos, setPosts } = props;
 
     if (infos.image === "") {
         infos.image = "https://archive.org/download/no-photo-available/no-photo-available.png"
-    }
+    } // isso aqui pode vir do back já
 
     let liked = infos.liked
     let { userId, token } = JSON.parse(localStorage.getItem('userData'))
     let isUserPost = false;
 
+    const [canDeletePost, setCanDeletePost] = useState(false)
+    const [canEditPost, setCanEditPost] = useState(false)
+
     if (userId === infos.userId) {
         isUserPost = true;
     }
 
-    function deletePost(){
+
+    
+
+    return (
+        <>
+            <$EachPost >
+
+                {canDeletePost ? <ModalDelete infos={infos} setCanDeletePost={setCanDeletePost} setPosts={setPosts} /> : ""}
+                <$Box >
+
+                    <$InfosLeft>
+                        <$Img img={infos.picture} />
+                        {liked ? <ion-icon name="heart"></ion-icon> : <ion-icon name="heart-outline"></ion-icon>}
+                        <p>
+                            {infos.likes} likes
+                        </p>
+                    </$InfosLeft>
+
+                    <$InfosRight>
+                        {isUserPost ? <$CanEdit>
+                            <ion-icon name="create-outline" onClick={(e) => {
+                                if(canEditPost){
+                                    setCanEditPost(false)
+                                }else{
+                                    setCanEditPost(true);
+                                    //textEdit.current.focus()
+                                }                               
+                            }}>
+
+                            </ion-icon>
+                            <ion-icon name="trash-outline" onClick={(e) => {
+                                setCanDeletePost(true)
+                            }}>
+
+                            </ion-icon>
+                        </$CanEdit> : <></>}
+
+                        <h6 onClick={() => { navigate(`/user/${infos.userId}`) }}>
+                            {infos.userName}
+                        </h6>
+
+                        {canEditPost ? <EditPost infos={infos} setCanEditPost={setCanEditPost} setPosts={setPosts}/> : <p> {infos.text} </p>}
+
+                        <$Embed onClick={() => { window.open(infos.link, "_blank"); }}>
+                            <$EmbedTitle>
+                                {infos.title}
+                            </$EmbedTitle>
+                            <$EmbedDescription>
+                                {infos.description}
+                            </$EmbedDescription>
+                            <$EmbedLink>
+                                {infos.link}
+                            </$EmbedLink>
+                            <$EmbedImg img={infos.image}>
+                            </$EmbedImg>
+
+                        </$Embed>
+                    </$InfosRight>
+                </$Box>
+            </$EachPost>
+
+        </>
+    )
+}
+
+function EditPost({ infos, setCanEditPost, setPosts }) {
+    const [infosToEdit, setInfosToEdit] = useState({})
+    let { token } = JSON.parse(localStorage.getItem('userData'))
+    const textEdit = useRef(null)
+
+
+
+    useEffect(() =>{
+        setInfosToEdit({ link: infos.link, text: infos.text })
+        textEdit.current.focus()
+    }, [])
+
+    function putPost() {
         const config = {
-            headers: { id: infos.id,  authorization: token}
+            headers: { id: infos.id, authorization: token }
+        }
+        const requet = axios.put("http://127.0.0.1:4000/post", infosToEdit, config);
+        requet.then(() => { setCanEditPost(false); getPosts(setPosts) });
+        requet.catch(() => { alert("Não foi possível editar o post") })
+    }
+
+    return (
+        <$InputEditPost onKeyUp={(e) =>{
+            if(e.key === "Escape" || e.key === "Esc"){
+                setCanEditPost(false)
+            }
+            if(e.key === "Enter"){
+                putPost()
+            }
+            }}>
+            <textarea 
+            ref={textEdit}
+            name="text" 
+            value={infosToEdit.text} 
+            onChange={(e) => {setInfosToEdit({...infosToEdit, text: e.target.value})}}
+            >
+            </textarea>
+          
+        </$InputEditPost>
+    )
+}
+
+function ModalDelete({ infos, setCanDeletePost, setPosts }) {
+
+    let { token } = JSON.parse(localStorage.getItem('userData'))
+
+
+
+    function deletePost() {
+        const config = {
+            headers: { id: infos.id, authorization: token }
         }
         const requet = axios.delete("http://127.0.0.1:4000/post", config);
-        requet.then(() =>{getPosts(setPosts)});
-        requet.catch(() =>{alert("Não foi possível deletar o post")})
-    }
-
-    function findHashtags(text){
-    text = text.split(' ')
-    let html = []
-    for (let i = 0; i < text.length; i++){
-      if (text[i][0] === '#'){
-        html.push(<Link to={`/hashtag/${text[i].replace('#','')}`}> {text[i]}</Link>)
-      } else {
-        html.push(' ' + text[i])
-      }
-    }
-    return (
-      html
-    )
+        requet.then(() => { setCanDeletePost(false); getPosts(setPosts) });
+        requet.catch(() => { alert("Não foi possível deletar o post") })
     }
 
     return (
-
-        <$EachPost>
-            <$Box >
-
-                <$InfosLeft>
-                    <$Img img={infos.picture} />
-                    {liked ? <ion-icon name="heart"></ion-icon> : <ion-icon name="heart-outline"></ion-icon>}
-                    <p>
-                        {infos.likes} likes
-                    </p>
-                </$InfosLeft>
-
-                <$InfosRight>
-                    {isUserPost ? <$CanEdit>
-                        <ion-icon name="create-outline" onClick={(e) => {
-                            console.log("Editar");
-                        }}>
-
-                        </ion-icon>
-                        <ion-icon name="trash-outline" onClick={(e) => {
-                            deletePost();
-                        }}>
-
-                        </ion-icon>
-                    </$CanEdit> : <></>}
-
-                    <h6 onClick={() => { navigate(`/user/${infos.userId}`) }}>
-                        {infos.userName}
-                    </h6>
-                    <p>
-                        {findHashtags(infos.text)}
-                    </p>
-                    <$Embed onClick={() => { window.open(infos.link, "_blank"); }}>
-                        <$EmbedTitle>
-                            {infos.title}
-                        </$EmbedTitle>
-                        <$EmbedDescription>
-                            {infos.description}
-                        </$EmbedDescription>
-                        <$EmbedLink>
-                            {infos.link}
-                        </$EmbedLink>
-                        <$EmbedImg img={infos.image}>
-                        </$EmbedImg>
-
-                    </$Embed>
-                </$InfosRight>
-            </$Box>
-        </$EachPost>
+        <$ModalDeletePost>
+            <p>Deseja deletar este post?</p>
+            <button onClick={() => { deletePost() }} >sim</button>
+            <button onClick={() => { setCanDeletePost(false) }}>não</button>
+        </$ModalDeletePost>
     )
 }
 
-const Loading = styled.div`
-  width: 100%;
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  
-  .loading{
-    animation: is-rotating 1s infinite;
-    width: 50px;
-    height: 50px;
-    border: 6px solid gray;
-    border-top-color: #fff;
-    border-radius: 50%;
-  }
-
-@keyframes is-rotating { 
-    to {
-        transform: rotate(1turn);
+const $InputEditPost = styled.div`
+    width: 100%;
+    
+    textarea{
+        height: 80px;
+        width: 100%;
+        border: none;
+        border-radius: 7px;
+        margin: 8px 0px;
+        -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+        -moz-box-sizing: border-box;    /* Firefox, other Gecko */
+        box-sizing: border-box;         /* Opera/IE 8+ */
+        padding: 5px;
+        resize: vertical;
+        font-family: 'Lato';
+        font-weight: 300;
+        font-size: 15px;
     }
-}
 `
 
 const $CanEdit = styled.div`
@@ -271,30 +327,8 @@ const $InfosRight = styled.div`
         font-family: 'Lato';
         font-size: 17px;
         padding: 7px 0px;
-        color: #B7B7B7;
-        font-weight: 400;
     }
 
-        a:link {
-    text-decoration: none;
-    color: white;
-    font-weight: 700;
-    }
-    a:visited {
-        text-decoration: none;
-        color: white;
-        font-weight: 700;
-    }
-    a:hover {
-        text-decoration: none;
-        color: white;
-        font-weight: 700;
-    }
-    a:active {
-        text-decoration: none;
-        color: white;
-        font-weight: 700;
-    }
     
 
 `
@@ -368,17 +402,6 @@ const $EmbedImg = styled.div`
 
 
 
-
-
-
-
-
-
-
-
-
-
-
 const $Img = styled.div`
     width: 50px;
     height: 50px;
@@ -386,4 +409,10 @@ const $Img = styled.div`
     background-image: url(${props => props.img});
     background-size: cover;
 
+`
+
+const $ModalDeletePost = styled.div`
+    height: 50px;
+    width: 100%;
+    background-color: red;
 `
