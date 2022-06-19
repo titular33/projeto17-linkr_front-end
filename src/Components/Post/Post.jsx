@@ -1,5 +1,24 @@
 import styled from 'styled-components';
+import { Link } from 'react-router-dom';
+
+
 export default function Post({picture, userName,link,text,title,description,image ,likes,liked}) {
+
+  function findHashtags(text){
+    text = text.split(' ')
+    let html = []
+    for (let i = 0; i < text.length; i++){
+      if (text[i][0] === '#'){
+        html.push(<Link to={`/hashtag/${text[i].replace('#','')}`}> {text[i]}</Link>)
+      } else {
+        html.push(' ' + text[i])
+      }
+    }
+    return (
+      html
+    )
+  }
+
   return(
   <PostWrapper ionIconColor={liked?'#AC0000':'white'}>
               <div className='left'>
@@ -11,7 +30,7 @@ export default function Post({picture, userName,link,text,title,description,imag
               </div>
               <div className='right'>
                 <h2>{userName}</h2>
-                <h3>{text}</h3>
+                <h3>{findHashtags(text)}</h3>
                 <div className='postLink'>
                   <div className='postLinkText'>
                     <h3>{title}</h3>
@@ -29,13 +48,28 @@ export default function Post({picture, userName,link,text,title,description,imag
 const PostWrapper = styled.div`
     margin-bottom: 16px;
     width: 611px;
-    /* height: 209px; */
     background-color: #171717;
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
     border-radius: 16px;
     display: flex;
    
-  
+  a:link {
+  text-decoration: none;
+  color: white;
+  }
+  a:visited {
+    text-decoration: none;
+    color: white;
+  }
+  a:hover {
+    text-decoration: none;
+    color: white;
+  }
+  a:active {
+    text-decoration: none;
+    color: white;
+  }
+
   .right{
     padding-left: 15px;
   }
