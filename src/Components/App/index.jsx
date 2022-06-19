@@ -20,7 +20,7 @@ export default function App() {
                     <Route path="/timeline" element={<GetTimeline />} />
                     <Route path="/test" element={<SearchBar />} />
                     <Route path="/test2" element={<Header />} />
-                    <Route path="/test/:id" element={<UserPage />} />
+                    <Route path="/user/:id" element={<UserPage />} />
                 </Routes>
             </BrowserRouter>
         </UserContext.Provider>

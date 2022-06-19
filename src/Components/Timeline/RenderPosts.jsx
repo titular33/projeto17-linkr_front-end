@@ -86,22 +86,19 @@ function EachPost(props) {
     let { userId, token } = JSON.parse(localStorage.getItem('userData'))
     let isUserPost = false;
 
+    const [canDetePost, setCanDeletePost] = useState(false)
+
     if (userId === infos.userId) {
         isUserPost = true;
     }
 
-    function deletePost(){
-        const config = {
-            headers: { id: infos.id,  authorization: token}
-        }
-        const requet = axios.delete("http://127.0.0.1:4000/post", config);
-        requet.then(() =>{getPosts(setPosts)});
-        requet.catch(() =>{alert("Não foi possível deletar o post")})
-    }
+    
 
     return (
 
         <$EachPost>
+
+        {canDetePost ? <ModalDelete infos={infos} setCanDeletePost={setCanDeletePost} setPosts={setPosts}/> : ""}
             <$Box >
 
                 <$InfosLeft>
@@ -120,7 +117,7 @@ function EachPost(props) {
 
                         </ion-icon>
                         <ion-icon name="trash-outline" onClick={(e) => {
-                            deletePost();
+                            setCanDeletePost(true)
                         }}>
 
                         </ion-icon>
@@ -149,6 +146,30 @@ function EachPost(props) {
                 </$InfosRight>
             </$Box>
         </$EachPost>
+    )
+}
+
+function ModalDelete({infos, setCanDeletePost, setPosts}){
+
+    let { token } = JSON.parse(localStorage.getItem('userData'))
+
+
+
+    function deletePost(){
+        const config = {
+            headers: { id: infos.id,  authorization: token}
+        }
+        const requet = axios.delete("http://127.0.0.1:4000/post", config);
+        requet.then(() =>{ setCanDeletePost(false); getPosts(setPosts)});
+        requet.catch(() =>{alert("Não foi possível deletar o post")})
+    }
+
+    return(
+        <$ModalDeletePost>
+            <p>Deseja deletar este post?</p>
+            <button onClick={() =>{deletePost()}} >sim</button>
+            <button onClick={() =>{setCanDeletePost(false)}}>não</button>
+        </$ModalDeletePost>
     )
 }
 
@@ -327,4 +348,10 @@ const $Img = styled.div`
     background-image: url(${props => props.img});
     background-size: cover;
 
+`
+
+const $ModalDeletePost = styled.div`
+    height: 50px;
+    width: 100%;
+    background-color: red;
 `
