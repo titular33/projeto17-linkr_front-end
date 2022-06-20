@@ -26,7 +26,7 @@ a:active {
     padding: 20px;
     display: flex;
     justify-content: space-between;
-    position: fixed;
+    position: sticky;
     top: 0;
     left: 0;
     z-index: 3;

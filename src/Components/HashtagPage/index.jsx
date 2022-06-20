@@ -4,61 +4,121 @@ import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import Post from '../Post/Post.jsx'
 import Header from '../Header'
-import HashtagBox from '../HashtagBox/index.jsx';
+import HashtagContainer from '../HashtagBox/index.jsx';
 
 export default function HashtagPage() {
 
-const params = useParams()
-const URL = `http://127.0.0.1:4000/hashtags/${params.hashtag}`
-const token = JSON.parse(localStorage.getItem('userData')).token
-const [hashtagData, setHashtagData] = useState()
-useEffect(getData, [URL, token])
+  const params = useParams()
+  const URL = `http://127.0.0.1:4000/hashtags/${params.hashtag}`
+  const token = JSON.parse(localStorage.getItem('userData')).token
+  const [hashtagData, setHashtagData] = useState()
+  useEffect(getData, [URL, token])
 
-function getData(){
-  const config = {headers: {Authorization: `Bearer ${token}`}}
-  axios.get(URL, config)
-  .then(res => {setHashtagData(res.data)})
-}
+  function getData() {
+    const config = { headers: { Authorization: `Bearer ${token}` } }
+    axios.get(URL, config)
+      .then(res => { setHashtagData(res.data) })
+  }
 
-if (!hashtagData) {
-  return (
-  <Loading>
-    <div className='loading'/>
-  </Loading>
-  )
-}
+  // console.log(hashtagData, params)
+  if (!hashtagData) {
+    return (
+      <Loading>
+        <div className='loading' />
+      </Loading>
+    )
+  }
 
-if (hashtagData) return (
-      <OuterWrapper>
-        <h6>#{params.hashtag}</h6>
-        <Wrapper>
-        <Container>
-            <Header/>
-            
-            {hashtagData.map((post) => <Post 
+  if (hashtagData) return (
+    <OuterWrapper>
+      <Header />
+      <Wrapper className='wrapper'>
+      <h6>#{params.hashtag}</h6>
+        <Container className='container'>
+
+          {hashtagData.map((post) => <Post
             picture={post.picture}
             userName={post.userName}
             link={post.link}
             text={post.text}
             title={post.title}
-            description={post.description} 
-            image={post.image} 
+            description={post.description}
+            image={post.image}
             likes={post.likes}
             liked={post.liked}
-            />)}
-            
+            userId={post.userId}
+          />)}
+
         </Container>
-        <HashtagBox/>
-        </Wrapper>
-      </OuterWrapper>
-    );  
+        <$sidebar className='sidebar'>
+          <HashtagContainer />
+        </$sidebar>
+      </Wrapper>
+    </OuterWrapper>
+  );
 }
-  
+
+
+const $sidebar = styled.div`
+    width: 100%;
+    max-width: 300px;
+    grid-column-start: 5;
+    grid-column-end: 7;
+`
+
 const OuterWrapper = styled.div`
 margin-top: 160px;
-margin-left: 241px; 
 
-h6{  
+@media (max-width: 1080px) {
+        .sidebar{
+        display: none;
+    }
+        .container{
+            grid-column-start: 2;
+            grid-column-end: 7;
+        }
+
+    }
+
+    @media (max-width: 630px) {
+
+      .wrapper {
+      justify-content: space-evenly;
+      justify-items: center;
+      position: relative;
+      }
+
+      .wrapper > h6{
+          grid-column-start: 1;
+          grid-column-end:8;
+          justify-self: start;
+          margin-left: 5%;
+          
+      }
+      .sidebar{
+          display: none;
+      }
+      .container{
+          grid-column-start: 1;
+          grid-column-end:8;
+          width: 90%;
+          
+      }
+    }
+
+`
+
+const Wrapper = styled.div`
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+    grid-template-rows: 50px fit-content(10%) fit-content(10%);
+    justify-content: center;
+    gap: 25px;
+    
+    & > h6{
+    grid-column-start: 2;
+    grid-column-end: 5;
+
     color: white;
     font-family: Oswald;
     font-size: 43px;
@@ -66,17 +126,7 @@ h6{
     line-height: 64px;
     letter-spacing: 0em;
     text-align: left;
-    margin-bottom: 40px;
   }
-`
-
-const Wrapper = styled.div`
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
-    grid-template-rows: 50px fit-content(10%) fit-content(10%);
-    justify-content: center;
-    gap: 25px;
-    
 `
 
 const Loading = styled.div`
@@ -105,6 +155,9 @@ const Loading = styled.div`
 const Container = styled.div`
   display: flex;
   flex-direction: column;
+  gap: 20px;
+  grid-column-start: 2;
+  grid-column-end: 5;
   
   h1{
     color: white;
@@ -157,10 +210,10 @@ const Container = styled.div`
     color: #CECECE;
     margin-top: 13px;
   }
-  .post{
+  /* .post{
     margin-bottom: 16px;
     width: 611px;
-    /* height: 209px; */
+    height: 209px;
     background-color: #171717;
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
     border-radius: 16px;
@@ -227,5 +280,5 @@ const Container = styled.div`
     border-radius: 304px;
     cursor: pointer;
     object-fit: cover;
-  }
+  } */
  `

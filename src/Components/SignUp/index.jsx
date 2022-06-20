@@ -12,13 +12,13 @@ const SignUp = () => {
     const [register, setRegister] = useState({ email: "", password: "", userName: "", picture: "" });
     const [load, setLoad] = useState(false);
     const [alert, setAlert] = useState(null);
-    const URL = "http://127.0.0.1:4000/signup";
+    const URL = process.env.URL_SIGNUP;
 
     function registerUser(event) {
         event.preventDefault();
         setAlert(null);
         setLoad(true);
-        const requisicaoPost = axios.post(URL, {
+        const requisicaoPost = axios.post("https://abef-linkr-api.herokuapp.com/signup", {
             email: register.email,
             password: register.password,
             userName: register.userName,
