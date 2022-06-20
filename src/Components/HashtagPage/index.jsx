@@ -8,52 +8,52 @@ import HashtagBox from '../HashtagBox/index.jsx';
 
 export default function HashtagPage() {
 
-const params = useParams()
-const URL = `http://127.0.0.1:4000/hashtags/${params.hashtag}`
-const token = JSON.parse(localStorage.getItem('userData')).token
-const [hashtagData, setHashtagData] = useState()
-useEffect(getData, [URL, token])
+  const params = useParams()
+  const URL = `http://127.0.0.1:4000/hashtags/${params.hashtag}`
+  const token = JSON.parse(localStorage.getItem('userData')).token
+  const [hashtagData, setHashtagData] = useState()
+  useEffect(getData, [URL, token])
 
-function getData(){
-  const config = {headers: {Authorization: `Bearer ${token}`}}
-  axios.get(URL, config)
-  .then(res => {setHashtagData(res.data)})
-}
+  function getData() {
+    const config = { headers: { Authorization: `Bearer ${token}` } }
+    axios.get(URL, config)
+      .then(res => { setHashtagData(res.data) })
+  }
 
-if (!hashtagData) {
-  return (
-  <Loading>
-    <div className='loading'/>
-  </Loading>
-  )
-}
+  if (!hashtagData) {
+    return (
+      <Loading>
+        <div className='loading' />
+      </Loading>
+    )
+  }
 
-if (hashtagData) return (
-      <OuterWrapper>
-        <h6>#{params.hashtag}</h6>
-        <Wrapper>
+  if (hashtagData) return (
+    <OuterWrapper>
+      <Header />
+      <h6>#{params.hashtag}</h6>
+      <Wrapper>
         <Container>
-            <Header/>
-            
-            {hashtagData.map((post) => <Post 
+
+          {hashtagData.map((post) => <Post
             picture={post.picture}
             userName={post.userName}
             link={post.link}
             text={post.text}
             title={post.title}
-            description={post.description} 
-            image={post.image} 
+            description={post.description}
+            image={post.image}
             likes={post.likes}
             liked={post.liked}
-            />)}
-            
+          />)}
+
         </Container>
-        <HashtagBox/>
-        </Wrapper>
-      </OuterWrapper>
-    );  
+        <HashtagBox />
+      </Wrapper>
+    </OuterWrapper>
+  );
 }
-  
+
 const OuterWrapper = styled.div`
 margin-top: 160px;
 margin-left: 241px; 

@@ -1,15 +1,17 @@
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 
-export default function Post({picture, userName,link,text,title,description,image ,likes,liked}) {
+export default function Post({ picture, userName, link, text, title, description, image, likes, liked }) {
 
-  function findHashtags(text){
+  const navigate = useNavigate();
+
+  function findHashtags(text) {
     text = text.split(' ')
     let html = []
-    for (let i = 0; i < text.length; i++){
-      if (text[i][0] === '#'){
-        html.push(<Link to={`/hashtag/${text[i].replace('#','')}`}> {text[i]}</Link>)
+    for (let i = 0; i < text.length; i++) {
+      if (text[i][0] === '#') {
+        html.push(<Link to={`/hashtag/${text[i].replace('#', '')}`}> {text[i]}</Link>)
       } else {
         html.push(' ' + text[i])
       }
@@ -19,31 +21,36 @@ export default function Post({picture, userName,link,text,title,description,imag
     )
   }
 
-  return(
-  <PostWrapper ionIconColor={liked?'#AC0000':'white'}>
-              <div className='left'>
-                <div className='profilePicture'>
-                  <img src={picture} alt="" />
-                </div>
-                <ion-icon name={liked?'heart':'heart-outline'}/>
-                <p>{likes} likes</p>
-              </div>
-              <div className='right'>
-                <h2>{userName}</h2>
-                <h3>{findHashtags(text)}</h3>
-                <div className='postLink'>
-                  <div className='postLinkText'>
-                    <h3>{title}</h3>
-                    <h4>{description}</h4>
-                    <h5>{link}</h5>
-                  </div>
-                  <div className='postLinkImage'>
-                    <img src={image} alt="ilustration" />
-                  </div>
-                </div>
-              </div>
+  if (image === "") {
+    image = "https://archive.org/download/no-photo-available/no-photo-available.png"
+}
+
+  return (
+    <PostWrapper ionIconColor={liked ? '#AC0000' : 'white'}>
+      <div className='left'>
+        <div className='profilePicture'>
+          <img src={picture} alt="" />
+        </div>
+        <ion-icon name={liked ? 'heart' : 'heart-outline'} />
+        <p>{likes} likes</p>
+      </div>
+      <div className='right'>
+        <h2>{userName}</h2>
+        <h3>{findHashtags(text)}</h3>
+        <div className='postLink' onClick={() =>{window.open(link, "_blank");}}>
+          <div className='postLinkText'>
+            <h3>{title}</h3>
+            <h4>{description}</h4>
+            <h5>{link}</h5>
+          </div>
+          <div className='postLinkImage'>
+            <img src={image} alt="ilustration" />
+          </div>
+        </div>
+      </div>
     </PostWrapper>
-)}
+  )
+}
 
 const PostWrapper = styled.div`
     margin-bottom: 16px;

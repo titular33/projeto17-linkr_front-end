@@ -75,7 +75,7 @@ const Container = styled.div`
   }
   background-color: #171717;
   border-radius: 16px;
-  width: 301px;
+  width: 100%;
   height: 406px;
   h1 {
     font-family: 'Oswald';
