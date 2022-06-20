@@ -79,7 +79,7 @@ const $AuxBody = styled.div`
         justify-content: space-evenly;
         justify-items: center;
         position: relative;
-        margin-top: 70px;
+        margin-top: 10px;
         }
         
         &>h1{
