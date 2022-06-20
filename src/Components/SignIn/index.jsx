@@ -14,15 +14,14 @@ const SignIn = () => {
     const [loginData, setloginData] = useState({ email: "", password: "" });
     const [load, setLoad] = useState(false);
     const [alert, setAlert] = useState(null);
-    const URL = process.env.URL_SIGNIN;
-
+    
     const { setUserData } = useContext(UserContext);
 
     function userLogin(event) {
         setAlert(null);
         event.preventDefault();
-        setLoad(true);
         const requisicaoPost = axios.post("https://abef-linkr-api.herokuapp.com/signin", loginData);
+        setLoad(true);        
         requisicaoPost.then(response => {
             console.log(response.data)
             const { data } = response;
