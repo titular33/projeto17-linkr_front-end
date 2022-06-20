@@ -1,10 +1,12 @@
 import axios from 'axios';
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useContext } from "react";
 import { useNavigate } from 'react-router-dom';
+import ReactTooltip from "react-tooltip"
 import styled from 'styled-components';
-
+import UserContext from "../../Contexts/UserContext.jsx"
 import NewPost from './NewPost';
-
+import { FiHeart } from "react-icons/fi"
+import { FaHeart } from "react-icons/fa"
 export default function RenderPosts() {
 
     let errorMessage = "";
@@ -95,6 +97,124 @@ function EachPost(props) {
     }
 
 
+    const { user } = useContext(UserContext)
+    const [likedBy, setLikedBy] = useState(() => {
+        getLikedBy()
+      })
+    
+      const [likeTooltip, setLikeTooltip] = useState()
+      const [likedByUser, setlikedByUser] = useState(() => {
+        getLikedByUser()
+      })
+
+    
+      useEffect(() => {
+        ReactTooltip.rebuild()
+    
+        let usersPart = likedBy && likedBy.join(", ")
+        let numberPart = likedBy && liked - likedBy.length
+    
+        let tooltipNewText
+    
+        if (likedBy) {
+          switch (liked) {
+            case 0:
+              tooltipNewText = "No one has liked it yet"
+              break
+            case 1:
+              tooltipNewText = `Liked by ${likedBy[0]}`
+              break
+            case 2:
+              tooltipNewText = `Liked by ${likedBy[0]} and ${likedBy[1]}`
+              break
+            case 3:
+              if (likedByUser)
+                tooltipNewText = `Liked by ${likedBy[0]}, ${likedBy[1]} and ${likedBy[2]}`
+              if (!likedByUser)
+                tooltipNewText = `Liked by ${usersPart} and ${numberPart} other`
+              break
+            case 4:
+              if (likedByUser)
+                tooltipNewText = `Liked by ${usersPart} and ${numberPart} other`
+              if (!likedByUser)
+                tooltipNewText = `Liked by ${usersPart} and ${numberPart} others`
+              break
+            default:
+              tooltipNewText = `Liked by ${usersPart} and ${numberPart} others`
+              break
+          }
+        }
+    
+        setLikeTooltip(tooltipNewText)
+      }, [likedBy, infos.likes, likedByUser])
+    
+      function getLikedByUser() {
+        const config = {
+          headers: {
+            Authorization: `Bearer ${user.token}`,
+          },
+        }
+        axios
+          .get(`${process.URL}/likes/${userId}`, config)
+          .then((response) => {
+            setlikedByUser(response.data)
+          })
+      }
+    
+      function handleLike() {
+        const API_URL = process.URL
+        const config = {
+          headers: {
+            Authorization: `Bearer ${user.token}`,
+          },
+        }
+    
+        if (!likedByUser) {
+          props.post.likesCount += 1
+          setlikedByUser(true)
+          likedBy && setLikedBy(["you", ...likedBy])
+    
+          axios
+            .post(`${API_URL}/likes/${userId}`, null, config)
+            .then((response) => {})
+            .catch((error) => {
+              props.post.likesCount -= 1
+              setlikedByUser(false)
+              if (likedBy) {
+                likedBy.shift()
+                setLikedBy([...likedBy])
+              }
+            })
+        } else {
+          props.post.likesCount -= 1
+          setlikedByUser(false)
+          if (likedBy) {
+            likedBy.shift()
+            setLikedBy([...likedBy])
+          }
+    
+          axios
+            .delete(`/likes/${userId}`, config)
+            .then((response) => {})
+            .catch((error) => {
+              props.post.likesCount += 1
+              setlikedByUser(true)
+              likedBy && setLikedBy(["you", ...likedBy])
+            })
+        }
+      }
+    
+      function getLikedBy() {
+        const LIMIT = 2
+    
+        axios
+          .get(`${process.env.URL}/likes?postId=${userId}&limit=${LIMIT}`)
+          .then((response) => {
+            setLikedBy(response.data.likedBy)
+          })
+      }
+
+
     
 
     return (
@@ -106,10 +226,23 @@ function EachPost(props) {
 
                     <$InfosLeft>
                         <$Img img={infos.picture} />
-                        {liked ? <ion-icon name="heart"></ion-icon> : <ion-icon name="heart-outline"></ion-icon>}
-                        <p>
-                            {infos.likes} likes
-                        </p>
+                        {liked ? <ion-icon name="heart" onClick ={ () => handleLike()} ></ion-icon>
+                         : <ion-icon name="heart-outline" onClick={handleLike}></ion-icon>}
+                        {infos.like === 1 ? (
+                        <>{infos.like} likes</>
+                        ) : (
+                        <>{infos.like} likes</>
+                        )}
+                        <ReactTooltip
+                        id={String(props.post.id)}
+                        type="light"
+                        place="bottom"
+                        getContent={() => {
+                        return null
+                         }}
+                            >
+                         {likedBy && <span>{likeTooltip}</span>}
+                        </ReactTooltip>
                     </$InfosLeft>
 
                     <$InfosRight>
@@ -415,4 +548,29 @@ const $ModalDeletePost = styled.div`
     height: 50px;
     width: 100%;
     background-color: red;
+`
+
+ const LikesContainer = styled.div`
+  text-align: center;
+  font-size: 12px;
+  cursor: default;
+  user-select: none;
+  div {
+    font-size: 12px;
+    color: ${({ theme }) => theme.colors.tooltipText};
+    font-weight: 700;
+  }
+  
+  
+`
+export const LikeIcon = styled(FiHeart)`
+  font-size: 25px;
+  cursor: pointer;
+  
+`
+export const LikeIconFilled = styled(FaHeart)`
+  font-size: 25px;
+  color: ${({ theme }) => theme.colors.likeButton};
+  cursor: pointer;
+  
 `
