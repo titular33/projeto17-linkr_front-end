@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { useEffect, useRef, useState } from "react";
+import { ThreeDots } from 'react-loader-spinner';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
@@ -95,7 +96,7 @@ function EachPost(props) {
     }
 
 
-    
+
 
     return (
         <>
@@ -115,12 +116,12 @@ function EachPost(props) {
                     <$InfosRight>
                         {isUserPost ? <$CanEdit>
                             <ion-icon name="create-outline" onClick={(e) => {
-                                if(canEditPost){
+                                if (canEditPost) {
                                     setCanEditPost(false)
-                                }else{
+                                } else {
                                     setCanEditPost(true);
                                     //textEdit.current.focus()
-                                }                               
+                                }
                             }}>
 
                             </ion-icon>
@@ -135,7 +136,7 @@ function EachPost(props) {
                             {infos.userName}
                         </h6>
 
-                        {canEditPost ? <EditPost infos={infos} setCanEditPost={setCanEditPost} setPosts={setPosts}/> : <p> {infos.text} </p>}
+                        {canEditPost ? <EditPost infos={infos} setCanEditPost={setCanEditPost} setPosts={setPosts} /> : <p> {infos.text} </p>}
 
                         <$Embed onClick={() => { window.open(infos.link, "_blank"); }}>
                             <$EmbedTitle>
@@ -166,7 +167,7 @@ function EditPost({ infos, setCanEditPost, setPosts }) {
 
 
 
-    useEffect(() =>{
+    useEffect(() => {
         setInfosToEdit({ link: infos.link, text: infos.text })
         textEdit.current.focus()
     }, [])
@@ -181,22 +182,22 @@ function EditPost({ infos, setCanEditPost, setPosts }) {
     }
 
     return (
-        <$InputEditPost onKeyUp={(e) =>{
-            if(e.key === "Escape" || e.key === "Esc"){
+        <$InputEditPost onKeyUp={(e) => {
+            if (e.key === "Escape" || e.key === "Esc") {
                 setCanEditPost(false)
             }
-            if(e.key === "Enter"){
+            if (e.key === "Enter") {
                 putPost()
             }
-            }}>
-            <textarea 
-            ref={textEdit}
-            name="text" 
-            value={infosToEdit.text} 
-            onChange={(e) => {setInfosToEdit({...infosToEdit, text: e.target.value})}}
+        }}>
+            <textarea
+                ref={textEdit}
+                name="text"
+                value={infosToEdit.text}
+                onChange={(e) => { setInfosToEdit({ ...infosToEdit, text: e.target.value }) }}
             >
             </textarea>
-          
+
         </$InputEditPost>
     )
 }
@@ -204,7 +205,7 @@ function EditPost({ infos, setCanEditPost, setPosts }) {
 function ModalDelete({ infos, setCanDeletePost, setPosts }) {
 
     let { token } = JSON.parse(localStorage.getItem('userData'))
-
+    const [loading, setLoading] = useState(false)
 
 
     function deletePost() {
@@ -217,10 +218,12 @@ function ModalDelete({ infos, setCanDeletePost, setPosts }) {
     }
 
     return (
-        <$ModalDeletePost>
-            <p>Deseja deletar este post?</p>
-            <button onClick={() => { deletePost() }} >sim</button>
-            <button onClick={() => { setCanDeletePost(false) }}>não</button>
+        <$ModalDeletePost loading={loading} onClick={() =>{setCanDeletePost(false)}}>
+            <div>
+                <p>Are you sure you want <br /> to delete this post?</p>
+                <button className='no'  disabled={loading} onClick={() => { setCanDeletePost(false) }}>No, go back</button>
+                <button className='yes' disabled={loading} onClick={(e) => { setLoading(true); deletePost(); e.stopPropagation() }} >{loading ? <ThreeDots color="#fff" height={13}/> : "Yes, delete it"}</button>
+            </div>
         </$ModalDeletePost>
     )
 }
@@ -412,7 +415,83 @@ const $Img = styled.div`
 `
 
 const $ModalDeletePost = styled.div`
-    height: 50px;
-    width: 100%;
-    background-color: red;
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    z-index: 1;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(255, 255, 255, 0.9);
+    
+    & > div{
+        display: grid;
+        grid-template-columns: 1fr 1fr; 
+        background-color: #333333;
+        border-radius: 50px;
+        padding: 60px 130px;
+        gap: 30px;
+        justify-content: center;
+        align-items: center;
+        filter: ${props =>{ return props.loading ? 'brightness(60%)': 'brightness(100%)'}};
+    }
+    
+    & > div p{
+        grid-column-start: 1;
+        grid-column-end: 3;
+
+        font-family: 'Lato';
+        font-weight: 700;
+        font-size: 34px;
+        color: #FFFFFF;
+        text-align: center;
+    }
+
+    
+    & > div .no{
+        grid-column-start: 1;
+        grid-column-end: 2;
+        width: 140px;
+        height: 40px;
+        padding: 5px 15px;
+
+        border: none;
+        border-radius: 5px;
+
+        background-color: white;
+        color: #1877F2;
+
+        font-family: 'Lato';
+        font-weight: 700;
+        font-size: 18px;
+        cursor: pointer;
+        
+    }
+    
+    & > div .yes{
+        grid-column-start: 2;
+        grid-column-end: 3;
+        padding: 5px 15px;
+
+        width: 140px;
+        height: 40px;
+
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+
+        background-color: #1877F2;
+        color: white;
+
+        font-family: 'Lato';
+        font-weight: 700;
+        font-size: 18px;
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
 `

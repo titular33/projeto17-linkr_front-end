@@ -31,6 +31,9 @@ const SignUp = () => {
             if (error.response.status === 409) {
                 setAlert('Email já cadastrado!');
             }
+            if (error.response.status === 422) {
+                setAlert('Erro ao cadastrar a foto!');
+            }
             setLoad(false);
         });
     }

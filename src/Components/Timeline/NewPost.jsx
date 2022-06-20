@@ -195,6 +195,10 @@ const $Form = styled.form`
         font-family: 'Lato';
         font-weight: 700;
         font-size: 14px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
         &:hover{
             filter: brightness(95%);
             cursor: pointer;
