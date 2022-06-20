@@ -20,8 +20,8 @@ const SignIn = () => {
     function userLogin(event) {
         setAlert(null);
         event.preventDefault();
-        const requisicaoPost = axios.post("https://abef-linkr-api.herokuapp.com/signin", loginData);
-        setLoad(true);        
+        setLoad(true); 
+        const requisicaoPost = axios.post("https://abef-linkr-api.herokuapp.com/signin", loginData);               
         requisicaoPost.then(response => {
             console.log(response.data)
             const { data } = response;
