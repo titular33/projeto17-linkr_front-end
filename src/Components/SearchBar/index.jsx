@@ -44,7 +44,8 @@ return (
 }
     
 const Container = styled.div`
-  width: 563px;
+  width: 100%;
+  max-width: 640px;
   position: relative;
   background-color: #E7E7E7;
   border-radius: 8px;
@@ -54,6 +55,7 @@ const Container = styled.div`
     display: flex;
     align-items: center;
     z-index: -1;
+    background-color: #E7E7E7;
   }
   .user .profilePicture{
     margin-left: 10px;

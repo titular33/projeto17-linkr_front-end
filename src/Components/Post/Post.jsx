@@ -2,8 +2,9 @@ import styled from 'styled-components';
 import { Link, useNavigate } from 'react-router-dom';
 
 
-export default function Post({ picture, userName, link, text, title, description, image, likes, liked }) {
+export default function Post({ picture, userName, link, text, title, description, image, likes, liked, userId, postId }) {
 
+  console.log("postId:" + postId)
   const navigate = useNavigate();
 
   function findHashtags(text) {
@@ -23,10 +24,10 @@ export default function Post({ picture, userName, link, text, title, description
 
   if (image === "") {
     image = "https://archive.org/download/no-photo-available/no-photo-available.png"
-}
+  }
 
   return (
-    <PostWrapper ionIconColor={liked ? '#AC0000' : 'white'}>
+    <PostWrapper ionIconColor={liked ? '#AC0000' : 'white'} key={postId}>
       <div className='left'>
         <div className='profilePicture'>
           <img src={picture} alt="" />
@@ -35,9 +36,9 @@ export default function Post({ picture, userName, link, text, title, description
         <p>{likes} likes</p>
       </div>
       <div className='right'>
-        <h2>{userName}</h2>
+        <h2 onClick={() => { navigate(`/user/${userId}`)} }>{userName}</h2>
         <h3>{findHashtags(text)}</h3>
-        <div className='postLink' onClick={() =>{window.open(link, "_blank");}}>
+        <div className='postLink' onClick={() => { window.open(link, "_blank"); }}>
           <div className='postLinkText'>
             <h3>{title}</h3>
             <h4>{description}</h4>
@@ -53,8 +54,7 @@ export default function Post({ picture, userName, link, text, title, description
 }
 
 const PostWrapper = styled.div`
-    margin-bottom: 16px;
-    width: 611px;
+    width: 100%;
     background-color: #171717;
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
     border-radius: 16px;
@@ -78,11 +78,11 @@ const PostWrapper = styled.div`
   }
 
   .right{
-    padding-left: 15px;
+    width: 85%;
   }
   .right .postLink{
     height: 155px;
-    width: 503px;
+    width: 98%;
     left: 328px;
     top: 571px;
     border-radius: 11px;
@@ -93,7 +93,7 @@ const PostWrapper = styled.div`
     overflow: hidden;
   }
    .right .postLink .postLinkText{
-    width: 350px;
+    width: 90%;
     padding-left: 20px;
     padding-top: 15px;
   }
@@ -107,7 +107,7 @@ const PostWrapper = styled.div`
     object-fit: cover;
    }
    .left{
-    width: 86px;
+    width: 15%;
     display: flex;
     flex-direction: column;
     align-items: center;

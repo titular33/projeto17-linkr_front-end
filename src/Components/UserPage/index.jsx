@@ -31,13 +31,13 @@ export default function UserPage() {
   if (userData) return (
 
     <$AuxBody>
-        <Header />
+      <Header />
 
-        <$Title>
-          <$Img picture={userData.picture}></$Img>
-          <h1>{userData.userName}'s Posts</h1>
-        </$Title>
-      <Container>
+      <$Title className='title'>
+        <$Img picture={userData.picture}></$Img>
+        <h1>{userData.userName}'s Posts</h1>
+      </$Title>
+      <Container className='container'>
         {userData.posts.map((post) => <Post
           picture={userData.picture}
           userName={userData.userName}
@@ -48,9 +48,11 @@ export default function UserPage() {
           image={post.image}
           likes={post.likes}
           liked={post.liked}
+          userId={post.userId}
+          postId={post.id}
         />)}
       </Container>
-      <$HashtagContainer>
+      <$HashtagContainer className='sidebar'>
         <HashtagContainer />
       </$HashtagContainer>
     </$AuxBody>
@@ -60,13 +62,59 @@ export default function UserPage() {
 
 const $AuxBody = styled.div`
   display: grid;
-  grid-template-columns: 1fr 2fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+  //grid-template-rows: 50px fit-content(10%) fit-content(10%);
+  justify-content: center;
   gap: 15px;
+
+  @media (max-width: 1080px) {
+
+        .title{
+            grid-column-start: 2;
+            grid-column-end: 7;
+        }
+        .sidebar{
+        display: none;
+        }
+        .container{
+            grid-column-start: 2;
+            grid-column-end: 7;
+        }
+
+
+
+    }
+
+    @media (max-width: 630px) {
+
+      & {
+      justify-content: space-evenly;
+      justify-items: center;
+      position: relative;
+      }
+
+      &> .title{
+          grid-column-start: 1;
+          grid-column-end:8;
+          justify-self: start;
+          margin-left: 5%;
+          
+      }
+      .sidebar{
+          display: none;
+      }
+      .container{
+          grid-column-start: 1;
+          grid-column-end:8;
+          width: 90%;          
+      }
+    }
 `
 
 const $HashtagContainer = styled.div`
-  grid-column-start: 3;
-  grid-column-end: 4;
+  grid-column-start: 5;
+  grid-column-end: 7;
+  max-width: 300px;
 `
 
 const Loading = styled.div`
@@ -98,7 +146,7 @@ const $Title = styled.div`
   align-items: center;
   justify-content: flex-start;
   grid-column-start: 2;
-  grid-column-end: 3;
+  grid-column-end: 5;
   
   h1{
     color: white;
@@ -124,7 +172,8 @@ const Container = styled.div`
   /* margin-left: 241px;*/
   /* margin-top: 160px;  */
   grid-column-start: 2;
-  grid-column-end: 3;
+  grid-column-end: 5;
+  gap: 20px;
 
 
   h2{

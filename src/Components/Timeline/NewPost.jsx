@@ -94,6 +94,9 @@ const $AuxBody = styled.div`
     display: grid;
     grid-template-columns: 15% 85%;
     background-color: white;
+    @media (max-width: 640px) {
+        border-radius: 0%;
+    }
 `
 
 

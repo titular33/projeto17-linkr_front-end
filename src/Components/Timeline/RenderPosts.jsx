@@ -276,6 +276,10 @@ const $EachPost = styled.div`
     display: flex;
     flex-direction: column;
     background-color: #171717;
+
+    @media (max-width: 640px) {
+        border-radius: 0%;
+    }
 `
 
 const $Box = styled.div`
