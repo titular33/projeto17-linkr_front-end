@@ -9,7 +9,7 @@ import HashtagContainer from '../HashtagBox/index.jsx';
 export default function UserPage() {
 
   const params = useParams()
-  const URL = `http://127.0.0.1:4000/user/${params.id}`
+  const URL = "https://abef-linkr-api.herokuapp.com/user/"+ `${params.id}`
   const token = JSON.parse(localStorage.getItem('userData')).token
   const [userData, setUserData] = useState()
   useEffect(getData, [])

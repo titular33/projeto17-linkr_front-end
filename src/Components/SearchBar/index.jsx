@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 
 
 export default function SearchBar() {
-const URL = 'http://127.0.0.1:4000/usernames'
+const URL = process.env.URL_USERNAMES
 
 const [response, setResponse] = useState([])
 
@@ -17,7 +17,7 @@ const handleChange = (event) => {
   }
   else{
     const payload = {"username": value};
-    axios.post(URL, payload)
+    axios.post("https://abef-linkr-api.herokuapp.com/usernames", payload)
     .then(res => 
       setResponse(res.data)
     )

@@ -46,7 +46,7 @@ export default function RenderPosts() {
 
 
 async function getPosts(setPosts) {
-    const URL = "http://127.0.0.1:4000/timeline"
+    const URL = "https://abef-linkr-api.herokuapp.com/timeline"
 
     let { token } = JSON.parse(localStorage.getItem('userData'))
 
@@ -164,6 +164,7 @@ function EditPost({ infos, setCanEditPost, setPosts }) {
     const [infosToEdit, setInfosToEdit] = useState({})
     let { token } = JSON.parse(localStorage.getItem('userData'))
     const textEdit = useRef(null)
+    const URL_POST = "https://abef-linkr-api.herokuapp.com/post"
 
 
 
@@ -176,7 +177,7 @@ function EditPost({ infos, setCanEditPost, setPosts }) {
         const config = {
             headers: { id: infos.id, authorization: token }
         }
-        const requet = axios.put("http://127.0.0.1:4000/post", infosToEdit, config);
+        const requet = axios.put(URL_POST, infosToEdit, config);
         requet.then(() => { setCanEditPost(false); getPosts(setPosts) });
         requet.catch(() => { alert("Não foi possível editar o post") })
     }
@@ -206,13 +207,14 @@ function ModalDelete({ infos, setCanDeletePost, setPosts }) {
 
     let { token } = JSON.parse(localStorage.getItem('userData'))
     const [loading, setLoading] = useState(false)
+    const URL_POST = "https://abef-linkr-api.herokuapp.com/post"
 
 
     function deletePost() {
         const config = {
             headers: { id: infos.id, authorization: token }
         }
-        const requet = axios.delete("http://127.0.0.1:4000/post", config);
+        const requet = axios.delete(URL_POST, config);
         requet.then(() => { setCanDeletePost(false); getPosts(setPosts) });
         requet.catch(() => { alert("Não foi possível deletar o post") })
     }
