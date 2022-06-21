@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { ThreeDots } from 'react-loader-spinner';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-
+import Likes from '../Likes'
 import NewPost from './NewPost';
 
 export default function RenderPosts() {
@@ -97,7 +97,6 @@ function EachPost(props) {
 
 
 
-
     return (
         <>
             <$EachPost >
@@ -107,10 +106,8 @@ function EachPost(props) {
 
                     <$InfosLeft>
                         <$Img img={infos.picture} />
-                        {liked ? <ion-icon name="heart"></ion-icon> : <ion-icon name="heart-outline"></ion-icon>}
-                        <p>
-                            {infos.likes} likes
-                        </p>
+                        
+                        <Likes  liked={liked} postId={infos.id} quantLikes={infos.likes}/>
                     </$InfosLeft>
 
                     <$InfosRight>
