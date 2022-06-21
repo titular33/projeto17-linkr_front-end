@@ -4,48 +4,119 @@ import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import Post from '../Post/Post.jsx'
 import Header from '../Header'
+import HashtagContainer from '../HashtagBox/index.jsx';
 
 export default function UserPage() {
 
-const params = useParams()
-const URL = `http://127.0.0.1:4000/user/${params.id}`
-const token = JSON.parse(localStorage.getItem('userData')).token
-const [userData, setUserData] = useState()
-useEffect(getData, [])
+  const params = useParams()
+  const URL = "https://abef-linkr-api.herokuapp.com/user/"+ `${params.id}`
+  const token = JSON.parse(localStorage.getItem('userData')).token
+  const [userData, setUserData] = useState()
+  useEffect(getData, [])
 
-function getData(){
-  const config = {headers: {Authorization: `Bearer ${token}`}}
-  axios.get(URL, config)
-  .then(res => {setUserData(res.data); console.log(res.data)})
+  function getData() {
+    const config = { headers: { Authorization: `Bearer ${token}` } }
+    axios.get(URL, config)
+      .then(res => { setUserData(res.data); console.log(res.data) })
+  }
+
+  if (!userData) {
+    return (
+      <Loading>
+        <div className='loading' />
+      </Loading>
+    )
+  }
+
+  if (userData) return (
+
+    <$AuxBody>
+      <Header />
+
+      <$Title className='title'>
+        <$Img picture={userData.picture}></$Img>
+        <h1>{userData.userName}'s Posts</h1>
+      </$Title>
+      <Container className='container'>
+        {userData.posts.map((post) => <Post
+          picture={userData.picture}
+          userName={userData.userName}
+          link={post.link}
+          text={post.text}
+          title={post.title}
+          description={post.description}
+          image={post.image}
+          likes={post.likes}
+          liked={post.liked}
+          userId={post.userId}
+          postId={post.id}
+        />)}
+      </Container>
+      <$HashtagContainer className='sidebar'>
+        <HashtagContainer />
+      </$HashtagContainer>
+    </$AuxBody>
+  );
 }
 
-if (!userData) {
-  return (
-  <Loading>
-    <div className='loading'/>
-  </Loading>
-  )
-}
 
-if (userData) return (
-        <Container>
-            <Header/>
-            <h1>{userData.userName}'s Posts</h1>
-            {userData.posts.map((post) => <Post 
-            picture={userData.picture}
-            userName={userData.userName}
-            link={post.link}
-            text={post.text}
-            title={post.title}
-            description={post.description} 
-            image={post.image} 
-            likes={post.likes}
-            liked={post.liked}
-            />)}
-        </Container>
-    );  
-}
-    
+const $AuxBody = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+  //grid-template-rows: 50px fit-content(10%) fit-content(10%);
+  justify-content: center;
+  gap: 15px;
+
+  @media (max-width: 1080px) {
+
+        .title{
+            grid-column-start: 2;
+            grid-column-end: 7;
+        }
+        .sidebar{
+        display: none;
+        }
+        .container{
+            grid-column-start: 2;
+            grid-column-end: 7;
+        }
+
+
+
+    }
+
+    @media (max-width: 630px) {
+
+      & {
+      justify-content: space-evenly;
+      justify-items: center;
+      position: relative;
+      }
+
+      &> .title{
+          grid-column-start: 1;
+          grid-column-end:8;
+          justify-self: start;
+          margin-left: 5%;
+          
+      }
+      .sidebar{
+          display: none;
+      }
+      .container{
+          grid-column-start: 1;
+          grid-column-end:8;
+          width: 90%;          
+      }
+    }
+`
+
+const $HashtagContainer = styled.div`
+  grid-column-start: 5;
+  grid-column-end: 7;
+  max-width: 300px;
+`
+
 const Loading = styled.div`
   width: 100%;
   height: 100vh;
@@ -68,22 +139,42 @@ const Loading = styled.div`
     }
 }
 `
-
-const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  margin-left: 241px;
+const $Title = styled.div`
+  width: 100%;
   margin-top: 160px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  grid-column-start: 2;
+  grid-column-end: 5;
+  
   h1{
     color: white;
     font-family: Oswald;
     font-size: 43px;
     font-weight: 700;
-    line-height: 64px;
-    letter-spacing: 0em;
-    text-align: left;
-    margin-bottom: 40px;
+    //text-align: left;
   }
+`
+const $Img = styled.div`
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-image: url(${props => props.picture});
+  background-size: cover;
+  margin-right: 15px;
+
+`
+
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  /* margin-left: 241px;*/
+  /* margin-top: 160px;  */
+  grid-column-start: 2;
+  grid-column-end: 5;
+  gap: 20px;
+
 
   h2{
     font-family: Lato;

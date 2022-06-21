@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 
 
 export default function SearchBar() {
-const URL = 'http://127.0.0.1:4000/usernames'
+const URL = process.env.URL_USERNAMES
 
 const [response, setResponse] = useState([])
 
@@ -17,7 +17,7 @@ const handleChange = (event) => {
   }
   else{
     const payload = {"username": value};
-    axios.post(URL, payload)
+    axios.post("https://abef-linkr-api.herokuapp.com/usernames", payload)
     .then(res => 
       setResponse(res.data)
     )
@@ -44,7 +44,8 @@ return (
 }
     
 const Container = styled.div`
-  width: 563px;
+  width: 100%;
+  max-width: 640px;
   position: relative;
   background-color: #E7E7E7;
   border-radius: 8px;
@@ -54,6 +55,7 @@ const Container = styled.div`
     display: flex;
     align-items: center;
     z-index: -1;
+    background-color: #E7E7E7;
   }
   .user .profilePicture{
     margin-left: 10px;

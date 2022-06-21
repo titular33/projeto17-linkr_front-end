@@ -1,5 +1,10 @@
 import axios from 'axios';
+<<<<<<< HEAD
 import { useEffect, useRef, useState, useContext } from "react";
+=======
+import { useEffect, useRef, useState } from "react";
+import { ThreeDots } from 'react-loader-spinner';
+>>>>>>> 02d4a3ec8d41bd2b7ed76c94ff94229f537f02db
 import { useNavigate } from 'react-router-dom';
 import ReactTooltip from "react-tooltip"
 import styled from 'styled-components';
@@ -47,7 +52,7 @@ export default function RenderPosts() {
 
 
 async function getPosts(setPosts) {
-    const URL = "http://127.0.0.1:4000/timeline"
+    const URL = "https://abef-linkr-api.herokuapp.com/timeline"
 
     let { token } = JSON.parse(localStorage.getItem('userData'))
 
@@ -97,125 +102,6 @@ function EachPost(props) {
     }
 
 
-    const { user } = useContext(UserContext)
-    const [likedBy, setLikedBy] = useState(() => {
-        getLikedBy()
-      })
-    
-      const [likeTooltip, setLikeTooltip] = useState()
-      const [likedByUser, setlikedByUser] = useState(() => {
-        getLikedByUser()
-      })
-
-    
-      useEffect(() => {
-        ReactTooltip.rebuild()
-    
-        let usersPart = likedBy && likedBy.join(", ")
-        let numberPart = likedBy && liked - likedBy.length
-    
-        let tooltipNewText
-    
-        if (likedBy) {
-          switch (liked) {
-            case 0:
-              tooltipNewText = "No one has liked it yet"
-              break
-            case 1:
-              tooltipNewText = `Liked by ${likedBy[0]}`
-              break
-            case 2:
-              tooltipNewText = `Liked by ${likedBy[0]} and ${likedBy[1]}`
-              break
-            case 3:
-              if (likedByUser)
-                tooltipNewText = `Liked by ${likedBy[0]}, ${likedBy[1]} and ${likedBy[2]}`
-              if (!likedByUser)
-                tooltipNewText = `Liked by ${usersPart} and ${numberPart} other`
-              break
-            case 4:
-              if (likedByUser)
-                tooltipNewText = `Liked by ${usersPart} and ${numberPart} other`
-              if (!likedByUser)
-                tooltipNewText = `Liked by ${usersPart} and ${numberPart} others`
-              break
-            default:
-              tooltipNewText = `Liked by ${usersPart} and ${numberPart} others`
-              break
-          }
-        }
-    
-        setLikeTooltip(tooltipNewText)
-      }, [likedBy, infos.likes, likedByUser])
-    
-      function getLikedByUser() {
-        const config = {
-          headers: {
-            Authorization: `Bearer ${user.token}`,
-          },
-        }
-        axios
-          .get(`${process.URL}/likes/${userId}`, config)
-          .then((response) => {
-            setlikedByUser(response.data)
-          })
-      }
-    
-      function handleLike() {
-        const API_URL = process.URL
-        const config = {
-          headers: {
-            Authorization: `Bearer ${user.token}`,
-          },
-        }
-    
-        if (!likedByUser) {
-          props.post.likesCount += 1
-          setlikedByUser(true)
-          likedBy && setLikedBy(["you", ...likedBy])
-    
-          axios
-            .post(`${API_URL}/likes/${userId}`, null, config)
-            .then((response) => {})
-            .catch((error) => {
-              props.post.likesCount -= 1
-              setlikedByUser(false)
-              if (likedBy) {
-                likedBy.shift()
-                setLikedBy([...likedBy])
-              }
-            })
-        } else {
-          props.post.likesCount -= 1
-          setlikedByUser(false)
-          if (likedBy) {
-            likedBy.shift()
-            setLikedBy([...likedBy])
-          }
-    
-          axios
-            .delete(`/likes/${userId}`, config)
-            .then((response) => {})
-            .catch((error) => {
-              props.post.likesCount += 1
-              setlikedByUser(true)
-              likedBy && setLikedBy(["you", ...likedBy])
-            })
-        }
-      }
-    
-      function getLikedBy() {
-        const LIMIT = 2
-    
-        axios
-          .get(`${process.env.URL}/likes?postId=${userId}&limit=${LIMIT}`)
-          .then((response) => {
-            setLikedBy(response.data.likedBy)
-          })
-      }
-
-
-    
 
     return (
         <>
@@ -248,12 +134,12 @@ function EachPost(props) {
                     <$InfosRight>
                         {isUserPost ? <$CanEdit>
                             <ion-icon name="create-outline" onClick={(e) => {
-                                if(canEditPost){
+                                if (canEditPost) {
                                     setCanEditPost(false)
-                                }else{
+                                } else {
                                     setCanEditPost(true);
                                     //textEdit.current.focus()
-                                }                               
+                                }
                             }}>
 
                             </ion-icon>
@@ -268,7 +154,7 @@ function EachPost(props) {
                             {infos.userName}
                         </h6>
 
-                        {canEditPost ? <EditPost infos={infos} setCanEditPost={setCanEditPost} setPosts={setPosts}/> : <p> {infos.text} </p>}
+                        {canEditPost ? <EditPost infos={infos} setCanEditPost={setCanEditPost} setPosts={setPosts} /> : <p> {infos.text} </p>}
 
                         <$Embed onClick={() => { window.open(infos.link, "_blank"); }}>
                             <$EmbedTitle>
@@ -296,10 +182,11 @@ function EditPost({ infos, setCanEditPost, setPosts }) {
     const [infosToEdit, setInfosToEdit] = useState({})
     let { token } = JSON.parse(localStorage.getItem('userData'))
     const textEdit = useRef(null)
+    const URL_POST = "https://abef-linkr-api.herokuapp.com/post"
 
 
 
-    useEffect(() =>{
+    useEffect(() => {
         setInfosToEdit({ link: infos.link, text: infos.text })
         textEdit.current.focus()
     }, [])
@@ -308,28 +195,28 @@ function EditPost({ infos, setCanEditPost, setPosts }) {
         const config = {
             headers: { id: infos.id, authorization: token }
         }
-        const requet = axios.put("http://127.0.0.1:4000/post", infosToEdit, config);
+        const requet = axios.put(URL_POST, infosToEdit, config);
         requet.then(() => { setCanEditPost(false); getPosts(setPosts) });
         requet.catch(() => { alert("Não foi possível editar o post") })
     }
 
     return (
-        <$InputEditPost onKeyUp={(e) =>{
-            if(e.key === "Escape" || e.key === "Esc"){
+        <$InputEditPost onKeyUp={(e) => {
+            if (e.key === "Escape" || e.key === "Esc") {
                 setCanEditPost(false)
             }
-            if(e.key === "Enter"){
+            if (e.key === "Enter") {
                 putPost()
             }
-            }}>
-            <textarea 
-            ref={textEdit}
-            name="text" 
-            value={infosToEdit.text} 
-            onChange={(e) => {setInfosToEdit({...infosToEdit, text: e.target.value})}}
+        }}>
+            <textarea
+                ref={textEdit}
+                name="text"
+                value={infosToEdit.text}
+                onChange={(e) => { setInfosToEdit({ ...infosToEdit, text: e.target.value }) }}
             >
             </textarea>
-          
+
         </$InputEditPost>
     )
 }
@@ -337,23 +224,26 @@ function EditPost({ infos, setCanEditPost, setPosts }) {
 function ModalDelete({ infos, setCanDeletePost, setPosts }) {
 
     let { token } = JSON.parse(localStorage.getItem('userData'))
-
+    const [loading, setLoading] = useState(false)
+    const URL_POST = "https://abef-linkr-api.herokuapp.com/post"
 
 
     function deletePost() {
         const config = {
             headers: { id: infos.id, authorization: token }
         }
-        const requet = axios.delete("http://127.0.0.1:4000/post", config);
+        const requet = axios.delete(URL_POST, config);
         requet.then(() => { setCanDeletePost(false); getPosts(setPosts) });
         requet.catch(() => { alert("Não foi possível deletar o post") })
     }
 
     return (
-        <$ModalDeletePost>
-            <p>Deseja deletar este post?</p>
-            <button onClick={() => { deletePost() }} >sim</button>
-            <button onClick={() => { setCanDeletePost(false) }}>não</button>
+        <$ModalDeletePost loading={loading} onClick={() =>{setCanDeletePost(false)}}>
+            <div>
+                <p>Are you sure you want <br /> to delete this post?</p>
+                <button className='no'  disabled={loading} onClick={() => { setCanDeletePost(false) }}>No, go back</button>
+                <button className='yes' disabled={loading} onClick={(e) => { setLoading(true); deletePost(); e.stopPropagation() }} >{loading ? <ThreeDots color="#fff" height={13}/> : "Yes, delete it"}</button>
+            </div>
         </$ModalDeletePost>
     )
 }
@@ -406,6 +296,10 @@ const $EachPost = styled.div`
     display: flex;
     flex-direction: column;
     background-color: #171717;
+
+    @media (max-width: 640px) {
+        border-radius: 0%;
+    }
 `
 
 const $Box = styled.div`
@@ -545,6 +439,7 @@ const $Img = styled.div`
 `
 
 const $ModalDeletePost = styled.div`
+<<<<<<< HEAD
     height: 50px;
     width: 100%;
     background-color: red;
@@ -573,4 +468,85 @@ export const LikeIconFilled = styled(FaHeart)`
   color: ${({ theme }) => theme.colors.likeButton};
   cursor: pointer;
   
+=======
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    z-index: 1;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(255, 255, 255, 0.9);
+    
+    & > div{
+        display: grid;
+        grid-template-columns: 1fr 1fr; 
+        background-color: #333333;
+        border-radius: 50px;
+        padding: 60px 130px;
+        gap: 30px;
+        justify-content: center;
+        align-items: center;
+        filter: ${props =>{ return props.loading ? 'brightness(60%)': 'brightness(100%)'}};
+    }
+    
+    & > div p{
+        grid-column-start: 1;
+        grid-column-end: 3;
+
+        font-family: 'Lato';
+        font-weight: 700;
+        font-size: 34px;
+        color: #FFFFFF;
+        text-align: center;
+    }
+
+    
+    & > div .no{
+        grid-column-start: 1;
+        grid-column-end: 2;
+        width: 140px;
+        height: 40px;
+        padding: 5px 15px;
+
+        border: none;
+        border-radius: 5px;
+
+        background-color: white;
+        color: #1877F2;
+
+        font-family: 'Lato';
+        font-weight: 700;
+        font-size: 18px;
+        cursor: pointer;
+        
+    }
+    
+    & > div .yes{
+        grid-column-start: 2;
+        grid-column-end: 3;
+        padding: 5px 15px;
+
+        width: 140px;
+        height: 40px;
+
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+
+        background-color: #1877F2;
+        color: white;
+
+        font-family: 'Lato';
+        font-weight: 700;
+        font-size: 18px;
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+>>>>>>> 02d4a3ec8d41bd2b7ed76c94ff94229f537f02db
 `

@@ -6,8 +6,8 @@ import { ThreeDots } from 'react-loader-spinner';
 
 
 export default function NewPost({setPosts}) {
-    const URL_POST = "http://127.0.0.1:4000/post"
-    const URL_GET = "http://127.0.0.1:4000/timeline"
+    const URL_POST = "https://abef-linkr-api.herokuapp.com/post"
+    const URL_GET = "https://abef-linkr-api.herokuapp.com/timeline"
 
 
     const { token, picture } = JSON.parse(localStorage.getItem('userData'))
@@ -94,6 +94,9 @@ const $AuxBody = styled.div`
     display: grid;
     grid-template-columns: 15% 85%;
     background-color: white;
+    @media (max-width: 640px) {
+        border-radius: 0%;
+    }
 `
 
 
@@ -195,6 +198,10 @@ const $Form = styled.form`
         font-family: 'Lato';
         font-weight: 700;
         font-size: 14px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
         &:hover{
             filter: brightness(95%);
             cursor: pointer;

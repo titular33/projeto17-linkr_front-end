@@ -9,13 +9,13 @@ import axios from 'axios';
 export default function HashtagContainer() {
 
 const [trending, setTrending] = useState()
-const URL = `http://127.0.0.1:4000/hashtags`
+const URL = `https://abef-linkr-api.herokuapp.com/hashtags`
 useEffect(getData, []) 
 
 
 function getData(){
   axios.get(URL)
-  .then(res => {console.log(res.data); 
+  .then(res => { 
     let hashtags = []
     for(let i = 0; i < res.data.length; i++){
       hashtags.push(res.data[i].hashtag)
@@ -56,6 +56,10 @@ return (
 }
     
 const Container = styled.div`
+  background-color: #171717;
+  border-radius: 16px;
+  width: 100%;
+  min-height: 406px;
   
   a:link {
   text-decoration: none;
@@ -73,10 +77,6 @@ const Container = styled.div`
     text-decoration: none;
     color: white;
   }
-  background-color: #171717;
-  border-radius: 16px;
-  width: 301px;
-  height: 406px;
   h1 {
     font-family: 'Oswald';
     font-style: normal;

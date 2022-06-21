@@ -14,16 +14,16 @@ const SignIn = () => {
     const [loginData, setloginData] = useState({ email: "", password: "" });
     const [load, setLoad] = useState(false);
     const [alert, setAlert] = useState(null);
-    const URL = "http://127.0.0.1:4000/signin";
-
+    
     const { setUserData } = useContext(UserContext);
 
     function userLogin(event) {
         setAlert(null);
         event.preventDefault();
-        setLoad(true);
-        const requisicaoPost = axios.post(URL, loginData);
+        setLoad(true); 
+        const requisicaoPost = axios.post("https://abef-linkr-api.herokuapp.com/signin", loginData);               
         requisicaoPost.then(response => {
+            console.log(response.data)
             const { data } = response;
             localStorage.setItem("userData", JSON.stringify({ userId: data.id, token: data.token, userName: data.userName, picture: data.picture }))
             setUserData({ token: data.token, userId: data.id, userName: data.userName, picture: data.picture });
