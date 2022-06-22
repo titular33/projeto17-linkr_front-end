@@ -77,7 +77,6 @@ function toggleFollow(userInfos, clickToggleFollowing, setClickToggleFollowing, 
         headers: { authorization: token, id: userInfos.id }
     }
 
-    console.log("config: ", config, "URL_foll: ", URL_Follow)
 
     const request = axios.post(URL_Follow, {}, config);
     request.then((res) => {

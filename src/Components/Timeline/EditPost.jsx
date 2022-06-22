@@ -21,7 +21,6 @@ export function EditPost({ infos, setCanEditPost, setPosts, URL }) {
             headers: { id: infos.id, authorization: token }
         }
 
-        console.log("setCanEditPost: ", setCanEditPost, " setPosts: ", setPosts, " config: ", config, " infosToEdit: ", infosToEdit);
         const requet = axios.put(URL_POST, infosToEdit, config);
         requet.then(() => { setCanEditPost(false); getPosts(setPosts, URL) });
         requet.catch(() => { alert("Não foi possível editar o post") })

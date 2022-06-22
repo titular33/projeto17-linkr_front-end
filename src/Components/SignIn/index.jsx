@@ -23,7 +23,6 @@ const SignIn = () => {
         setLoad(true); 
         const requisicaoPost = axios.post("http://localhost:4000/signin", loginData);               
         requisicaoPost.then(response => {
-            console.log(response.data)
             const { data } = response;
             localStorage.setItem("userData", JSON.stringify({ userId: data.id, token: data.token, userName: data.userName, picture: data.picture }))
             setUserData({ token: data.token, userId: data.id, userName: data.userName, picture: data.picture });

@@ -74,7 +74,6 @@ export async function getPosts(setPosts, URL, rotaName, setuserInfos) {
     const requestPosts = axios.get(URL, config)
     requestPosts.then(res => {
         if (rotaName === "user") {
-            console.log(res.data)
              setPosts([...res.data.posts]);
              setuserInfos({...res.data})
         } else { setPosts([...res.data]) }

@@ -7,7 +7,6 @@ import styled from 'styled-components';
 /* import tooltipText from './TooltipText';
  */
 export default function Likes({liked, postId, quantLikes}) {
-    console.log(liked, postId, quantLikes);
 
     const { token } = JSON.parse(localStorage.getItem('userData'));
     const [ isLiked, setIsLiked ] = useState(liked);
@@ -26,7 +25,6 @@ export default function Likes({liked, postId, quantLikes}) {
         request.catch(err => {console.log(err)});
     }
     function dislikePost() {
-        console.log(config)
         let request = axios.delete(`http://127.0.0.1:4000/like/${postId}`, config);
         request.then(res => {
         setIsLiked(!isLiked);
@@ -39,7 +37,7 @@ export default function Likes({liked, postId, quantLikes}) {
         <>
             <LikeStyled isLiked={isLiked}>
                 {isLiked 
-                ? <ion-icon name = "heart" onClick={() => dislikePost()} />
+                ? <ion-icon name = "heart" onClick={() => {dislikePost()}} />
                 : <ion-icon name = "heart-outline" onClick={() => likePost()} />
                 }
             </LikeStyled>

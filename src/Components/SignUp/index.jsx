@@ -24,7 +24,6 @@ const SignUp = () => {
             userName: register.userName,
             picture: register.picture,
         }); requisicaoPost.then(response => {
-            console.log(response.data)
             setLoad(false);
             navigate('/timeline')
         }); requisicaoPost.catch(error => {
