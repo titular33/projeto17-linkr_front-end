@@ -2,13 +2,13 @@ import axios from 'axios';
 import { useEffect, useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
-
+import Likes from '../Likes'
 import NewPost from './NewPost';
 import { EditPost } from './EditPost';
 import ModalDelete from './ModalDelete';
+import { Link } from 'react-router-dom';
 
-export default function RenderPosts({ rotaName, URL, setUserName }) {
+export default function RenderPosts({ rotaName, URL, setuserInfos, clickToggleFollowing }) {
 
     let errorMessage = "";
 
@@ -26,9 +26,9 @@ export default function RenderPosts({ rotaName, URL, setUserName }) {
         }
 
         if (rotaName === "user") {
-            getPosts(setPosts, URL, rotaName, setUserName)
+            getPosts(setPosts, URL, rotaName, setuserInfos)
         }
-    }, [URL])
+    }, [URL, clickToggleFollowing])
 
 
     if (posts === null) {
@@ -62,7 +62,7 @@ export default function RenderPosts({ rotaName, URL, setUserName }) {
 }
 
 
-export async function getPosts(setPosts, URL, rotaName, setUserName) {
+export async function getPosts(setPosts, URL, rotaName, setuserInfos) {
     //const URL = "https://abef-linkr-api.herokuapp.com/timeline"
 
     let { token } = JSON.parse(localStorage.getItem('userData'))
@@ -74,8 +74,9 @@ export async function getPosts(setPosts, URL, rotaName, setUserName) {
     const requestPosts = axios.get(URL, config)
     requestPosts.then(res => {
         if (rotaName === "user") {
+            console.log(res.data)
              setPosts([...res.data.posts]);
-             setUserName(`${res.data.userName}`)
+             setuserInfos({...res.data})
         } else { setPosts([...res.data]) }
     })
     requestPosts.catch(e => { setPosts({ e }) })
@@ -136,7 +137,6 @@ function EachPost(props) {
 
 
 
-
     return (
         
             <StyledEachPost key={infos.id}>
@@ -146,10 +146,8 @@ function EachPost(props) {
 
                     <StyledInfosLeft>
                         <StyledImg img={infos.picture} />
-                        {liked ? <ion-icon name="heart"></ion-icon> : <ion-icon name="heart-outline"></ion-icon>}
-                        <p>
-                            {infos.likes} likes
-                        </p>
+                        
+                        <Likes  liked={liked} postId={infos.id} quantLikes={infos.likes}/>
                     </StyledInfosLeft>
 
                     <StyledInfosRight>
@@ -203,95 +201,6 @@ function EachPost(props) {
     )
 }
 
-// function EditPost({ infos, setCanEditPost, setPosts }) {
-//     const [infosToEdit, setInfosToEdit] = useState({})
-//     let { token } = JSON.parse(localStorage.getItem('userData'))
-//     const textEdit = useRef(null)
-//     const URL_POST = "https://abef-linkr-api.herokuapp.com/post"
-
-
-
-//     useEffect(() => {
-//         setInfosToEdit({ link: infos.link, text: infos.text })
-//         textEdit.current.focus()
-//     }, [])
-
-//     function putPost() {
-//         const config = {
-//             headers: { id: infos.id, authorization: token }
-//         }
-//         const requet = axios.put(URL_POST, infosToEdit, config);
-//         requet.then(() => { setCanEditPost(false); getPosts(setPosts) });
-//         requet.catch(() => { alert("Não foi possível editar o post") })
-//     }
-
-//     return (
-//         <$InputEditPost onKeyUp={(e) => {
-//             if (e.key === "Escape" || e.key === "Esc") {
-//                 setCanEditPost(false)
-//             }
-//             if (e.key === "Enter") {
-//                 putPost()
-//             }
-//         }}>
-//             <textarea
-//                 ref={textEdit}
-//                 name="text"
-//                 value={infosToEdit.text}
-//                 onChange={(e) => { setInfosToEdit({ ...infosToEdit, text: e.target.value }) }}
-//             >
-//             </textarea>
-
-//         </$InputEditPost>
-//     )
-// }
-
-// function ModalDelete({ infos, setCanDeletePost, setPosts }) {
-
-//     let { token } = JSON.parse(localStorage.getItem('userData'))
-//     const [loading, setLoading] = useState(false)
-//     const URL_POST = "https://abef-linkr-api.herokuapp.com/post"
-
-
-//     function deletePost() {
-//         const config = {
-//             headers: { id: infos.id, authorization: token }
-//         }
-//         const requet = axios.delete(URL_POST, config);
-//         requet.then(() => { setCanDeletePost(false); getPosts(setPosts) });
-//         requet.catch(() => { alert("Não foi possível deletar o post") })
-//     }
-
-//     return (
-//         <$ModalDeletePost loading={loading} onClick={() => { setCanDeletePost(false) }}>
-//             <div>
-//                 <p>Are you sure you want <br /> to delete this post?</p>
-//                 <button className='no' disabled={loading} onClick={() => { setCanDeletePost(false) }}>No, go back</button>
-//                 <button className='yes' disabled={loading} onClick={(e) => { setLoading(true); deletePost(); e.stopPropagation() }} >{loading ? <ThreeDots color="#fff" height={13} /> : "Yes, delete it"}</button>
-//             </div>
-//         </$ModalDeletePost>
-//     )
-// }
-
-// const StyledInputEditPost = styled.div`
-//     width: 100%;
-    
-//     textarea{
-//         height: 80px;
-//         width: 100%;
-//         border: none;
-//         border-radius: 7px;
-//         margin: 8px 0px;
-//         -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
-//         -moz-box-sizing: border-box;    /* Firefox, other Gecko */
-//         box-sizing: border-box;         /* Opera/IE 8+ */
-//         padding: 5px;
-//         resize: vertical;
-//         font-family: 'Lato';
-//         font-weight: 300;
-//         font-size: 15px;
-//     }
-// `
 
 const StyledCanEdit = styled.div`
     position: absolute;

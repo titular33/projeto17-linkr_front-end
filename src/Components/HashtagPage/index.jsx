@@ -145,4 +145,6 @@ const StyledNavbar = styled.div`
     max-width: 300px;
     grid-column-start: 5;
     grid-column-end: 7;
+    position: sticky;
+    top: 230px;
 `

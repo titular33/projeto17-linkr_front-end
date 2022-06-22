@@ -1,12 +1,14 @@
 import { useParams } from "react-router-dom"
 import styled from "styled-components";
 import { useState } from "react";
+import axios from "axios";
 
 
 import RenderPosts from "../Timeline/RenderPosts";
 import Header from '../Header';
 import SearchBar from "../SearchBar";
 import HashtagContainer from "../HashtagBox";
+//import { getPosts } from "../Timeline/RenderPosts";
 
 
 
@@ -18,9 +20,13 @@ export default function HashtagPage() {
 
     //console.log(params)
 
-    const [URL, setURL] = useState(`https://abef-linkr-api.herokuapp.com/user/${params.id}`)
-    const [userName, setUserName] = useState('')
+    // const [URL, setURL] = useState(`https://abef-linkr-api.herokuapp.com/user/${params.id}`)
+    const [URL, setURL] = useState(`http://localhost:4000/user/${params.id}`)
+    const [userInfos, setuserInfos] = useState({ userName: "", following: false })
+    const [clickToggleFollowing, setClickToggleFollowing] = useState(false)
+    const [disabled, setDisabled] = useState(false)
 
+    const thisUserId = JSON.parse(localStorage.getItem('userData'))
 
     return (
         <>
@@ -30,11 +36,24 @@ export default function HashtagPage() {
                 <InputSearchBar className='searchBar'>
                     <SearchBar />
                 </InputSearchBar>
-                <h1>
-                    {userName}'s Posts
-                </h1>
+                <StyledTitle>
+
+                    <h1>
+                        {userInfos.userName}'s Posts
+                    </h1>
+
+                    {thisUserId.userId === userInfos.id || userInfos.userName === "" ? <></> :
+                        <button type="button" disabled={disabled} className={`${disabled}`} onClick={(e) => {
+                            disabled ? setDisabled(false) : setDisabled(true)
+                            toggleFollow(userInfos, clickToggleFollowing, setClickToggleFollowing, disabled, setDisabled);
+
+                        }}>
+                            {userInfos.following ? "Unfollow" : "Follow"}
+                        </button>
+                    }
+                </StyledTitle>
                 <StyledSection className='section'>
-                    <RenderPosts rotaName={"user"} URL={URL} setUserName={setUserName}/>
+                    <RenderPosts rotaName={"user"} URL={URL} setuserInfos={setuserInfos} clickToggleFollowing={clickToggleFollowing} />
 
                 </StyledSection>
                 <StyledNavbar className='navBar'>
@@ -45,6 +64,37 @@ export default function HashtagPage() {
         </>
     )
 }
+
+function toggleFollow(userInfos, clickToggleFollowing, setClickToggleFollowing, disabled, setDisabled) {
+
+    let route = ''
+    userInfos.following ? route = 'unfollow' : route = 'follow'
+
+    const URL_Follow = `http://localhost:4000/${route}`
+
+    const { token } = JSON.parse(localStorage.getItem('userData'))
+    const config = {
+        headers: { authorization: token, id: userInfos.id }
+    }
+
+    console.log("config: ", config, "URL_foll: ", URL_Follow)
+
+    const request = axios.post(URL_Follow, {}, config);
+    request.then((res) => {
+        // window.location.reload()
+        //setURL(`http://localhost:4000/user/${params.id}`)
+        clickToggleFollowing ? setClickToggleFollowing(false) : setClickToggleFollowing(true)
+        setDisabled(false);
+    })
+    request.catch((e) => {
+        console.log(e)
+    })
+}
+
+
+
+
+
 
 const StyledAuxBody = styled.div`
     margin-top: 150px;
@@ -60,16 +110,6 @@ const StyledAuxBody = styled.div`
 
     .searchBar{
         display: none;
-    }
-
-    & > h1{
-        grid-column-start: 2;
-        grid-column-end: 5;
-        font-family: 'Oswald';
-        font-weight: 700;
-        font-size: 43px;
-        color: white;
-        justify-self: left;
     }
 
     
@@ -135,18 +175,60 @@ const InputSearchBar = styled.div`
     /* position: absolute;
     top: 0px;
     left: 0px; */
-`
+    `
 
 const StyledSection = styled.div`
     width: 100%;
     grid-column-start: 2;
     grid-column-end: 5;
     
-`
+    `
 
+const StyledTitle = styled.div`
+    width: 100%;
+    grid-column-start: 2;
+    grid-column-end: 7;
+
+    display: grid;
+    grid-template-columns: 6fr 4fr;
+    justify-content: left;
+    gap: 25px;
+
+    & > h1{
+        width: 100%;
+        grid-column-start: 1;
+        grid-column-end: 2;
+        font-family: 'Oswald';
+        font-weight: 700;
+        font-size: 43px;
+        color: white;
+        justify-self: left;
+    }
+
+    & > button{
+        grid-column-start: 2;
+        grid-column-end: 3;
+        display: block;
+        width: 110px;
+        background-color: #1877F2;
+        color: white;
+        position: relative;
+        left: 190px;
+        border-radius: 5px;
+        border: none;
+        cursor: pointer;
+    }
+
+    & > .true{
+        filter: brightness(90%);
+        cursor: default;
+    }
+`
 const StyledNavbar = styled.div`
     width: 100%;
     max-width: 300px;
     grid-column-start: 5;
     grid-column-end: 7;
+    position: sticky;
+    top: 230px;
 `
