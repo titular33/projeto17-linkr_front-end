@@ -1,9 +1,9 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 /* import ReactTooltip from 'react-tooltip';
  */
 import axios from 'axios';
 import styled from 'styled-components';
-import UserContext from '../../Contexts/UserContext';
+// import UserContext from '../../Contexts/UserContext';
 /* import tooltipText from './TooltipText';
  */
 export default function Likes({liked, postId, quantLikes}) {

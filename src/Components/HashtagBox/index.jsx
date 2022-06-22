@@ -1,60 +1,77 @@
 import styled from 'styled-components';
-import {Link} from "react-router-dom"
+import { Link } from "react-router-dom"
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 
 
 
 
-export default function HashtagContainer() {
+export default function HashtagContainer({ setURL }) {
 
-const [trending, setTrending] = useState()
-const URL = `https://abef-linkr-api.herokuapp.com/hashtags`
-useEffect(getData, []) 
+  const [trending, setTrending] = useState()
+  const URL = `https://abef-linkr-api.herokuapp.com/hashtags`
+  useEffect(getData, [])
 
 
-function getData(){
-  axios.get(URL)
-  .then(res => { 
-    let hashtags = []
-    for(let i = 0; i < res.data.length; i++){
-      hashtags.push(res.data[i].hashtag)
-    } 
-    setTrending(hashtags)
-  })
-}
+  function getData() {
+    axios.get(URL)
+      .then(res => {
+        let hashtags = []
+        for (let i = 0; i < res.data.length; i++) {
+          hashtags.push(res.data[i].hashtag)
+        }
+        setTrending(hashtags)
+      })
+  }
 
-if (!trending){
+  if (!trending) {
+    return (
+      <Container>
+        <Loading>
+          <div className='loading' />
+        </Loading>
+      </Container>
+    )
+  }
+
+  /* 
+                  const redirect = `/hashtag/${text[i].replace('#', '')}`
+                  const URL = 'https://abef-linkr-api.herokuapp.com/hashtags/' + `${text[i].replace('#', '')}`
+                  html.push(<Link to={redirect} onClick={() =>{getPosts(setPosts, URL)}}> {text[i]}</Link>)
+  
+  */
+
+  //const redirect = `/hashtag/${text[i].replace('#', '')}`
+
+
   return (
-  <Container>
-    <Loading>
-    <div className='loading'/>
-    </Loading>
-  </Container>
-  )
-}
+    <Container>
+      <div>
+        <h1>
+          trending
+        </h1>
+      </div>
+      <div className='line' />
+      <div>
+        {trending.map(themes => {
+
+          const redirect = `/hashtag/${themes.replace('#', '')}`;
+          const newURL = `https://abef-linkr-api.herokuapp.com/hashtags/${themes.replace('#', '')}`
 
 
-return (
-        <Container>
-            <div>
-              <h1>
-                trending
-              </h1>
-            </div>
-            <div className='line'/>
-            <div> 
-              {trending.map(themes => 
-                <h2 >
-                  <Link to={`/hashtag/${themes.replace('#','')}`}>
-                    { themes}
-                  </Link>
-                </h2>)}
-            </div>
-        </Container>
-    );  
+          return (
+            <h2 key={themes}>
+              <Link to={redirect} onClick={() => { setURL(newURL) }}>
+                {themes}
+              </Link>
+            </h2>)
+        })
+        }
+      </div>
+    </Container>
+  );
 }
-    
+
 const Container = styled.div`
   background-color: #171717;
   border-radius: 16px;
@@ -104,7 +121,7 @@ const Container = styled.div`
     margin-bottom: 7px;
   }
  `
- const Loading = styled.div`
+const Loading = styled.div`
   width: 100%;
   height: 100vh;
   display: flex;

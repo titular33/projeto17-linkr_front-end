@@ -12,7 +12,7 @@ const SignUp = () => {
     const [register, setRegister] = useState({ email: "", password: "", userName: "", picture: "" });
     const [load, setLoad] = useState(false);
     const [alert, setAlert] = useState(null);
-    const URL = process.env.URL_SIGNUP;
+    //const URL = process.env.URL_SIGNUP;
 
     function registerUser(event) {
         event.preventDefault();

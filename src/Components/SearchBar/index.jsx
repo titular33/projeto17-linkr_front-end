@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 
 
 export default function SearchBar() {
-const URL = process.env.URL_USERNAMES
+//const URL = process.env.URL_USERNAMES
 
 const [response, setResponse] = useState([])
 

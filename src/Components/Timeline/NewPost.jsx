@@ -42,17 +42,17 @@ export default function NewPost({setPosts}) {
     }
 
     return (
-        <$AuxBody>
+        <StyledAuxBody>
 
-            <$InfosLeft>
-                <$Img img={picture} />
-            </$InfosLeft>
+            <StyledInfosLeft>
+                <StyledImg img={picture} />
+            </StyledInfosLeft>
 
-            <$InfosRight>
+            <StyledInfosRight>
                 <h6>
                     What are you going to share today?
                 </h6>
-                <$Form onSubmit={(e) => { e.preventDefault(); setDisabled(true);tryPost(); }}>
+                <StyledForm onSubmit={(e) => { e.preventDefault(); setDisabled(true);tryPost(); }}>
                     <input
                                             className={`${disabled}`}
 
@@ -79,14 +79,14 @@ export default function NewPost({setPosts}) {
                         type="submit">
                         {disabled ?  <ThreeDots color="#fff" height={13}/> : "Publish"}
                     </button>
-                </$Form>
-                {errorPost ? <$Error> There was an error posting your link </$Error> : ""}
-            </$InfosRight>
-        </$AuxBody>
+                </StyledForm>
+                {errorPost ? <StyledError> There was an error posting your link </StyledError> : ""}
+            </StyledInfosRight>
+        </StyledAuxBody>
     )
 }
 
-const $AuxBody = styled.div`
+const StyledAuxBody = styled.div`
     width: 100%;
     padding: 15px;
     margin-bottom: 30px;
@@ -100,12 +100,12 @@ const $AuxBody = styled.div`
 `
 
 
-const $InfosLeft = styled.div`
+const StyledInfosLeft = styled.div`
     grid-column-start:1;
     grid-column-end:2;
 
 `
-const $InfosRight = styled.div`
+const StyledInfosRight = styled.div`
     grid-column-start:2;
     grid-column-end:3;
 
@@ -119,7 +119,7 @@ const $InfosRight = styled.div`
     
 `
 
-const $Img = styled.div`
+const StyledImg = styled.div`
     width: 50px;
     height: 50px;
     border-radius: 50%;
@@ -128,7 +128,7 @@ const $Img = styled.div`
 `
 
 
-const $Form = styled.form`
+const StyledForm = styled.form`
     margin: 10px 0pc;
     position: relative;
 
@@ -213,6 +213,6 @@ const $Form = styled.form`
    }
 `
 
-const $Error = styled.p`
+const StyledError = styled.p`
     color: red;
 `
