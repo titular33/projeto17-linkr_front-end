@@ -1,18 +1,15 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 /* import ReactTooltip from 'react-tooltip';
- */
-import axios from 'axios';
+ */import axios from 'axios';
 import styled from 'styled-components';
-import UserContext from '../../Contexts/UserContext';
-/* import tooltipText from './TooltipText';
- */
-export default function Likes({liked, postId, quantLikes}) {
-    console.log(liked, postId, quantLikes);
+/* import tooltipText from './tooltipText'; */
 
-    const { token } = JSON.parse(localStorage.getItem('userData'));
+export default function Likes({liked, postId, quantLikes}) {
+/*     console.log(user);
+ */    const { token } = JSON.parse(localStorage.getItem('userData'));
     const [ isLiked, setIsLiked ] = useState(liked);
     const [ quantityLikesPost, setQuantityLikesPost ] = useState(quantLikes);
-   
+   /*  const [userLiked, setUserLiked] = useState(user); */
     const config = {
         headers: { authorization: token }
     }
@@ -45,14 +42,14 @@ export default function Likes({liked, postId, quantLikes}) {
             </LikeStyled>
            {/*  {isLiked
                 ?   <span 
-                        data-tip={tooltipText(likes, isLiked, quantityLikesPost, user)} 
+                        data-tip={tooltipText(quantLikes, isLiked, quantityLikesPost,userLiked )} 
                         data-class={'tooltip'} 
                         data-place={'bottom'} 
                         data-arrow-color={'rgba(255, 255, 255, 0.9)'}>
                             {quantityLikesPost} likes
                     </span>
                 :   <span 
-                        data-tip={tooltipText(likes, isLiked, quantityLikesPost, user)} 
+                        data-tip={tooltipText(quantLikes, isLiked, quantityLikesPost, userLiked)} 
                         data-class={'tooltip'} 
                         data-place={'bottom'} 
                         data-arrow-color={'rgba(255, 255, 255, 0.9)'}>

@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import Likes from '../Likes'
 import NewPost from './NewPost';
+/* import Comments from '../Coments'; */
 
 export default function RenderPosts() {
 
@@ -79,7 +80,7 @@ function EachPost(props) {
 
 
     const { infos, setPosts } = props;
-
+  console.log(infos);
     if (infos.image === "") {
         infos.image = "https://archive.org/download/no-photo-available/no-photo-available.png"
     } // isso aqui pode vir do back já
@@ -107,7 +108,7 @@ function EachPost(props) {
                     <$InfosLeft>
                         <$Img img={infos.picture} />
                         
-                        <Likes  liked={liked} postId={infos.id} quantLikes={infos.likes}/>
+                        <Likes  liked={liked} postId={infos.id} quantLikes={infos.likes} user = {infos.userName}/>
                     </$InfosLeft>
 
                     <$InfosRight>
@@ -151,6 +152,13 @@ function EachPost(props) {
                         </$Embed>
                     </$InfosRight>
                 </$Box>
+                {/* <Comments
+            setTotalComments={setTotalComments}
+            commentState={commentState}
+            postId={post.id}
+            isRepost={post.userRepostName}
+            whoPosted={post.userId}
+        /> */}
             </$EachPost>
 
         </>
