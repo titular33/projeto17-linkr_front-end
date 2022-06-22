@@ -3,9 +3,9 @@ import { useState } from "react";
 import styled from "styled-components";
 import { ThreeDots } from 'react-loader-spinner';
 
+import HashtagContainer from "../HashtagBox";
 
-
-export default function NewPost({setPosts}) {
+export default function NewPost({setPosts, setNewHashtag}) {
     const URL_POST = "https://abef-linkr-api.herokuapp.com/post"
     const URL_GET = "https://abef-linkr-api.herokuapp.com/timeline"
 
@@ -34,7 +34,7 @@ export default function NewPost({setPosts}) {
         if (!error) {
             setInfosToPost({ link: "", text: "" })
             const requestPosts = axios.get(URL_GET, config)
-            requestPosts.then(res => { setPosts(res.data); setErrorPost(false) })
+            requestPosts.then(res => { setPosts(res.data); setErrorPost(false); const hash = "hashtag" + Date.now();  setNewHashtag(hash)})
             requestPosts.catch(e => { setPosts({ e }) })
             
         }

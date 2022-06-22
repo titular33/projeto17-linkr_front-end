@@ -6,11 +6,11 @@ import axios from 'axios';
 
 
 
-export default function HashtagContainer({ setURL }) {
+export default function HashtagContainer({ setURL, newHashtag }) {
 
   const [trending, setTrending] = useState()
   const URL = `https://abef-linkr-api.herokuapp.com/hashtags`
-  useEffect(getData, [])
+  useEffect(getData, [newHashtag])
 
 
   function getData() {

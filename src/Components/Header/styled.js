@@ -72,7 +72,7 @@ const InputBox = styled.div`
     max-width: 60vw;
     
     /* position: relative; */
-    @media (max-width: 650px) {
+    @media (max-width: 640px) {
         display: none;
     }
 `;

@@ -8,7 +8,7 @@ import { EditPost } from './EditPost';
 import ModalDelete from './ModalDelete';
 import { Link } from 'react-router-dom';
 
-export default function RenderPosts({ rotaName, URL, setuserInfos, clickToggleFollowing }) {
+export default function RenderPosts({ rotaName, URL, setuserInfos, clickToggleFollowing, setNewHashtag }) {
 
     let errorMessage = "";
 
@@ -32,7 +32,7 @@ export default function RenderPosts({ rotaName, URL, setuserInfos, clickToggleFo
 
 
     if (posts === null) {
-        errorMessage = "Loading..."
+        errorMessage = <StyledLoading> <div className='loading' /> </StyledLoading>
     }
 
     else if (posts.length === 0) {
@@ -47,13 +47,13 @@ export default function RenderPosts({ rotaName, URL, setuserInfos, clickToggleFo
     return (
         <>
             {rotaName === "timeline" ?
-                <NewPost setPosts={setPosts} />
+                <NewPost setPosts={setPosts} setNewHashtag={setNewHashtag}/>
                 : ""
             }
             {
                 posts === null || posts.length === 0 || posts.e ?
                     errorMessage :
-                    <AllPosts posts={posts} setPosts={setPosts} URL={URL}/>
+                    <AllPosts posts={posts} setPosts={setPosts} URL={URL} setNewHashtag={setNewHashtag}/>
             }
         </>
 
@@ -74,9 +74,8 @@ export async function getPosts(setPosts, URL, rotaName, setuserInfos) {
     const requestPosts = axios.get(URL, config)
     requestPosts.then(res => {
         if (rotaName === "user") {
-            console.log(res.data)
-             setPosts([...res.data.posts]);
-             setuserInfos({...res.data})
+            setPosts([...res.data.posts]);
+            setuserInfos({ ...res.data })
         } else { setPosts([...res.data]) }
     })
     requestPosts.catch(e => { setPosts({ e }) })
@@ -84,13 +83,13 @@ export async function getPosts(setPosts, URL, rotaName, setuserInfos) {
 }
 
 function AllPosts(props) {
-    const { posts, setPosts, URL } = props;
+    const { posts, setPosts, URL, setNewHashtag } = props;
 
     return (
         posts.map(infos => {
             return (
 
-                <EachPost key={`${infos.id}`} infos={infos} setPosts={setPosts} URL={URL}/>
+                <EachPost key={`${infos.id}`} infos={infos} setPosts={setPosts} URL={URL} setNewHashtag={setNewHashtag} />
 
             )
         })
@@ -101,7 +100,7 @@ function EachPost(props) {
     let navigate = useNavigate()
 
 
-    const { infos, setPosts, URL } = props;
+    const { infos, setPosts, URL, setNewHashtag } = props;
 
     if (infos.image === "") {
         infos.image = "https://archive.org/download/no-photo-available/no-photo-available.png"
@@ -138,68 +137,98 @@ function EachPost(props) {
 
 
     return (
-        
-            <StyledEachPost key={infos.id}>
 
-                {canDeletePost ? <ModalDelete infos={infos} setCanDeletePost={setCanDeletePost} setPosts={setPosts} URL={URL}/> : ""}
-                <StyledBox >
+        <StyledEachPost key={infos.id}>
 
-                    <StyledInfosLeft>
-                        <StyledImg img={infos.picture} />
-                        
-                        <Likes  liked={liked} postId={infos.id} quantLikes={infos.likes}/>
-                    </StyledInfosLeft>
+            {canDeletePost ? <ModalDelete infos={infos} setCanDeletePost={setCanDeletePost} setPosts={setPosts} URL={URL} setNewHashtag={setNewHashtag}/> : ""}
+            <StyledBox >
 
-                    <StyledInfosRight>
-                        {isUserPost ? <StyledCanEdit>
-                            <ion-icon name="create-outline" onClick={(e) => {
-                                if (canEditPost) {
-                                    setCanEditPost(false)
-                                } else {
-                                    setCanEditPost(true);
-                                    //textEdit.current.focus()
-                                }
-                            }}>
+                <StyledInfosLeft>
+                    <StyledImg img={infos.picture} />
 
-                            </ion-icon>
-                            <ion-icon name="trash-outline" onClick={(e) => {
-                                setCanDeletePost(true)
-                            }}>
+                    <Likes liked={liked} postId={infos.id} quantLikes={infos.likes} />
+                </StyledInfosLeft>
 
-                            </ion-icon>
-                        </StyledCanEdit> : <></>}
+                <StyledInfosRight>
+                    {isUserPost ? <StyledCanEdit>
+                        <ion-icon name="create-outline" onClick={(e) => {
+                            if (canEditPost) {
+                                setCanEditPost(false)
+                            } else {
+                                setCanEditPost(true);
+                                //textEdit.current.focus()
+                            }
+                        }}>
 
-                        <h6 onClick={() => { navigate(`/user/${infos.userId}`) }}>
-                            {infos.userName}
-                        </h6>
+                        </ion-icon>
+                        <ion-icon name="trash-outline" onClick={(e) => {
+                            setCanDeletePost(true)
+                        }}>
 
-                        {canEditPost ?
-                            <EditPost infos={infos} setCanEditPost={setCanEditPost} setPosts={setPosts} URL={URL} /> :
-                            <p>
-                                {findHashtags(infos.text)}
-                            </p>}
+                        </ion-icon>
+                    </StyledCanEdit> : <></>}
 
-                        <StyledEmbed onClick={() => { window.open(infos.link, "_blank"); }}>
-                            <StyledEmbedTitle>
-                                {infos.title}
-                            </StyledEmbedTitle>
-                            <StyledEmbedDescription>
-                                {infos.description}
-                            </StyledEmbedDescription>
-                            <StyledEmbedLink>
-                                {infos.link}
-                            </StyledEmbedLink>
-                            <StyledEmbedImg img={infos.image}>
-                            </StyledEmbedImg>
+                    <h6 onClick={() => { navigate(`/user/${infos.userId}`) }}>
+                        {infos.userName}
+                    </h6>
 
-                        </StyledEmbed>
-                    </StyledInfosRight>
-                </StyledBox>
-            </StyledEachPost>
+                    {canEditPost ?
+                        <EditPost infos={infos} setCanEditPost={setCanEditPost} setPosts={setPosts} URL={URL} setNewHashtag={setNewHashtag}/> :
+                        <p>
+                            {findHashtags(infos.text)}
+                        </p>}
 
-        
+                    <StyledEmbed onClick={() => { window.open(infos.link, "_blank"); }}>
+                        <StyledEmbedTitle>
+                            {infos.title}
+                        </StyledEmbedTitle>
+                        <StyledEmbedDescription>
+                            {infos.description}
+                        </StyledEmbedDescription>
+                        <StyledEmbedLink>
+                            {infos.link}
+                        </StyledEmbedLink>
+                        <StyledEmbedImg img={infos.image}>
+                        </StyledEmbedImg>
+
+                    </StyledEmbed>
+                </StyledInfosRight>
+            </StyledBox>
+        </StyledEachPost>
+
+
     )
 }
+
+
+
+
+const StyledLoading = styled.div`
+    width: 100%;
+    height: 30vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  
+    .loading{
+    animation: is-rotating 1s infinite;
+    width: 50px;
+    height: 50px;
+    border: 6px solid gray;
+    border-top-color: #fff;
+    border-radius: 50%;
+    }
+
+    @keyframes is-rotating { 
+        to {
+            transform: rotate(1turn);
+        }
+    }
+
+`
+
+
+
 
 
 const StyledCanEdit = styled.div`

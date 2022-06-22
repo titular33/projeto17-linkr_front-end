@@ -4,7 +4,7 @@ import { getPosts } from "./RenderPosts"
 import { ThreeDots } from "react-loader-spinner"
 import styled from "styled-components"
 
-export default function ModalDelete({ infos, setCanDeletePost, setPosts , URL}) {
+export default function ModalDelete({ infos, setCanDeletePost, setPosts , URL, setNewHashtag}) {
 
     let { token } = JSON.parse(localStorage.getItem('userData'))
     const [loading, setLoading] = useState(false)
@@ -16,7 +16,7 @@ export default function ModalDelete({ infos, setCanDeletePost, setPosts , URL}) 
             headers: { id: infos.id, authorization: token }
         }
         const requet = axios.delete(URL_POST, config);
-        requet.then(() => { setCanDeletePost(false); getPosts(setPosts, URL) });
+        requet.then(() => { setCanDeletePost(false); getPosts(setPosts, URL); setNewHashtag("hashtag" + Date.now()) });
         requet.catch(() => { alert("Não foi possível deletar o post") })
     }
 

@@ -3,7 +3,7 @@ import { useEffect, useState, useRef } from "react"
 import { getPosts } from "./RenderPosts"
 import styled from "styled-components"
 
-export function EditPost({ infos, setCanEditPost, setPosts, URL }) {
+export function EditPost({ infos, setCanEditPost, setPosts, URL, setNewHashtag }) {
     const [infosToEdit, setInfosToEdit] = useState({})
     let { token } = JSON.parse(localStorage.getItem('userData'))
     const textEdit = useRef(null)
@@ -21,9 +21,8 @@ export function EditPost({ infos, setCanEditPost, setPosts, URL }) {
             headers: { id: infos.id, authorization: token }
         }
 
-        console.log("setCanEditPost: ", setCanEditPost, " setPosts: ", setPosts, " config: ", config, " infosToEdit: ", infosToEdit);
         const requet = axios.put(URL_POST, infosToEdit, config);
-        requet.then(() => { setCanEditPost(false); getPosts(setPosts, URL) });
+        requet.then(() => { setCanEditPost(false); getPosts(setPosts, URL); setNewHashtag("hashtag" + Date.now()) });
         requet.catch(() => { alert("Não foi possível editar o post") })
     }
 
