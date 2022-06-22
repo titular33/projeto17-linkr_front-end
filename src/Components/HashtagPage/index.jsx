@@ -63,6 +63,14 @@ const StyledAuxBody = styled.div`
         font-size: 43px;
         color: white;
         justify-self: left;
+
+        @media (max-width: 1080px) {
+            font-size:33px 
+        }
+        @media (max-width: 640px) {
+            font-size: 33px;
+        }
+
     }
 
     

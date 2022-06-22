@@ -8,7 +8,7 @@ import { useState } from 'react';
 export default function GetTimeline() {
 
     const [URL, setURL] = useState("https://abef-linkr-api.herokuapp.com/timeline")
-
+    const [newHashtag, setNewHashtag] = useState("hashtag")
 
     return (
         <>
@@ -21,11 +21,11 @@ export default function GetTimeline() {
                     timeline
                 </h1>
                 <StyledSection className='section'>
-                    <RenderPosts rotaName={"timeline"} URL={URL}/>
+                    <RenderPosts rotaName={"timeline"} URL={URL} setNewHashtag={setNewHashtag}/>
 
                 </StyledSection>
                 <StyledNavbar className='navBar' >
-                    <HashtagContainer setURL={setURL}/>
+                    <HashtagContainer setURL={setURL} newHashtag={newHashtag}/>
                 </StyledNavbar>
             </StyledAuxBody>
         </>
@@ -58,6 +58,12 @@ const StyledAuxBody = styled.div`
         font-size: 43px;
         color: white;
         justify-self: left;
+        @media (max-width: 1080px) {
+            font-size:33px 
+        }
+        @media (max-width: 640px) {
+            font-size: 33px;
+        }
     }
 
     

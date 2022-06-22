@@ -4,6 +4,7 @@ import { useState } from "react";
 import axios from "axios";
 
 
+
 import RenderPosts from "../Timeline/RenderPosts";
 import Header from '../Header';
 import SearchBar from "../SearchBar";
@@ -15,10 +16,6 @@ import HashtagContainer from "../HashtagBox";
 export default function HashtagPage() {
 
     const params = useParams()
-    //const URL = "https://abef-linkr-api.herokuapp.com/user/"+ `${params.id}`
-    //const token = JSON.parse(localStorage.getItem('userData')).token;
-
-    //console.log(params)
 
     // const [URL, setURL] = useState(`https://abef-linkr-api.herokuapp.com/user/${params.id}`)
     const [URL, setURL] = useState(`http://localhost:4000/user/${params.id}`)
@@ -28,7 +25,9 @@ export default function HashtagPage() {
 
     const thisUserId = JSON.parse(localStorage.getItem('userData'))
 
+    console.log("user page userinfso: ", userInfos)
     return (
+
         <>
             <Header />
             <StyledAuxBody>
@@ -38,18 +37,30 @@ export default function HashtagPage() {
                 </InputSearchBar>
                 <StyledTitle>
 
-                    <h1>
-                        {userInfos.userName}'s Posts
-                    </h1>
+                    <StyledPicture >
+                        <StyledImg picture={userInfos.picture}>
+
+                        </StyledImg>
+                        <h1>
+                            {userInfos.userName}'s Posts
+                        </h1>
+                    </StyledPicture>
 
                     {thisUserId.userId === userInfos.id || userInfos.userName === "" ? <></> :
-                        <button type="button" disabled={disabled} className={`${disabled}`} onClick={(e) => {
-                            disabled ? setDisabled(false) : setDisabled(true)
-                            toggleFollow(userInfos, clickToggleFollowing, setClickToggleFollowing, disabled, setDisabled);
+                        <StyledButton type="button"
+                            disabled={disabled}
+                            className={`${disabled}`}
+                            background={userInfos.following ? "white" : "#1877F2"}
+                            color={userInfos.following ? "#1877F2" : "white"}
 
-                        }}>
+
+                            onClick={(e) => {
+                                disabled ? setDisabled(false) : setDisabled(true)
+                                toggleFollow(userInfos, clickToggleFollowing, setClickToggleFollowing, disabled, setDisabled);
+
+                            }}>
                             {userInfos.following ? "Unfollow" : "Follow"}
-                        </button>
+                        </StyledButton>
                     }
                 </StyledTitle>
                 <StyledSection className='section'>
@@ -61,6 +72,7 @@ export default function HashtagPage() {
                 </StyledNavbar>
 
             </StyledAuxBody>
+
         </>
     )
 }
@@ -81,8 +93,6 @@ function toggleFollow(userInfos, clickToggleFollowing, setClickToggleFollowing, 
 
     const request = axios.post(URL_Follow, {}, config);
     request.then((res) => {
-        // window.location.reload()
-        //setURL(`http://localhost:4000/user/${params.id}`)
         clickToggleFollowing ? setClickToggleFollowing(false) : setClickToggleFollowing(true)
         setDisabled(false);
     })
@@ -95,14 +105,13 @@ function toggleFollow(userInfos, clickToggleFollowing, setClickToggleFollowing, 
 
 
 
-
 const StyledAuxBody = styled.div`
     margin-top: 150px;
     width: 100%;
     min-height: 100vw;
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
-    grid-template-rows: 50px 50px fit-content(10%) fit-content(10%);
+    grid-template-rows: 50px  100px  fit-content(10%) fit-content(10%);
     /* justify-content: center; */
     justify-items: left;
     gap: 25px;
@@ -132,22 +141,7 @@ const StyledAuxBody = styled.div`
         margin-top: 10px;
         }
         
-        &>h1{
-            grid-column-start: 1;
-            grid-column-end:8;
-            justify-self: start;
-            margin-left: 5%;
-            
-        }
-        .navBar{
-            display: none;
-        }
-        .section{
-            grid-column-start: 1;
-            grid-column-end:8;
-            width: 100%;
-            
-        }
+       
         .searchBar{
             display: contents;
             width: 90%;
@@ -159,6 +153,14 @@ const StyledAuxBody = styled.div`
             justify-content: center;
 
         }
+        .navBar{
+            display: none;
+        }
+        .section{
+            grid-column-start: 1;
+            grid-column-end:8;
+            width: 100%;
+        }
 
     }
     
@@ -169,12 +171,10 @@ const InputSearchBar = styled.div`
     grid-column-start: 1;
     grid-column-end: 8;
     grid-row-start: 1;
-    height: 30px;
+    height: 200px;
     display: inline-flex;
     justify-content: center;
-    /* position: absolute;
-    top: 0px;
-    left: 0px; */
+    background-color: purple;
     `
 
 const StyledSection = styled.div`
@@ -182,7 +182,8 @@ const StyledSection = styled.div`
     grid-column-start: 2;
     grid-column-end: 5;
     
-    `
+`
+
 
 const StyledTitle = styled.div`
     width: 100%;
@@ -194,35 +195,86 @@ const StyledTitle = styled.div`
     justify-content: left;
     gap: 25px;
 
-    & > h1{
+    @media (max-width: 1080px) {
+        grid-template-columns: 1fr
+    }
+
+    @media (max-width: 640px) {
+            width: 90%;
+            grid-column-start: 1;
+            grid-column-end: 8;
+            display: inline-flex;
+            justify-content: center;
+            display: block;
+    }
+    
+
+    `
+    const StyledPicture = styled.div`
         width: 100%;
-        grid-column-start: 1;
-        grid-column-end: 2;
-        font-family: 'Oswald';
-        font-weight: 700;
-        font-size: 43px;
-        color: white;
-        justify-self: left;
-    }
-
-    & > button{
-        grid-column-start: 2;
-        grid-column-end: 3;
-        display: block;
-        width: 110px;
-        background-color: #1877F2;
-        color: white;
-        position: relative;
-        left: 190px;
-        border-radius: 5px;
-        border: none;
-        cursor: pointer;
-    }
-
-    & > .true{
+        display: flex;
+        align-items: center;
+        grid-column-start:1;
+        grid-column-end:2 ;
+    
+        & > h1{
+            width: 100%;
+            grid-column-start: 1;
+            grid-column-end: 2;
+            font-family: 'Oswald';
+            font-weight: 700;
+            font-size: 43px;
+            color: white;
+            justify-self: left;
+    
+            @media (max-width: 1080px) {
+                font-size:33px 
+            }
+            @media (max-width: 640px) {
+                font-size: 33px;
+            }
+            
+        }
+    `
+const StyledButton = styled.button`
+    grid-column-start: 2;
+    grid-column-end: 3;
+    display: block;
+    width: 110px;
+    color:  ${props => props.color};;
+    background-color: ${props => props.background};
+    position: relative;
+    left: 190px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    
+    & .true{
         filter: brightness(90%);
         cursor: default;
     }
+
+    @media (max-width: 1080px) {
+        position: inherit;
+    }
+    @media (max-width: 640px) {
+        margin-top: 20px;
+        height: 30px;
+        width: 100%;
+    }
+`
+
+const StyledImg = styled.div`
+    background-image: url(${props => props.picture});
+    background-size: cover;
+    background-position: center;
+    width: 50px;
+    min-width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-right: 10px;
+    /* background-color: red; */
+    
 `
 const StyledNavbar = styled.div`
     width: 100%;
@@ -231,4 +283,4 @@ const StyledNavbar = styled.div`
     grid-column-end: 7;
     position: sticky;
     top: 230px;
-`
+    `
