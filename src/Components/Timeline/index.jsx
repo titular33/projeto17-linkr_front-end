@@ -3,35 +3,38 @@ import Header from '../Header';
 import RenderPosts from './RenderPosts';
 import HashtagContainer from '../HashtagBox'
 import SearchBar from '../SearchBar';
+import { useState } from 'react';
 
 export default function GetTimeline() {
+
+    const [URL, setURL] = useState("https://abef-linkr-api.herokuapp.com/timeline")
 
 
     return (
         <>
             <Header />
-            <$AuxBody className='auxBody'>
+            <StyledAuxBody className='auxBody'>
                 <InputSearchBar className='searchBar'>
                     <SearchBar />
                 </InputSearchBar>
                 <h1>
                     timeline
                 </h1>
-                <$Section className='section'>
-                    <RenderPosts />
+                <StyledSection className='section'>
+                    <RenderPosts rotaName={"timeline"} URL={URL}/>
 
-                </$Section>
-                <$Navbar className='navBar'>
-                    <HashtagContainer />
-                </$Navbar>
-            </$AuxBody>
+                </StyledSection>
+                <StyledNavbar className='navBar' >
+                    <HashtagContainer setURL={setURL}/>
+                </StyledNavbar>
+            </StyledAuxBody>
         </>
     )
 }
 
 
 
-const $AuxBody = styled.div`
+const StyledAuxBody = styled.div`
     margin-top: 150px;
     width: 100%;
     min-height: 100vw;
@@ -124,7 +127,7 @@ const InputSearchBar = styled.div`
 `
 
 
-const $Section = styled.div`
+const StyledSection = styled.div`
     width: 100%;
     grid-column-start: 2;
     grid-column-end: 5;
@@ -132,7 +135,7 @@ const $Section = styled.div`
 `
 
 
-const $Navbar = styled.div`
+const StyledNavbar = styled.div`
     width: 100%;
     max-width: 300px;
     grid-column-start: 5;

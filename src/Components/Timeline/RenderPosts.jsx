@@ -1,20 +1,34 @@
 import axios from 'axios';
-import { useEffect, useRef, useState } from "react";
-import { ThreeDots } from 'react-loader-spinner';
+import { useEffect, useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import { Link } from 'react-router-dom';
 
 import NewPost from './NewPost';
+import { EditPost } from './EditPost';
+import ModalDelete from './ModalDelete';
 
-export default function RenderPosts() {
+export default function RenderPosts({ rotaName, URL, setUserName }) {
 
     let errorMessage = "";
 
     const [posts, setPosts] = useState(null)
 
     useEffect(() => {
-        getPosts(setPosts)
-    }, [])
+        // const [url, setUrl] = setUrl(URL)
+
+        if (rotaName === "timeline") {
+            getPosts(setPosts, URL)
+        }
+
+        if (rotaName === "hashtags") {
+            getPosts(setPosts, URL)
+        }
+
+        if (rotaName === "user") {
+            getPosts(setPosts, URL, rotaName, setUserName)
+        }
+    }, [URL])
 
 
     if (posts === null) {
@@ -32,11 +46,14 @@ export default function RenderPosts() {
 
     return (
         <>
-            <NewPost setPosts={setPosts} />
+            {rotaName === "timeline" ?
+                <NewPost setPosts={setPosts} />
+                : ""
+            }
             {
                 posts === null || posts.length === 0 || posts.e ?
                     errorMessage :
-                    <AllPosts posts={posts} setPosts={setPosts} />
+                    <AllPosts posts={posts} setPosts={setPosts} URL={URL}/>
             }
         </>
 
@@ -45,8 +62,8 @@ export default function RenderPosts() {
 }
 
 
-async function getPosts(setPosts) {
-    const URL = "https://abef-linkr-api.herokuapp.com/timeline"
+export async function getPosts(setPosts, URL, rotaName, setUserName) {
+    //const URL = "https://abef-linkr-api.herokuapp.com/timeline"
 
     let { token } = JSON.parse(localStorage.getItem('userData'))
 
@@ -55,19 +72,24 @@ async function getPosts(setPosts) {
     }
 
     const requestPosts = axios.get(URL, config)
-    requestPosts.then(res => { setPosts(res.data) })
+    requestPosts.then(res => {
+        if (rotaName === "user") {
+             setPosts([...res.data.posts]);
+             setUserName(`${res.data.userName}`)
+        } else { setPosts([...res.data]) }
+    })
     requestPosts.catch(e => { setPosts({ e }) })
 
 }
 
 function AllPosts(props) {
-    const { posts, setPosts } = props;
+    const { posts, setPosts, URL } = props;
 
     return (
         posts.map(infos => {
             return (
 
-                <EachPost key={infos.id + infos.createdAt} infos={infos} setPosts={setPosts} />
+                <EachPost key={`${infos.id}`} infos={infos} setPosts={setPosts} URL={URL}/>
 
             )
         })
@@ -78,14 +100,14 @@ function EachPost(props) {
     let navigate = useNavigate()
 
 
-    const { infos, setPosts } = props;
+    const { infos, setPosts, URL } = props;
 
     if (infos.image === "") {
         infos.image = "https://archive.org/download/no-photo-available/no-photo-available.png"
     } // isso aqui pode vir do back já
 
     let liked = infos.liked
-    let { userId, token } = JSON.parse(localStorage.getItem('userData'))
+    let { userId } = JSON.parse(localStorage.getItem('userData'))
     let isUserPost = false;
 
     const [canDeletePost, setCanDeletePost] = useState(false)
@@ -95,26 +117,43 @@ function EachPost(props) {
         isUserPost = true;
     }
 
+    function findHashtags(text) {
+        text = text.split(' ')
+        let html = []
+        for (let i = 0; i < text.length; i++) {
+            if (text[i][0] === '#') {
+                const redirect = `/hashtag/${text[i].replace('#', '')}`
+                const URL = `https://abef-linkr-api.herokuapp.com/hashtags/${text[i].replace('#', '')}`
+                html.push(<Link to={redirect} onClick={() => { getPosts(setPosts, URL) }}> {text[i]}</Link>)
+            } else {
+                html.push(' ' + text[i])
+            }
+        }
+        return (
+            html
+        )
+    }
+
 
 
 
     return (
-        <>
-            <$EachPost >
+        
+            <StyledEachPost key={infos.id}>
 
-                {canDeletePost ? <ModalDelete infos={infos} setCanDeletePost={setCanDeletePost} setPosts={setPosts} /> : ""}
-                <$Box >
+                {canDeletePost ? <ModalDelete infos={infos} setCanDeletePost={setCanDeletePost} setPosts={setPosts} URL={URL}/> : ""}
+                <StyledBox >
 
-                    <$InfosLeft>
-                        <$Img img={infos.picture} />
+                    <StyledInfosLeft>
+                        <StyledImg img={infos.picture} />
                         {liked ? <ion-icon name="heart"></ion-icon> : <ion-icon name="heart-outline"></ion-icon>}
                         <p>
                             {infos.likes} likes
                         </p>
-                    </$InfosLeft>
+                    </StyledInfosLeft>
 
-                    <$InfosRight>
-                        {isUserPost ? <$CanEdit>
+                    <StyledInfosRight>
+                        {isUserPost ? <StyledCanEdit>
                             <ion-icon name="create-outline" onClick={(e) => {
                                 if (canEditPost) {
                                     setCanEditPost(false)
@@ -130,127 +169,131 @@ function EachPost(props) {
                             }}>
 
                             </ion-icon>
-                        </$CanEdit> : <></>}
+                        </StyledCanEdit> : <></>}
 
                         <h6 onClick={() => { navigate(`/user/${infos.userId}`) }}>
                             {infos.userName}
                         </h6>
 
-                        {canEditPost ? <EditPost infos={infos} setCanEditPost={setCanEditPost} setPosts={setPosts} /> : <p> {infos.text} </p>}
+                        {canEditPost ?
+                            <EditPost infos={infos} setCanEditPost={setCanEditPost} setPosts={setPosts} URL={URL} /> :
+                            <p>
+                                {findHashtags(infos.text)}
+                            </p>}
 
-                        <$Embed onClick={() => { window.open(infos.link, "_blank"); }}>
-                            <$EmbedTitle>
+                        <StyledEmbed onClick={() => { window.open(infos.link, "_blank"); }}>
+                            <StyledEmbedTitle>
                                 {infos.title}
-                            </$EmbedTitle>
-                            <$EmbedDescription>
+                            </StyledEmbedTitle>
+                            <StyledEmbedDescription>
                                 {infos.description}
-                            </$EmbedDescription>
-                            <$EmbedLink>
+                            </StyledEmbedDescription>
+                            <StyledEmbedLink>
                                 {infos.link}
-                            </$EmbedLink>
-                            <$EmbedImg img={infos.image}>
-                            </$EmbedImg>
+                            </StyledEmbedLink>
+                            <StyledEmbedImg img={infos.image}>
+                            </StyledEmbedImg>
 
-                        </$Embed>
-                    </$InfosRight>
-                </$Box>
-            </$EachPost>
+                        </StyledEmbed>
+                    </StyledInfosRight>
+                </StyledBox>
+            </StyledEachPost>
 
-        </>
+        
     )
 }
 
-function EditPost({ infos, setCanEditPost, setPosts }) {
-    const [infosToEdit, setInfosToEdit] = useState({})
-    let { token } = JSON.parse(localStorage.getItem('userData'))
-    const textEdit = useRef(null)
-    const URL_POST = "https://abef-linkr-api.herokuapp.com/post"
+// function EditPost({ infos, setCanEditPost, setPosts }) {
+//     const [infosToEdit, setInfosToEdit] = useState({})
+//     let { token } = JSON.parse(localStorage.getItem('userData'))
+//     const textEdit = useRef(null)
+//     const URL_POST = "https://abef-linkr-api.herokuapp.com/post"
 
 
 
-    useEffect(() => {
-        setInfosToEdit({ link: infos.link, text: infos.text })
-        textEdit.current.focus()
-    }, [])
+//     useEffect(() => {
+//         setInfosToEdit({ link: infos.link, text: infos.text })
+//         textEdit.current.focus()
+//     }, [])
 
-    function putPost() {
-        const config = {
-            headers: { id: infos.id, authorization: token }
-        }
-        const requet = axios.put(URL_POST, infosToEdit, config);
-        requet.then(() => { setCanEditPost(false); getPosts(setPosts) });
-        requet.catch(() => { alert("Não foi possível editar o post") })
-    }
+//     function putPost() {
+//         const config = {
+//             headers: { id: infos.id, authorization: token }
+//         }
+//         const requet = axios.put(URL_POST, infosToEdit, config);
+//         requet.then(() => { setCanEditPost(false); getPosts(setPosts) });
+//         requet.catch(() => { alert("Não foi possível editar o post") })
+//     }
 
-    return (
-        <$InputEditPost onKeyUp={(e) => {
-            if (e.key === "Escape" || e.key === "Esc") {
-                setCanEditPost(false)
-            }
-            if (e.key === "Enter") {
-                putPost()
-            }
-        }}>
-            <textarea
-                ref={textEdit}
-                name="text"
-                value={infosToEdit.text}
-                onChange={(e) => { setInfosToEdit({ ...infosToEdit, text: e.target.value }) }}
-            >
-            </textarea>
+//     return (
+//         <$InputEditPost onKeyUp={(e) => {
+//             if (e.key === "Escape" || e.key === "Esc") {
+//                 setCanEditPost(false)
+//             }
+//             if (e.key === "Enter") {
+//                 putPost()
+//             }
+//         }}>
+//             <textarea
+//                 ref={textEdit}
+//                 name="text"
+//                 value={infosToEdit.text}
+//                 onChange={(e) => { setInfosToEdit({ ...infosToEdit, text: e.target.value }) }}
+//             >
+//             </textarea>
 
-        </$InputEditPost>
-    )
-}
+//         </$InputEditPost>
+//     )
+// }
 
-function ModalDelete({ infos, setCanDeletePost, setPosts }) {
+// function ModalDelete({ infos, setCanDeletePost, setPosts }) {
 
-    let { token } = JSON.parse(localStorage.getItem('userData'))
-    const [loading, setLoading] = useState(false)
-    const URL_POST = "https://abef-linkr-api.herokuapp.com/post"
+//     let { token } = JSON.parse(localStorage.getItem('userData'))
+//     const [loading, setLoading] = useState(false)
+//     const URL_POST = "https://abef-linkr-api.herokuapp.com/post"
 
 
-    function deletePost() {
-        const config = {
-            headers: { id: infos.id, authorization: token }
-        }
-        const requet = axios.delete(URL_POST, config);
-        requet.then(() => { setCanDeletePost(false); getPosts(setPosts) });
-        requet.catch(() => { alert("Não foi possível deletar o post") })
-    }
+//     function deletePost() {
+//         const config = {
+//             headers: { id: infos.id, authorization: token }
+//         }
+//         const requet = axios.delete(URL_POST, config);
+//         requet.then(() => { setCanDeletePost(false); getPosts(setPosts) });
+//         requet.catch(() => { alert("Não foi possível deletar o post") })
+//     }
 
-    return (
-        <$ModalDeletePost loading={loading} onClick={() =>{setCanDeletePost(false)}}>
-            <div>
-                <p>Are you sure you want <br /> to delete this post?</p>
-                <button className='no'  disabled={loading} onClick={() => { setCanDeletePost(false) }}>No, go back</button>
-                <button className='yes' disabled={loading} onClick={(e) => { setLoading(true); deletePost(); e.stopPropagation() }} >{loading ? <ThreeDots color="#fff" height={13}/> : "Yes, delete it"}</button>
-            </div>
-        </$ModalDeletePost>
-    )
-}
+//     return (
+//         <$ModalDeletePost loading={loading} onClick={() => { setCanDeletePost(false) }}>
+//             <div>
+//                 <p>Are you sure you want <br /> to delete this post?</p>
+//                 <button className='no' disabled={loading} onClick={() => { setCanDeletePost(false) }}>No, go back</button>
+//                 <button className='yes' disabled={loading} onClick={(e) => { setLoading(true); deletePost(); e.stopPropagation() }} >{loading ? <ThreeDots color="#fff" height={13} /> : "Yes, delete it"}</button>
+//             </div>
+//         </$ModalDeletePost>
+//     )
+// }
 
-const $InputEditPost = styled.div`
-    width: 100%;
+// const StyledInputEditPost = styled.div`
+//     width: 100%;
     
-    textarea{
-        height: 80px;
-        width: 100%;
-        border: none;
-        border-radius: 7px;
-        margin: 8px 0px;
-        -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
-        -moz-box-sizing: border-box;    /* Firefox, other Gecko */
-        box-sizing: border-box;         /* Opera/IE 8+ */
-        padding: 5px;
-        resize: vertical;
-        font-family: 'Lato';
-        font-weight: 300;
-        font-size: 15px;
-    }
-`
+//     textarea{
+//         height: 80px;
+//         width: 100%;
+//         border: none;
+//         border-radius: 7px;
+//         margin: 8px 0px;
+//         -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+//         -moz-box-sizing: border-box;    /* Firefox, other Gecko */
+//         box-sizing: border-box;         /* Opera/IE 8+ */
+//         padding: 5px;
+//         resize: vertical;
+//         font-family: 'Lato';
+//         font-weight: 300;
+//         font-size: 15px;
+//     }
+// `
 
-const $CanEdit = styled.div`
+const StyledCanEdit = styled.div`
     position: absolute;
     top: 5px;
     right: 15px;
@@ -270,7 +313,7 @@ const $CanEdit = styled.div`
 `
 
 
-const $EachPost = styled.div`
+const StyledEachPost = styled.div`
     width: 100%;
     padding: 15px;
     margin-bottom: 30px;
@@ -284,7 +327,7 @@ const $EachPost = styled.div`
     }
 `
 
-const $Box = styled.div`
+const StyledBox = styled.div`
     width: 100%;
     display: flex;
     align-items: flex-start;
@@ -292,7 +335,7 @@ const $Box = styled.div`
     gap: 10px;
 `
 
-const $InfosLeft = styled.div`
+const StyledInfosLeft = styled.div`
     width: 15%;
     display: flex;
     flex-direction: column;
@@ -315,7 +358,7 @@ const $InfosLeft = styled.div`
     `
 
 
-const $InfosRight = styled.div`
+const StyledInfosRight = styled.div`
     width: 85%;
     position: relative;
 
@@ -342,7 +385,7 @@ const $InfosRight = styled.div`
 
 `
 
-const $Embed = styled.div`
+const StyledEmbed = styled.div`
     width: 100%;
     min-height: 150px;
     border: 1px solid #4D4D4D;
@@ -364,7 +407,7 @@ const $Embed = styled.div`
 
 `
 
-const $EmbedTitle = styled.h6`
+const StyledEmbedTitle = styled.h6`
     grid-column-start: 1;
     text-overflow: ellipsis;
     margin: 10px 20px;
@@ -373,7 +416,7 @@ const $EmbedTitle = styled.h6`
     color: #CECECE;
 `
 
-const $EmbedDescription = styled.p`
+const StyledEmbedDescription = styled.p`
     margin: 10px 20px;
     grid-column-start: 1;
     font-family: 'Lato';
@@ -381,7 +424,7 @@ const $EmbedDescription = styled.p`
     color: #9B9595;
 `
 
-const $EmbedLink = styled.p`
+const StyledEmbedLink = styled.p`
     margin: 10px 20px;
     grid-column-start: 1;
     font-family: 'Lato';
@@ -389,7 +432,7 @@ const $EmbedLink = styled.p`
     color: #CECECE;
 `
 
-const $EmbedImg = styled.div`
+const StyledEmbedImg = styled.div`
     grid-column-start: 2;
     grid-row-start:1;
     grid-row-end: 4;
@@ -411,7 +454,7 @@ const $EmbedImg = styled.div`
 
 
 
-const $Img = styled.div`
+const StyledImg = styled.div`
     width: 50px;
     height: 50px;
     border-radius: 50%;
@@ -420,84 +463,3 @@ const $Img = styled.div`
 
 `
 
-const $ModalDeletePost = styled.div`
-    position: fixed;
-    top: 0px;
-    left: 0px;
-    z-index: 1;
-    width: 100vw;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: rgba(255, 255, 255, 0.9);
-    
-    & > div{
-        display: grid;
-        grid-template-columns: 1fr 1fr; 
-        background-color: #333333;
-        border-radius: 50px;
-        padding: 60px 130px;
-        gap: 30px;
-        justify-content: center;
-        align-items: center;
-        filter: ${props =>{ return props.loading ? 'brightness(60%)': 'brightness(100%)'}};
-    }
-    
-    & > div p{
-        grid-column-start: 1;
-        grid-column-end: 3;
-
-        font-family: 'Lato';
-        font-weight: 700;
-        font-size: 34px;
-        color: #FFFFFF;
-        text-align: center;
-    }
-
-    
-    & > div .no{
-        grid-column-start: 1;
-        grid-column-end: 2;
-        width: 140px;
-        height: 40px;
-        padding: 5px 15px;
-
-        border: none;
-        border-radius: 5px;
-
-        background-color: white;
-        color: #1877F2;
-
-        font-family: 'Lato';
-        font-weight: 700;
-        font-size: 18px;
-        cursor: pointer;
-        
-    }
-    
-    & > div .yes{
-        grid-column-start: 2;
-        grid-column-end: 3;
-        padding: 5px 15px;
-
-        width: 140px;
-        height: 40px;
-
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-
-        background-color: #1877F2;
-        color: white;
-
-        font-family: 'Lato';
-        font-weight: 700;
-        font-size: 18px;
-
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-
-`
