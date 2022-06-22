@@ -74,7 +74,6 @@ export async function getPosts(setPosts, URL, rotaName, setuserInfos) {
     const requestPosts = axios.get(URL, config)
     requestPosts.then(res => {
         if (rotaName === "user") {
-            console.log(res.data)
             setPosts([...res.data.posts]);
             setuserInfos({ ...res.data })
         } else { setPosts([...res.data]) }
@@ -102,7 +101,6 @@ function EachPost(props) {
 
 
     const { infos, setPosts, URL, setNewHashtag } = props;
-    console.log(infos)
 
     if (infos.image === "") {
         infos.image = "https://archive.org/download/no-photo-available/no-photo-available.png"

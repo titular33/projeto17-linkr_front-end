@@ -25,7 +25,6 @@ export default function HashtagPage() {
 
     const thisUserId = JSON.parse(localStorage.getItem('userData'))
 
-    console.log("user page userinfso: ", userInfos)
     return (
 
         <>
@@ -88,8 +87,6 @@ function toggleFollow(userInfos, clickToggleFollowing, setClickToggleFollowing, 
     const config = {
         headers: { authorization: token, id: userInfos.id }
     }
-
-    console.log("config: ", config, "URL_foll: ", URL_Follow)
 
     const request = axios.post(URL_Follow, {}, config);
     request.then((res) => {
