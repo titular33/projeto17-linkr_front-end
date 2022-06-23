@@ -16,9 +16,10 @@ export default function RefreshNewPosts({posts}){
             if(posts.length > 0){
                 getNumberNewPosts(posts[0].createdAt, setqtd)
             }else{
-                const data = dayjs('2022-06-13').format('YYYY-MM-DDTHH:mm:ssZ')
+                const data = dayjs('2022-06-13').format('YYYY-MM-DDTHH:mm:ss')
                 console.log("data: ", data)
                 getNumberNewPosts(data, setqtd)
+                
 
             }
         }

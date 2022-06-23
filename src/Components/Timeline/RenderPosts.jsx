@@ -40,6 +40,10 @@ export default function RenderPosts({ rotaName, URL, setuserInfos, clickToggleFo
         errorMessage = " There are no posts yet."
     }
 
+    // else if(posts[0].followAnyone){
+
+    // }
+
     else if (posts.e) {
         errorMessage = "An error occured while trying to fetch the posts, please refresh the page"
     }
@@ -92,7 +96,7 @@ export async function getPosts(setPosts, URL, rotaName, setuserInfos) {
 
 function AllPosts(props) {
     const { posts, setPosts, URL, setNewHashtag } = props;
-
+    console.log("console antes do map: ", posts)
     return (
         posts.map(infos => {
             return (
