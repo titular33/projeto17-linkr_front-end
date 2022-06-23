@@ -19,7 +19,7 @@ export default function RenderPosts({ rotaName, URL, setuserInfos, clickToggleFo
         // const [url, setUrl] = setUrl(URL)
 
         if (rotaName === "timeline") {
-            getPosts(setPosts, URL, rotaName)
+            getPosts(setPosts, URL)
         }
 
         if (rotaName === "hashtags") {
@@ -50,9 +50,11 @@ export default function RenderPosts({ rotaName, URL, setuserInfos, clickToggleFo
             {rotaName === "timeline" ?
                 <>
                     <NewPost setPosts={setPosts} setNewHashtag={setNewHashtag} />
-                    <StyledRefreshNeuPost>
-                        <RefreshNewPosts />
-                    </StyledRefreshNeuPost>
+                    <StyledRefresh onClick={() => { getPosts(setPosts, URL)}}>
+
+                        <RefreshNewPosts posts={posts} />
+                    </StyledRefresh>
+
                 </>
                 : ""
             }
@@ -233,20 +235,11 @@ const StyledLoading = styled.div`
 
 `
 
-const StyledRefreshNeuPost = styled.button`
-    width: 100%;
-    height: 60px;
-    margin-bottom: 20px;
-    color: white;
-    background-color: #1877F2;
-    border-radius: 16px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border: none;
+
+
+const StyledRefresh = styled.div`
+    
 `
-
-
 
 
 
