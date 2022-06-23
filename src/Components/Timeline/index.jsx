@@ -41,7 +41,6 @@ const StyledAuxBody = styled.div`
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
     grid-template-rows: 50px 50px fit-content(10%) fit-content(10%);
-    /* justify-content: center; */
     justify-items: left;
     gap: 25px;
     position: relative;
