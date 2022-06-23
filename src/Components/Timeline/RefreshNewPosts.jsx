@@ -8,19 +8,13 @@ export default function RefreshNewPosts({posts}){
 
     const [qtd, setqtd] = useState(0)
 
-    console.log("posts: ", posts, "qtd: ", qtd)
-
-    
     useInterval(() =>{
         if(posts !== null){
             if(posts.length > 0){
                 getNumberNewPosts(posts[0].createdAt, setqtd)
             }else{
                 const data = dayjs('2022-06-13').format('YYYY-MM-DDTHH:mm:ss')
-                console.log("data: ", data)
                 getNumberNewPosts(data, setqtd)
-                
-
             }
         }
     }, 5000)
@@ -54,7 +48,6 @@ function getNumberNewPosts(createdAt, setqtd){
   
     const request = axios.get(URL_COUNT_POSTS,  config);
     request.then((res) => {
-        console.log( "setqtd: ", res.data.count)
         setqtd(res.data.count)});
     request.catch((e) => {console.log(e)})    
 

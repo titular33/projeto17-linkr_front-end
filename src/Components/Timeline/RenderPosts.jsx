@@ -10,7 +10,7 @@ import { Link } from 'react-router-dom';
 import RefreshNewPosts from './RefreshNewPosts';
 import { ThreeDots } from 'react-loader-spinner';
 
-export default function RenderPosts({ rotaName, URL, setuserInfos, clickToggleFollowing, setNewHashtag }) {
+export default function RenderPosts({ rotaName, URL, setuserInfos, clickToggleFollowing }) {
 
     let errorMessage = "";
 
@@ -59,7 +59,7 @@ export default function RenderPosts({ rotaName, URL, setuserInfos, clickToggleFo
         <>
             {rotaName === "timeline" ?
                 <>
-                    <NewPost setPosts={setPosts} setNewHashtag={setNewHashtag} />
+                    <NewPost setPosts={setPosts} />
                     <StyledRefresh
                         onClick={() => {
                             //     if(refreshing){    
@@ -84,7 +84,7 @@ export default function RenderPosts({ rotaName, URL, setuserInfos, clickToggleFo
             {
                 posts === null || posts.length === 0 || posts.e ?
                     errorMessage :
-                    <AllPosts posts={posts} setPosts={setPosts} URL={URL} setNewHashtag={setNewHashtag} />
+                    <AllPosts posts={posts} setPosts={setPosts} URL={URL} setuserInfos={setuserInfos}/>
             }
         </>
 
@@ -114,13 +114,12 @@ export async function getPosts(setPosts, URL, rotaName, setuserInfos) {
 }
 
 function AllPosts(props) {
-    const { posts, setPosts, URL, setNewHashtag } = props;
-    console.log("console antes do map: ", posts)
+    const { posts, setPosts, URL, setuserInfos } = props;
     return (
         posts.map((infos, index) => {
             return (
 
-                <EachPost key={index} infos={infos} setPosts={setPosts} URL={URL} setNewHashtag={setNewHashtag} />
+                <EachPost key={index} infos={infos} setPosts={setPosts} URL={URL} setuserInfos={setuserInfos}/>
 
             )
         })
@@ -131,7 +130,7 @@ function EachPost(props) {
     let navigate = useNavigate()
 
 
-    const { infos, setPosts, URL, setNewHashtag } = props;
+    const { infos, setPosts, URL, setuserInfos } = props;
 
     if (infos.image === "") {
         infos.image = "https://archive.org/download/no-photo-available/no-photo-available.png"
@@ -171,7 +170,7 @@ function EachPost(props) {
 
         <StyledEachPost key={infos.id}>
 
-            {canDeletePost ? <ModalDelete infos={infos} setCanDeletePost={setCanDeletePost} setPosts={setPosts} URL={URL} setNewHashtag={setNewHashtag} /> : ""}
+            {canDeletePost ? <ModalDelete infos={infos} setCanDeletePost={setCanDeletePost} setPosts={setPosts} URL={URL} setuserInfos={setuserInfos} /> : ""}
             <StyledBox >
 
                 <StyledInfosLeft>
@@ -204,7 +203,7 @@ function EachPost(props) {
                     </h6>
 
                     {canEditPost ?
-                        <EditPost infos={infos} setCanEditPost={setCanEditPost} setPosts={setPosts} URL={URL} setNewHashtag={setNewHashtag} /> :
+                        <EditPost infos={infos} setCanEditPost={setCanEditPost} setPosts={setPosts} URL={URL} setuserInfos={setuserInfos} /> :
                         <p>
                             {findHashtags(infos.text)}
                         </p>}

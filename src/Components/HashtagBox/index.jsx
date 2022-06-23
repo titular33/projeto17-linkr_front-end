@@ -1,30 +1,17 @@
 import styled from 'styled-components';
 import { Link } from "react-router-dom"
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
-
-
+import HashTagsContext from '../../Contexts/HashTagsContext';
 
 
 export default function HashtagContainer({ setURL, newHashtag }) {
 
-  const [trending, setTrending] = useState()
-  const URL = `https://abef-linkr-api.herokuapp.com/hashtags`
-  useEffect(getData, [newHashtag])
 
+  const { hashTags, setHashTags } = useContext(HashTagsContext)
+  useEffect( () =>{getHashTags(setHashTags)}, [newHashtag])
 
-  function getData() {
-    axios.get(URL)
-      .then(res => {
-        let hashtags = []
-        for (let i = 0; i < res.data.length; i++) {
-          hashtags.push(res.data[i].hashtag)
-        }
-        setTrending(hashtags)
-      })
-  }
-
-  if (!trending) {
+   if (hashTags.length === 0) {
     return (
       <Container>
         <Loading>
@@ -33,16 +20,6 @@ export default function HashtagContainer({ setURL, newHashtag }) {
       </Container>
     )
   }
-
-  /* 
-                  const redirect = `/hashtag/${text[i].replace('#', '')}`
-                  const URL = 'https://abef-linkr-api.herokuapp.com/hashtags/' + `${text[i].replace('#', '')}`
-                  html.push(<Link to={redirect} onClick={() =>{getPosts(setPosts, URL)}}> {text[i]}</Link>)
-  
-  */
-
-  //const redirect = `/hashtag/${text[i].replace('#', '')}`
-
 
   return (
     <Container>
@@ -53,11 +30,10 @@ export default function HashtagContainer({ setURL, newHashtag }) {
       </div>
       <div className='line' />
       <div>
-        {trending.map(themes => {
+        {hashTags.map(themes => {
 
           const redirect = `/hashtag/${themes.replace('#', '')}`;
           const newURL = `https://abef-linkr-api.herokuapp.com/hashtags/${themes.replace('#', '')}`
-
 
           return (
             <h2 key={themes}>
@@ -71,6 +47,21 @@ export default function HashtagContainer({ setURL, newHashtag }) {
     </Container>
   );
 }
+
+export function getHashTags(setHashTags) {
+  const URL = `https://abef-linkr-api.herokuapp.com/hashtags`
+
+  const request = axios.get(URL)
+    request.then(res => {
+      let hashtags = []
+      for (let i = 0; i < res.data.length; i++) {
+        hashtags.push(res.data[i].hashtag)
+      }
+      setHashTags(hashtags)
+    })
+    request.catch((e) => (console.log("Não foi possível carregar as hashtags.", e)))
+}
+
 
 const Container = styled.div`
   background-color: #171717;

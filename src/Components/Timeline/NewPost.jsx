@@ -1,13 +1,15 @@
 import axios from "axios";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import styled from "styled-components";
 import { ThreeDots } from 'react-loader-spinner';
 import ModalRedirectPerfil from "./ModalRedirectPerfil";
+import HashTagsContext from "../../Contexts/HashTagsContext";
+import { getHashTags } from "../HashtagBox";
 
 import HashtagContainer from "../HashtagBox";
 import { useNavigate } from "react-router-dom";
 
-export default function NewPost({setPosts, setNewHashtag}) {
+export default function NewPost({setPosts}) {
     const URL_POST = "https://abef-linkr-api.herokuapp.com/post"
     const URL_GET = "https://abef-linkr-api.herokuapp.com/timeline"
     const navigate = useNavigate()
@@ -22,6 +24,8 @@ export default function NewPost({setPosts, setNewHashtag}) {
     const [disabled, setDisabled] = useState(false) 
     const [errorPost, setErrorPost] = useState(false)
     const [createdNewPost, setCreatedNewPost] = useState(false)
+
+    const { hashTags, setHashTags } = useContext(HashTagsContext);
 
 
     async function tryPost() {
@@ -40,8 +44,7 @@ export default function NewPost({setPosts, setNewHashtag}) {
             requestPosts.then(res => { 
                 // setPosts(res.data); 
                 setErrorPost(false); 
-                const hash = "hashtag" + Date.now();  
-                setNewHashtag(hash);
+                getHashTags(setHashTags);
                 setCreatedNewPost(true)
             })
             requestPosts.catch(e => { setPosts({ e }) })

@@ -1,14 +1,20 @@
 import axios from "axios"
-import { useState } from "react"
+import { useContext, useState } from "react"
 import { getPosts } from "./RenderPosts"
 import { ThreeDots } from "react-loader-spinner"
 import styled from "styled-components"
+import HashTagsContext from "../../Contexts/HashTagsContext"
 
-export default function ModalDelete({ infos, setCanDeletePost, setPosts , URL, setNewHashtag}) {
+import { getHashTags } from "../HashtagBox"
+
+export default function ModalDelete({ infos, setCanDeletePost, setPosts , URL, setuserInfos}) {
 
     let { token } = JSON.parse(localStorage.getItem('userData'))
     const [loading, setLoading] = useState(false)
     const URL_POST = "https://abef-linkr-api.herokuapp.com/post"
+
+    const { hashTags, setHashTags } = useContext(HashTagsContext);
+
 
 
     function deletePost() {
@@ -16,7 +22,7 @@ export default function ModalDelete({ infos, setCanDeletePost, setPosts , URL, s
             headers: { id: infos.id, authorization: token }
         }
         const requet = axios.delete(URL_POST, config);
-        requet.then(() => { setCanDeletePost(false); getPosts(setPosts, URL); setNewHashtag("hashtag" + Date.now()) });
+        requet.then(() => { setCanDeletePost(false); getPosts(setPosts, URL, "user", setuserInfos); getHashTags(setHashTags) });
         requet.catch(() => { alert("Não foi possível deletar o post") })
     }
 

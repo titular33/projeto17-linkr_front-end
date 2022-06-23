@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import UserContext from "../../Contexts/UserContext"
+import UserContext from "../../Contexts/UserContext";
+import HashTagsContext from "../../Contexts/HashTagsContext";
 import { useState } from "react";
 
 import SignUp from "../SignUp";
@@ -11,18 +12,21 @@ import HashtagPage from "../HashtagPage";
 
 export default function App() {
     const [userData, setUserData] = useState(JSON.parse(localStorage.getItem("userData")));
+    const [hashTags, setHashTags] = useState([])
     return (
         <UserContext.Provider value={{ userData, setUserData }}>
-            <BrowserRouter>
-                <Routes>
-                    <Route path="/" element={<SignIn />} />
-                    <Route path="/signup" element={<SignUp />} />
-                    <Route path="/timeline" element={<GetTimeline />} />
-                    <Route path="/test" element={<SearchBar />} />
-                    <Route path="/user/:id" element={<UserPage />} />
-                    <Route path='/hashtag/:hashtag' element={<HashtagPage/>}/>
-                </Routes>
-            </BrowserRouter>
+            <HashTagsContext.Provider value={{ hashTags, setHashTags }}>
+                <BrowserRouter>
+                    <Routes>
+                        <Route path="/" element={<SignIn />} />
+                        <Route path="/signup" element={<SignUp />} />
+                        <Route path="/test" element={<SearchBar />} />
+                        <Route path="/timeline" element={<GetTimeline />} />
+                        <Route path="/user/:id" element={<UserPage />} />
+                        <Route path='/hashtag/:hashtag' element={<HashtagPage />} />
+                    </Routes>
+                </BrowserRouter>
+            </HashTagsContext.Provider>
         </UserContext.Provider>
     );
 }
