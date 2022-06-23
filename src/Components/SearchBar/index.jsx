@@ -6,8 +6,13 @@ import { Link } from 'react-router-dom';
 
 
 export default function SearchBar() {
-//const URL = process.env.URL_USERNAMES
 
+  const { token } = JSON.parse(localStorage.getItem('userData'))
+  const config = {
+    headers: { authorization: token }
+  }
+
+console.log(token);
 const [response, setResponse] = useState([])
 
 const handleChange = (event) => {
@@ -17,13 +22,12 @@ const handleChange = (event) => {
   }
   else{
     const payload = {"username": value};
-    axios.post("https://abef-linkr-api.herokuapp.com/usernames", payload)
+    axios.post("http://127.0.0.1:4000/usernames", payload, config)
     .then(res => 
       setResponse(res.data)
     )
   }
 }
-
 
 return (
         <Container>
