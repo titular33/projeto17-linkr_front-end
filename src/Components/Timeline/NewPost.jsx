@@ -2,15 +2,17 @@ import axios from "axios";
 import { useState } from "react";
 import styled from "styled-components";
 import { ThreeDots } from 'react-loader-spinner';
+import ModalRedirectPerfil from "./ModalRedirectPerfil";
 
 import HashtagContainer from "../HashtagBox";
+import { useNavigate } from "react-router-dom";
 
 export default function NewPost({setPosts, setNewHashtag}) {
     const URL_POST = "https://abef-linkr-api.herokuapp.com/post"
     const URL_GET = "https://abef-linkr-api.herokuapp.com/timeline"
+    const navigate = useNavigate()
 
-
-    const { token, picture } = JSON.parse(localStorage.getItem('userData'))
+    const { token, picture, userId } = JSON.parse(localStorage.getItem('userData'))
     const config = {
         headers: { authorization: token }
     }
@@ -19,6 +21,7 @@ export default function NewPost({setPosts, setNewHashtag}) {
     const [infosTopost, setInfosToPost] = useState({ link: "", text: "" })
     const [disabled, setDisabled] = useState(false) 
     const [errorPost, setErrorPost] = useState(false)
+    const [createdNewPost, setCreatedNewPost] = useState(false)
 
 
     async function tryPost() {
@@ -39,7 +42,7 @@ export default function NewPost({setPosts, setNewHashtag}) {
                 setErrorPost(false); 
                 const hash = "hashtag" + Date.now();  
                 setNewHashtag(hash);
-                alert("Post criado com sucesso!")
+                setCreatedNewPost(true)
             })
             requestPosts.catch(e => { setPosts({ e }) })
             
@@ -49,9 +52,10 @@ export default function NewPost({setPosts, setNewHashtag}) {
 
     return (
         <StyledAuxBody>
+            {createdNewPost ? <ModalRedirectPerfil setCreatedNewPost={setCreatedNewPost}/> : <></>}
 
             <StyledInfosLeft>
-                <StyledImg img={picture} />
+                <StyledImg img={picture} onClick={() =>{navigate(`/user/${userId}`)}}/>
             </StyledInfosLeft>
 
             <StyledInfosRight>
@@ -131,6 +135,7 @@ const StyledImg = styled.div`
     border-radius: 50%;
     background-image: url(${props => props.img});
     background-size: cover;
+    cursor: pointer;
 `
 
 

@@ -31,7 +31,7 @@ const handleChange = (event) => {
 
 return (
         <Container>
-          <input type={Text} id="placeholder-text" placeholder={'Search for people'} onChange={handleChange}/>
+          <input type="text" id="placeholder-text" placeholder={'Search for people'} onChange={handleChange}/>
           <ion-icon name="search-outline"/>
           {response.map(userInfo => 
           <Link to ={`/user/${userInfo.id}`}>

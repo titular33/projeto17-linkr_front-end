@@ -8,12 +8,14 @@ import { EditPost } from './EditPost';
 import ModalDelete from './ModalDelete';
 import { Link } from 'react-router-dom';
 import RefreshNewPosts from './RefreshNewPosts';
+import { ThreeDots } from 'react-loader-spinner';
 
 export default function RenderPosts({ rotaName, URL, setuserInfos, clickToggleFollowing, setNewHashtag }) {
 
     let errorMessage = "";
 
     const [posts, setPosts] = useState(null)
+    const [refreshing, setRefreshing] = useState(false)
 
     useEffect(() => {
         // const [url, setUrl] = setUrl(URL)
@@ -30,6 +32,10 @@ export default function RenderPosts({ rotaName, URL, setuserInfos, clickToggleFo
             getPosts(setPosts, URL, rotaName, setuserInfos)
         }
     }, [URL, clickToggleFollowing])
+
+    // useEffect(() => {
+    //     setRefreshing(false)
+    // }, [refreshing])
 
 
     if (posts === null) {
@@ -54,9 +60,22 @@ export default function RenderPosts({ rotaName, URL, setuserInfos, clickToggleFo
             {rotaName === "timeline" ?
                 <>
                     <NewPost setPosts={setPosts} setNewHashtag={setNewHashtag} />
-                    <StyledRefresh onClick={() => { getPosts(setPosts, URL)}}>
-
-                        <RefreshNewPosts posts={posts} />
+                    <StyledRefresh
+                        onClick={() => {
+                            //     if(refreshing){    
+                            //         ""
+                            // } else{
+                            setRefreshing(true);
+                            getPosts(setPosts, URL)
+                            // }
+                        }}>
+                        {refreshing
+                            ?
+                            <StyledThreeDots>
+                                <ThreeDots color="#fff" height={13} />
+                            </StyledThreeDots>
+                            : <RefreshNewPosts posts={posts} />
+                        }
                     </StyledRefresh>
 
                 </>
@@ -98,10 +117,10 @@ function AllPosts(props) {
     const { posts, setPosts, URL, setNewHashtag } = props;
     console.log("console antes do map: ", posts)
     return (
-        posts.map(infos => {
+        posts.map((infos, index) => {
             return (
 
-                <EachPost key={`${infos.id}`} infos={infos} setPosts={setPosts} URL={URL} setNewHashtag={setNewHashtag} />
+                <EachPost key={index} infos={infos} setPosts={setPosts} URL={URL} setNewHashtag={setNewHashtag} />
 
             )
         })
@@ -239,7 +258,18 @@ const StyledLoading = styled.div`
 
 `
 
+const StyledThreeDots = styled.div`
+    width: 100%;
+    height: 60px;
+    margin-bottom: 20px;
+    background-color: #1877F2;
+    border-radius: 16px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: none;
 
+`
 
 const StyledRefresh = styled.div`
     
@@ -335,6 +365,14 @@ const StyledInfosRight = styled.div`
         padding: 7px 0px;
     }
 
+    a{
+        text-decoration: none;
+        color: white;
+
+        &:hover{
+            filter: brightness(80%);
+        }
+    }
     
 
 `
