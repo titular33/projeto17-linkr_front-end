@@ -34,7 +34,13 @@ export default function NewPost({setPosts, setNewHashtag}) {
         if (!error) {
             setInfosToPost({ link: "", text: "" })
             const requestPosts = axios.get(URL_GET, config)
-            requestPosts.then(res => { setPosts(res.data); setErrorPost(false); const hash = "hashtag" + Date.now();  setNewHashtag(hash)})
+            requestPosts.then(res => { 
+                // setPosts(res.data); 
+                setErrorPost(false); 
+                const hash = "hashtag" + Date.now();  
+                setNewHashtag(hash);
+                alert("Post criado com sucesso!")
+            })
             requestPosts.catch(e => { setPosts({ e }) })
             
         }

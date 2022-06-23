@@ -7,6 +7,7 @@ import NewPost from './NewPost';
 import { EditPost } from './EditPost';
 import ModalDelete from './ModalDelete';
 import { Link } from 'react-router-dom';
+import RefreshNewPosts from './RefreshNewPosts';
 
 export default function RenderPosts({ rotaName, URL, setuserInfos, clickToggleFollowing, setNewHashtag }) {
 
@@ -18,7 +19,7 @@ export default function RenderPosts({ rotaName, URL, setuserInfos, clickToggleFo
         // const [url, setUrl] = setUrl(URL)
 
         if (rotaName === "timeline") {
-            getPosts(setPosts, URL)
+            getPosts(setPosts, URL, rotaName)
         }
 
         if (rotaName === "hashtags") {
@@ -47,13 +48,18 @@ export default function RenderPosts({ rotaName, URL, setuserInfos, clickToggleFo
     return (
         <>
             {rotaName === "timeline" ?
-                <NewPost setPosts={setPosts} setNewHashtag={setNewHashtag}/>
+                <>
+                    <NewPost setPosts={setPosts} setNewHashtag={setNewHashtag} />
+                    <StyledRefreshNeuPost>
+                        <RefreshNewPosts />
+                    </StyledRefreshNeuPost>
+                </>
                 : ""
             }
             {
                 posts === null || posts.length === 0 || posts.e ?
                     errorMessage :
-                    <AllPosts posts={posts} setPosts={setPosts} URL={URL} setNewHashtag={setNewHashtag}/>
+                    <AllPosts posts={posts} setPosts={setPosts} URL={URL} setNewHashtag={setNewHashtag} />
             }
         </>
 
@@ -140,7 +146,7 @@ function EachPost(props) {
 
         <StyledEachPost key={infos.id}>
 
-            {canDeletePost ? <ModalDelete infos={infos} setCanDeletePost={setCanDeletePost} setPosts={setPosts} URL={URL} setNewHashtag={setNewHashtag}/> : ""}
+            {canDeletePost ? <ModalDelete infos={infos} setCanDeletePost={setCanDeletePost} setPosts={setPosts} URL={URL} setNewHashtag={setNewHashtag} /> : ""}
             <StyledBox >
 
                 <StyledInfosLeft>
@@ -173,7 +179,7 @@ function EachPost(props) {
                     </h6>
 
                     {canEditPost ?
-                        <EditPost infos={infos} setCanEditPost={setCanEditPost} setPosts={setPosts} URL={URL} setNewHashtag={setNewHashtag}/> :
+                        <EditPost infos={infos} setCanEditPost={setCanEditPost} setPosts={setPosts} URL={URL} setNewHashtag={setNewHashtag} /> :
                         <p>
                             {findHashtags(infos.text)}
                         </p>}
@@ -225,6 +231,19 @@ const StyledLoading = styled.div`
         }
     }
 
+`
+
+const StyledRefreshNeuPost = styled.button`
+    width: 100%;
+    height: 60px;
+    margin-bottom: 20px;
+    color: white;
+    background-color: #1877F2;
+    border-radius: 16px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: none;
 `
 
 

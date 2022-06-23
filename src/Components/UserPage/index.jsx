@@ -13,7 +13,7 @@ import HashtagContainer from "../HashtagBox";
 
 
 
-export default function HashtagPage() {
+export default function UserPage() {
 
     const params = useParams()
 
