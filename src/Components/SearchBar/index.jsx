@@ -21,7 +21,7 @@ const handleChange = (event) => {
   }
   else{
     const payload = {"username": value};
-    axios.post("http://127.0.0.1:4000/usernames", payload, config)
+    axios.post("https://abef-linkr-api.herokuapp.com/usernames", payload, config)
     .then(res => 
       setResponse(res.data)
     )
@@ -30,7 +30,7 @@ const handleChange = (event) => {
 
 return (
         <Container>
-          <input type={Text} id="placeholder-text" placeholder={'Search for people'} onChange={handleChange}/>
+          <input type="text" id="placeholder-text" placeholder={'Search for people'} onChange={handleChange}/>
           <ion-icon name="search-outline"/>
           {response.map(userInfo => 
           <Link to ={`/user/${userInfo.id}`}>

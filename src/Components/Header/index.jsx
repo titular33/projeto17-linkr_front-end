@@ -7,16 +7,14 @@ import {
     InputBox,
 } from "./styled";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import SearchBar from "../SearchBar";
 import { useNavigate } from "react-router-dom";
 
 export default function Header() {
     const [quickAccess, setQuickAccess] = useState(false);
-    const [userData, setUserData] = useState({});
     const logoff = () => {
-        setUserData('');
         localStorage.removeItem('userData');
     }
     const { token, picture, userId } = JSON.parse(localStorage.getItem('userData'))
