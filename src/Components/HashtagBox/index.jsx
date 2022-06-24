@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { Link } from "react-router-dom"
-import { useState, useEffect, useContext } from 'react';
+import { useEffect, useContext } from 'react';
 import axios from 'axios';
 import HashTagsContext from '../../Contexts/HashTagsContext';
 

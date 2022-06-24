@@ -12,7 +12,6 @@ export default function SearchBar() {
     headers: { authorization: token }
   }
 
-console.log(token);
 const [response, setResponse] = useState([])
 
 const handleChange = (event) => {
@@ -22,7 +21,7 @@ const handleChange = (event) => {
   }
   else{
     const payload = {"username": value};
-    axios.post("http://127.0.0.1:4000/usernames", payload, config)
+    axios.post("https://abef-linkr-api.herokuapp.com/usernames", payload, config)
     .then(res => 
       setResponse(res.data)
     )

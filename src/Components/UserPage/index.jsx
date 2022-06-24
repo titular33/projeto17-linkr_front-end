@@ -18,7 +18,7 @@ export default function UserPage() {
     const params = useParams()
 
     // const [URL, setURL] = useState(`https://abef-linkr-api.herokuapp.com/user/${params.id}`)
-    const [URL, setURL] = useState(`http://localhost:4000/user/${params.id}`)
+    const [URL, setURL] = useState(`https://abef-linkr-api.herokuapp.com/user/${params.id}`)
     const [userInfos, setuserInfos] = useState({ userName: "", following: false })
     const [clickToggleFollowing, setClickToggleFollowing] = useState(false)
     const [disabled, setDisabled] = useState(false)
@@ -81,7 +81,7 @@ function toggleFollow(userInfos, clickToggleFollowing, setClickToggleFollowing, 
     let route = ''
     userInfos.following ? route = 'unfollow' : route = 'follow'
 
-    const URL_Follow = `http://localhost:4000/${route}`
+    const URL_Follow = `https://abef-linkr-api.herokuapp.com/${route}`
 
     const { token } = JSON.parse(localStorage.getItem('userData'))
     const config = {

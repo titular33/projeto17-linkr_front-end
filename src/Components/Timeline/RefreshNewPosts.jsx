@@ -1,5 +1,5 @@
 import axios from "axios"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import useInterval from "use-interval"
 import dayjs from "dayjs"
 import styled from "styled-components"
@@ -10,11 +10,12 @@ export default function RefreshNewPosts({posts}){
 
     useInterval(() =>{
         if(posts !== null){
-            if(posts.length > 0){
-                getNumberNewPosts(posts[0].createdAt, setqtd)
-            }else{
+            if(posts.length === 0 || posts[0].followingNoOne){
                 const data = dayjs('2022-06-13').format('YYYY-MM-DDTHH:mm:ss')
                 getNumberNewPosts(data, setqtd)
+
+            }else{
+                getNumberNewPosts(posts[0].createdAt, setqtd)
             }
         }
     }, 5000)
@@ -36,7 +37,7 @@ export default function RefreshNewPosts({posts}){
 
 function getNumberNewPosts(createdAt, setqtd){
     const { token } = JSON.parse(localStorage.getItem('userData'))
-    const URL_COUNT_POSTS = "http://localhost:4000/count/posts"
+    const URL_COUNT_POSTS = "https://abef-linkr-api.herokuapp.com/count/posts"
     
     const config = {
         headers: { 

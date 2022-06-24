@@ -2,64 +2,76 @@ import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
+import { getPosts } from '../Timeline/RenderPosts'
 import CommentInput from "./CommentInput"
 
 
 
-const URL = 'http://localhost:4000/comments'
-
-function getComments(setComments, infosUser){
-  console.log(infosUser)
-  const { token } = JSON.parse(localStorage.getItem('userData'))
-  const config = {
-  headers: { postId: infosUser.id, authorization: token }
-  }
-  const requestComments = axios.get(URL, config)
-    requestComments.then(res => setComments([...res.data]))
-    requestComments.catch(e => { setComments({ e }) })
-}
-
-export default function Comment({infosUser}) {
+export default function Comment({ infosUser, setPosts, setuserInfos }) {
   const [comments, setComments] = useState([])
 
   useEffect(() => {
     getComments(setComments, infosUser)
-  },[])
-  const navigate = useNavigate
+  }, [])
+  const navigate = useNavigate()
+
 
   return (
     <>
-    {comments.map((comment, index) =>
-     <Container key={index}>
-      <Content>
-        <div className='left'>
-          <div className='profilePic'>
-            <img src={comment.picture} 
-            alt='profilePicOfUser'
-            onClick={() => navigate(`/user/${comment.idAuthor}`)}
-            />
-          </div>
-        </div>
+      {comments.map((comment, index) =>
 
-        <div className='right'>
-          <div className='userName' onClick={() => navigate(`/user/${comment.idAuthor}`)}>
-            <h1>
-              {comment.nameAuthor}
-            </h1>
-            {comment.idAuthor === infosUser.userId? <h2>• post's author</h2>:comment.iFollow? <h2>• following</h2>:<></>}
-          </div>
-          <div className='textContent'>
-            <h3>{comment.comment}
-            </h3>
-          </div>
-        </div>
-      </Content>
-    </Container>)}
-    <CommentInput postId={infosUser.id}
-     getComments={getComments(setComments, infosUser)}/>
+        <Container key={index}>
+          <Content>
+            <div className='left'>
+              <div className='profilePic'>
+                <img src={comment.picture}
+                  alt='profilePicOfUser'
+                  onClick={() => navigate(`/user/1`)}
+                />
+              </div>
+            </div>
+
+            <div className='right'>
+              <StyledDiv className='userName'
+                onClick={() => {
+                  navigate(`/user/${comment.idAuthor}`)
+                  getPosts(setPosts, `https://abef-linkr-api.herokuapp.com/user/${comment.idAuthor}`, "user", setuserInfos);
+                }}>
+                <h1>
+                  {comment.nameAuthor}
+                </h1>
+                {comment.idAuthor === infosUser.userId ? <h2>• post's author</h2> : comment.iFollow ? <h2>• following</h2> : <></>}
+              </StyledDiv>
+              <div className='textContent'>
+                <h3>{comment.comment}
+                </h3>
+              </div>
+            </div>
+          </Content>
+        </Container>)}
+      <CommentInput postId={infosUser.id} infosUser={infosUser} setComments={setComments} />
     </>
   )
 }
+
+
+
+export function getComments(setComments, infosUser) {
+  const URL = 'https://abef-linkr-api.herokuapp.com/comments'
+  const { token } = JSON.parse(localStorage.getItem('userData'))
+  const config = {
+    headers: { postId: infosUser.id, authorization: token }
+  }
+  const requestComments = axios.get(URL, config)
+  requestComments.then(res => setComments([...res.data]))
+  requestComments.catch(e => { setComments({ e }) })
+}
+
+
+const StyledDiv = styled.div`
+  
+`
+
 
 const Container = styled.div`
   

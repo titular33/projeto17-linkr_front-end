@@ -9,24 +9,23 @@ export default function Likes({liked, postId, quantLikes}) {
     const { token } = JSON.parse(localStorage.getItem('userData'));
     const [ isLiked, setIsLiked ] = useState(liked);
     const [ quantityLikesPost, setQuantityLikesPost ] = useState(quantLikes);
-    const user = " José " // Colocar aqui os usernames;
     const config = {
         headers: { authorization: token }
     }
     
     function likePost() {
-        let request = axios.post("http://127.0.0.1:4000/like",{postId:postId}, config);
+        let request = axios.post("https://abef-linkr-api.herokuapp.com/like",{postId:postId}, config);
         request.then(res => {
         setIsLiked(!isLiked);
-        setQuantityLikesPost((quantityLikesPost + 1));
+        setQuantityLikesPost((parseInt(quantityLikesPost) + 1));
         });
         request.catch(err => {console.log(err)});
     }
     function dislikePost() {
-        let request = axios.delete(`http://127.0.0.1:4000/like/${postId}`, config);
+        let request = axios.delete(`https://abef-linkr-api.herokuapp.com/like/${postId}`, config);
         request.then(res => {
         setIsLiked(!isLiked);
-        setQuantityLikesPost((quantityLikesPost - 1 ));
+        setQuantityLikesPost((parseInt(quantityLikesPost) - 1 ));
         });
         request.catch(err => {console.log(err)});
     }
@@ -39,14 +38,14 @@ export default function Likes({liked, postId, quantLikes}) {
                 }
             </LikeStyled>
             {isLiked
-                ?   <span 
+                ?   <span style={{color: "white"}}
                         data-tip={TooltipText(isLiked, quantityLikesPost)} 
                         data-class={'tooltip'} 
                         data-place={'bottom'} 
                         data-arrow-color={'rgba(255, 255, 255, 0.9)'}>
                             {quantityLikesPost} likes
                     </span>
-                :   <span 
+                :   <span style={{color: "white"}}
                         data-tip={TooltipText( isLiked, quantityLikesPost)} 
                         data-class={'tooltip'} 
                         data-place={'bottom'} 
