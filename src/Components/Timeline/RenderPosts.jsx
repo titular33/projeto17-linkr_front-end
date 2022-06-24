@@ -7,8 +7,12 @@ import NewPost from './NewPost';
 import { EditPost } from './EditPost';
 import ModalDelete from './ModalDelete';
 import { Link } from 'react-router-dom';
+<<<<<<< HEAD
 import RefreshNewPosts from './RefreshNewPosts';
 import { ThreeDots } from 'react-loader-spinner';
+=======
+import Comment from '../Comment/Comment';
+>>>>>>> 7bd7a85573fdfc363d40de0d3ff3e19ea25b7334
 
 export default function RenderPosts({ rotaName, URL, setuserInfos, clickToggleFollowing }) {
 
@@ -224,13 +228,19 @@ function EachPost(props) {
                     </StyledEmbed>
                 </StyledInfosRight>
             </StyledBox>
+            <ScrollContainer>
+            <Comment infosUser={infos} />
+            </ScrollContainer>
         </StyledEachPost>
 
 
     )
 }
 
-
+const ScrollContainer = styled.div`
+    max-height: 200px;
+    overflow-y: scroll;
+`
 
 
 const StyledLoading = styled.div`
@@ -316,6 +326,7 @@ const StyledBox = styled.div`
     align-items: flex-start;
     justify-content: center;
     gap: 10px;
+    padding-bottom: 10px;
 `
 
 const StyledInfosLeft = styled.div`
@@ -453,4 +464,3 @@ const StyledImg = styled.div`
     background-size: cover;
 
 `
-

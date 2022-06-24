@@ -10,6 +10,7 @@ import {
 import { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import SearchBar from "../SearchBar";
+import { useNavigate } from "react-router-dom";
 
 export default function Header() {
     const [quickAccess, setQuickAccess] = useState(false);
@@ -18,8 +19,8 @@ export default function Header() {
         setUserData('');
         localStorage.removeItem('userData');
     }
-    const { token, picture } = JSON.parse(localStorage.getItem('userData'))
-
+    const { token, picture, userId } = JSON.parse(localStorage.getItem('userData'))
+    
     useEffect(() => {
         function OutsideClick(e) {
             if (quickAccess && token.current && !token.current.contains(e.target)) {
@@ -34,6 +35,10 @@ export default function Header() {
         }
     }, [quickAccess]);
 
+    const navigate = useNavigate();
+    function profileRoute() {
+        navigate(`/user/${userId}`);
+    }
 
     return(
         <Container token={token}>
@@ -45,7 +50,7 @@ export default function Header() {
 
             <ImageUser 
                 src={picture}
-                onClick={() => setQuickAccess(!quickAccess)}
+                onClick={() => profileRoute()}
                 alt="profile picture"
             />
 

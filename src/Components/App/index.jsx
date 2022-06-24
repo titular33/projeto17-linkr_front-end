@@ -9,6 +9,7 @@ import GetTimeline from "../Timeline";
 import SearchBar from "../SearchBar";
 import UserPage from "../UserPage";
 import HashtagPage from "../HashtagPage";
+import Comment from "../Comment/Comment";
 
 export default function App() {
     const [userData, setUserData] = useState(JSON.parse(localStorage.getItem("userData")));
@@ -20,10 +21,11 @@ export default function App() {
                     <Routes>
                         <Route path="/" element={<SignIn />} />
                         <Route path="/signup" element={<SignUp />} />
-                        <Route path="/test" element={<SearchBar />} />
+                        {/* <Route path="/test" element={<SearchBar />} /> */}
                         <Route path="/timeline" element={<GetTimeline />} />
                         <Route path="/user/:id" element={<UserPage />} />
                         <Route path='/hashtag/:hashtag' element={<HashtagPage />} />
+                        <Route path='/test' element={<Comment/>}/>
                     </Routes>
                 </BrowserRouter>
             </HashTagsContext.Provider>
