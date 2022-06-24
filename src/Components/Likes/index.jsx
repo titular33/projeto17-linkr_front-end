@@ -1,17 +1,15 @@
 import React, { useState } from 'react';
-/* import ReactTooltip from 'react-tooltip';
- */
+import ReactTooltip from 'react-tooltip';
 import axios from 'axios';
 import styled from 'styled-components';
-// import UserContext from '../../Contexts/UserContext';
-/* import tooltipText from './TooltipText';
- */
+import TooltipText from '../TooltipText';
+
 export default function Likes({liked, postId, quantLikes}) {
 
     const { token } = JSON.parse(localStorage.getItem('userData'));
     const [ isLiked, setIsLiked ] = useState(liked);
     const [ quantityLikesPost, setQuantityLikesPost ] = useState(quantLikes);
-   
+    const user = " José " // Colocar aqui os usernames;
     const config = {
         headers: { authorization: token }
     }
@@ -32,7 +30,6 @@ export default function Likes({liked, postId, quantLikes}) {
         });
         request.catch(err => {console.log(err)});
     }
-    
     return(
         <>
             <LikeStyled isLiked={isLiked}>
@@ -41,25 +38,26 @@ export default function Likes({liked, postId, quantLikes}) {
                 : <ion-icon name = "heart-outline" onClick={() => likePost()} />
                 }
             </LikeStyled>
-           {/*  {isLiked
+            {isLiked
                 ?   <span 
-                        data-tip={tooltipText(likes, isLiked, quantityLikesPost, user)} 
+                        data-tip={TooltipText(isLiked, quantityLikesPost)} 
                         data-class={'tooltip'} 
                         data-place={'bottom'} 
                         data-arrow-color={'rgba(255, 255, 255, 0.9)'}>
                             {quantityLikesPost} likes
                     </span>
                 :   <span 
-                        data-tip={tooltipText(likes, isLiked, quantityLikesPost, user)} 
+                        data-tip={TooltipText( isLiked, quantityLikesPost)} 
                         data-class={'tooltip'} 
                         data-place={'bottom'} 
                         data-arrow-color={'rgba(255, 255, 255, 0.9)'}>
                             {quantityLikesPost} likes
                     </span>
             }   
-            <ReactTooltip /> */}
+            <ReactTooltip type="light"/>
         </>
     )
+    
 };
 
 const LikeStyled = styled.div`
