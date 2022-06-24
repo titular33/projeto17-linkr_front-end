@@ -1,48 +1,94 @@
-import React from 'react'
+import axios from 'axios'
+import React, { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
+import CommentInput from "./CommentInput"
 
-export default function Comment() {
+
+
+const URL = 'http://localhost:4000/comments'
+
+function getComments(setComments, infosUser){
+  console.log(infosUser)
+  const { token } = JSON.parse(localStorage.getItem('userData'))
+  const config = {
+  headers: { postId: infosUser.id, authorization: token }
+  }
+  const requestComments = axios.get(URL, config)
+    requestComments.then(res => setComments([...res.data]))
+    requestComments.catch(e => { setComments({ e }) })
+}
+
+export default function Comment({infosUser}) {
+  const [comments, setComments] = useState([])
+
+  useEffect(() => {
+    getComments(setComments, infosUser)
+  },[])
+  const navigate = useNavigate
+
   return (
-    <Container>
+    <>
+    {comments.map((comment, index) =>
+     <Container key={index}>
       <Content>
         <div className='left'>
           <div className='profilePic'>
-            <img src='https://st.depositphotos.com/2044631/2014/i/600/depositphotos_20146623-stock-photo-tigers-face.jpg' alt='profilePicOfUser'/>
+            <img src={comment.picture} 
+            alt='profilePicOfUser'
+            onClick={() => navigate(`/user/${comment.idAuthor}`)}
+            />
           </div>
         </div>
 
         <div className='right'>
-          <div className='userName'>
+          <div className='userName' onClick={() => navigate(`/user/${comment.idAuthor}`)}>
             <h1>
-              Usuário Leão
+              {comment.nameAuthor}
             </h1>
-            <h2>
-              • following
-            </h2>
+            {comment.idAuthor === infosUser.userId? <h2>• post's author</h2>:comment.iFollow? <h2>• following</h2>:<></>}
           </div>
           <div className='textContent'>
-            <h3>O leão [feminino: leoa] (nome científico: Panthera leo) é uma espécie de mamífero carnívoro do gênero Panthera e da família Felidae. A espécie é atualmente encontrada na África subsaariana e na Ásia, com uma única população remanescente em perigo, no Parque Nacional da Floresta de Gir, Gujarat, Índia.
-</h3>
+            <h3>{comment.comment}
+            </h3>
           </div>
         </div>
       </Content>
-    </Container>
+    </Container>)}
+    <CommentInput postId={infosUser.id}
+     getComments={getComments(setComments, infosUser)}/>
+    </>
   )
 }
 
 const Container = styled.div`
-  min-height: 75px;
-  width: 611px;
-  border-radius: 16px;
-  background-color: #1E1E1E;
   
+  min-height: 75px;
+  width: 100%;
+  background-color: #1E1E1E;
+  margin-bottom: 1px;
+
+  a:link {
+  text-decoration: none;
+  }
+
+  a:visited {
+    text-decoration: none;
+  }
+
+  a:hover {
+    text-decoration: none;
+  }
+
+  a:active {
+    text-decoration: none;
+  }
 `
 const Content = styled.div`
   display: flex;
   .profilePic{
     width: 40px;
     height: 40px;
-    background-color: red;
     border-radius: 100%;
     margin-top: 15px;
     margin-left: 25px;
