@@ -12,7 +12,6 @@ export default function SearchBar() {
     headers: { authorization: token }
   }
 
-console.log(token);
 const [response, setResponse] = useState([])
 
 const handleChange = (event) => {
