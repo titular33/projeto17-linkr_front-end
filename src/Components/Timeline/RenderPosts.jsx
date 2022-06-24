@@ -102,6 +102,7 @@ export async function getPosts(setPosts, URL, rotaName, setuserInfos) {
 
 }
 
+
 function AllPosts(props) {
     const { posts, setPosts, URL, setuserInfos } = props;
     return (
