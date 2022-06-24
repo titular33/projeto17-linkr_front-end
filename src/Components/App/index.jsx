@@ -5,8 +5,6 @@ import { useState } from "react";
 import SignUp from "../SignUp";
 import SignIn from "../SignIn";
 import GetTimeline from "../Timeline";
-import SearchBar from "../SearchBar";
-import Header from "../Header";
 import UserPage from "../UserPage";
 import HashtagPage from "../HashtagPage";
 import Comment from "../Comment/Comment";
