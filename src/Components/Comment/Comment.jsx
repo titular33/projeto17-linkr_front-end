@@ -9,8 +9,8 @@ import CommentInput from "./CommentInput"
 const URL = 'http://localhost:4000/comments'
 
 function getComments(setComments, infosUser){
-  console.log(infosUser)
-  const { token } = JSON.parse(localStorage.getItem('userData'))
+/*   console.log(infosUser)
+ */  const { token } = JSON.parse(localStorage.getItem('userData'))
   const config = {
   headers: { postId: infosUser.id, authorization: token }
   }

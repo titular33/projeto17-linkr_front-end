@@ -17,6 +17,7 @@ export default function Likes({liked, postId, quantLikes}) {
     function likePost() {
         let request = axios.post("http://127.0.0.1:4000/like",{postId:postId}, config);
         request.then(res => {
+          console.log(res.data);
         setIsLiked(!isLiked);
         setQuantityLikesPost((quantityLikesPost + 1));
         });
@@ -38,6 +39,7 @@ export default function Likes({liked, postId, quantLikes}) {
                 : <ion-icon name = "heart-outline" onClick={() => likePost()} />
                 }
             </LikeStyled>
+              <Tolltip>
             {isLiked
                 ?   <span 
                         data-tip={TooltipText(isLiked, quantityLikesPost)} 
@@ -51,10 +53,11 @@ export default function Likes({liked, postId, quantLikes}) {
                         data-class={'tooltip'} 
                         data-place={'bottom'} 
                         data-arrow-color={'rgba(255, 255, 255, 0.9)'}>
-                            {quantityLikesPost} likes
+                            {quantLikes} likes
                     </span>
             }   
-            <ReactTooltip type="light"/>
+             <ReactTooltip type="light"/>
+              </Tolltip>
         </>
     )
     
@@ -66,6 +69,18 @@ const LikeStyled = styled.div`
         margin-top: 10px;
         color: ${props => props.isLiked ? "red" : "#fff"};
     }
+`;
+const Tolltip = styled.div`
+> span {
+  font-family: 'Lato';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 11px;
+  line-height: 13px;
+  text-align: center;
+    color: #FFFFFF;
+;
+}
 `;
 
 
