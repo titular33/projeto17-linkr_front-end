@@ -7,6 +7,7 @@ import NewPost from './NewPost';
 import { EditPost } from './EditPost';
 import ModalDelete from './ModalDelete';
 import { Link } from 'react-router-dom';
+import Comment from '../Comment/Comment';
 
 export default function RenderPosts({ rotaName, URL, setuserInfos, clickToggleFollowing, setNewHashtag }) {
 
@@ -194,13 +195,19 @@ function EachPost(props) {
                     </StyledEmbed>
                 </StyledInfosRight>
             </StyledBox>
+            <ScrollContainer>
+            <Comment infosUser={infos} />
+            </ScrollContainer>
         </StyledEachPost>
 
 
     )
 }
 
-
+const ScrollContainer = styled.div`
+    max-height: 200px;
+    overflow-y: scroll;
+`
 
 
 const StyledLoading = styled.div`
@@ -271,6 +278,7 @@ const StyledBox = styled.div`
     align-items: flex-start;
     justify-content: center;
     gap: 10px;
+    padding-bottom: 10px;
 `
 
 const StyledInfosLeft = styled.div`
@@ -400,4 +408,3 @@ const StyledImg = styled.div`
     background-size: cover;
 
 `
-
