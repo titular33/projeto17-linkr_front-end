@@ -46,7 +46,7 @@ export default function Comment({infosUser}) {
             <h1>
               {comment.nameAuthor}
             </h1>
-            {comment.idAuthor === infosUser.userId? <h2>• post's author </h2>:comment.iFollow? <h2>• following</h2>:<></>}
+            {comment.idAuthor === infosUser.userId? <h2>• post's author</h2>:comment.iFollow? <h2>• following</h2>:<></>}
           </div>
           <div className='textContent'>
             <h3>{comment.comment}
