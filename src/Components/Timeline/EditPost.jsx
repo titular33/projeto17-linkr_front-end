@@ -1,15 +1,18 @@
-import axios from "axios"
-import { useEffect, useState, useRef } from "react"
-import { getPosts } from "./RenderPosts"
-import styled from "styled-components"
+import axios from "axios";
+import { useEffect, useState, useRef, useContext } from "react";
+import { getPosts } from "./RenderPosts";
+import styled from "styled-components";
+import { getHashTags } from "../HashtagBox";
+import HashTagsContext from "../../Contexts/HashTagsContext";
 
-export function EditPost({ infos, setCanEditPost, setPosts, URL, setNewHashtag }) {
+export function EditPost({ infos, setCanEditPost, setPosts, URL, setuserInfos }) {
     const [infosToEdit, setInfosToEdit] = useState({})
     let { token } = JSON.parse(localStorage.getItem('userData'))
     const textEdit = useRef(null)
     const URL_POST = "https://abef-linkr-api.herokuapp.com/post"
 
-    
+    const { hashTags, setHashTags } = useContext(HashTagsContext);
+
 
     useEffect(() => {
         setInfosToEdit({ link: infos?.link, text: infos?.text })
@@ -22,7 +25,7 @@ export function EditPost({ infos, setCanEditPost, setPosts, URL, setNewHashtag }
         }
 
         const requet = axios.put(URL_POST, infosToEdit, config);
-        requet.then(() => { setCanEditPost(false); getPosts(setPosts, URL); setNewHashtag("hashtag" + Date.now()) });
+        requet.then(() => { setCanEditPost(false); getPosts(setPosts, URL, "user", setuserInfos); getHashTags(setHashTags) });
         requet.catch(() => { alert("Não foi possível editar o post") })
     }
 

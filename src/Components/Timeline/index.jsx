@@ -9,6 +9,8 @@ export default function GetTimeline() {
 
     const [URL, setURL] = useState("https://abef-linkr-api.herokuapp.com/timeline")
     const [newHashtag, setNewHashtag] = useState("hashtag")
+    const [userInfos, setuserInfos] = useState({ userName: "", following: false })
+
 
     return (
         <>
@@ -21,7 +23,12 @@ export default function GetTimeline() {
                     timeline
                 </h1>
                 <StyledSection className='section'>
-                    <RenderPosts rotaName={"timeline"} URL={URL} setNewHashtag={setNewHashtag}/>
+                    <RenderPosts 
+                    rotaName={"timeline"} 
+                    URL={URL} 
+                    setNewHashtag={setNewHashtag} 
+                    setuserInfos={setuserInfos}
+                    />
 
                 </StyledSection>
                 <StyledNavbar className='navBar' >

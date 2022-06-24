@@ -7,16 +7,17 @@ import NewPost from './NewPost';
 import { EditPost } from './EditPost';
 import ModalDelete from './ModalDelete';
 import { Link } from 'react-router-dom';
+import RefreshNewPosts from './RefreshNewPosts';
+import { ThreeDots } from 'react-loader-spinner';
 import Comment from '../Comment/Comment';
 
-export default function RenderPosts({ rotaName, URL, setuserInfos, clickToggleFollowing, setNewHashtag }) {
+export default function RenderPosts({ rotaName, URL, setuserInfos, clickToggleFollowing }) {
 
     let errorMessage = "";
-
     const [posts, setPosts] = useState(null)
-
+    const [refreshing, setRefreshing] = useState(false)
+    
     useEffect(() => {
-        // const [url, setUrl] = setUrl(URL)
 
         if (rotaName === "timeline") {
             getPosts(setPosts, URL)
@@ -40,6 +41,10 @@ export default function RenderPosts({ rotaName, URL, setuserInfos, clickToggleFo
         errorMessage = " There are no posts yet."
     }
 
+    else if(posts[0].followingNoOne){
+        errorMessage = " You don't follow anyone yet. Search for new friends!"
+    }
+
     else if (posts.e) {
         errorMessage = "An error occured while trying to fetch the posts, please refresh the page"
     }
@@ -48,13 +53,29 @@ export default function RenderPosts({ rotaName, URL, setuserInfos, clickToggleFo
     return (
         <>
             {rotaName === "timeline" ?
-                <NewPost setPosts={setPosts} setNewHashtag={setNewHashtag}/>
+                <>
+                    <NewPost setPosts={setPosts} />
+                    <StyledRefresh
+                        onClick={() => {
+                            setRefreshing(true);
+                            getPosts(setPosts, URL)
+                        }}>
+                        {refreshing
+                            ?
+                            <StyledThreeDots>
+                                <ThreeDots color="#fff" height={13} />
+                            </StyledThreeDots>
+                            : <RefreshNewPosts posts={posts} />
+                        }
+                    </StyledRefresh>
+
+                </>
                 : ""
             }
             {
-                posts === null || posts.length === 0 || posts.e ?
+                posts === null || posts.length === 0 || posts.e || posts[0].followingNoOne ?
                     errorMessage :
-                    <AllPosts posts={posts} setPosts={setPosts} URL={URL} setNewHashtag={setNewHashtag}/>
+                    <AllPosts posts={posts} setPosts={setPosts} URL={URL} setuserInfos={setuserInfos}/>
             }
         </>
 
@@ -64,10 +85,8 @@ export default function RenderPosts({ rotaName, URL, setuserInfos, clickToggleFo
 
 
 export async function getPosts(setPosts, URL, rotaName, setuserInfos) {
-    //const URL = "https://abef-linkr-api.herokuapp.com/timeline"
 
     let { token } = JSON.parse(localStorage.getItem('userData'))
-
     const config = {
         headers: { authorization: token }
     }
@@ -85,13 +104,12 @@ export async function getPosts(setPosts, URL, rotaName, setuserInfos) {
 
 
 function AllPosts(props) {
-    const { posts, setPosts, URL, setNewHashtag } = props;
-
+    const { posts, setPosts, URL, setuserInfos } = props;
     return (
-        posts.map(infos => {
+        posts.map((infos, key) => {
             return (
 
-                <EachPost key={`${infos.id}`} infos={infos} setPosts={setPosts} URL={URL} setNewHashtag={setNewHashtag} />
+                <EachPost key={key} infos={infos} setPosts={setPosts} URL={URL} setuserInfos={setuserInfos}/>
 
             )
         })
@@ -101,8 +119,7 @@ function AllPosts(props) {
 function EachPost(props) {
     let navigate = useNavigate()
 
-
-    const { infos, setPosts, URL, setNewHashtag } = props;
+    const { infos, setPosts, URL, setuserInfos } = props;
 
     if (infos.image === "") {
         infos.image = "https://archive.org/download/no-photo-available/no-photo-available.png"
@@ -142,7 +159,7 @@ function EachPost(props) {
 
         <StyledEachPost key={infos.id}>
 
-            {canDeletePost ? <ModalDelete infos={infos} setCanDeletePost={setCanDeletePost} setPosts={setPosts} URL={URL} setNewHashtag={setNewHashtag}/> : ""}
+            {canDeletePost ? <ModalDelete infos={infos} setCanDeletePost={setCanDeletePost} setPosts={setPosts} URL={URL} setuserInfos={setuserInfos} /> : ""}
             <StyledBox >
 
                 <StyledInfosLeft>
@@ -158,7 +175,6 @@ function EachPost(props) {
                                 setCanEditPost(false)
                             } else {
                                 setCanEditPost(true);
-                                //textEdit.current.focus()
                             }
                         }}>
 
@@ -175,7 +191,7 @@ function EachPost(props) {
                     </h6>
 
                     {canEditPost ?
-                        <EditPost infos={infos} setCanEditPost={setCanEditPost} setPosts={setPosts} URL={URL} setNewHashtag={setNewHashtag}/> :
+                        <EditPost infos={infos} setCanEditPost={setCanEditPost} setPosts={setPosts} URL={URL} setuserInfos={setuserInfos} /> :
                         <p>
                             {findHashtags(infos.text)}
                         </p>}
@@ -197,7 +213,7 @@ function EachPost(props) {
                 </StyledInfosRight>
             </StyledBox>
             <ScrollContainer>
-            <Comment infosUser={infos} />
+            <Comment infosUser={infos} setPosts={setPosts} setuserInfos={setuserInfos}/>
             </ScrollContainer>
         </StyledEachPost>
 
@@ -206,8 +222,9 @@ function EachPost(props) {
 }
 
 const ScrollContainer = styled.div`
-    max-height: 200px;
+    max-height: 250px;
     overflow-y: scroll;
+    margin-bottom: 60px;
 `
 
 
@@ -235,7 +252,22 @@ const StyledLoading = styled.div`
 
 `
 
+const StyledThreeDots = styled.div`
+    width: 100%;
+    height: 60px;
+    margin-bottom: 20px;
+    background-color: #1877F2;
+    border-radius: 16px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: none;
 
+`
+
+const StyledRefresh = styled.div`
+    
+`
 
 
 
@@ -261,12 +293,13 @@ const StyledCanEdit = styled.div`
 
 const StyledEachPost = styled.div`
     width: 100%;
-    padding: 15px;
+    padding: 15px 2%;
     margin-bottom: 30px;
     border-radius: 15px;
     display: flex;
     flex-direction: column;
     background-color: #171717;
+    position: relative;
 
     @media (max-width: 640px) {
         border-radius: 0%;
@@ -308,6 +341,7 @@ const StyledInfosLeft = styled.div`
 const StyledInfosRight = styled.div`
     width: 85%;
     position: relative;
+    margin-bottom: 35px;
 
     & > h6{
         max-width: 80%;
@@ -328,6 +362,14 @@ const StyledInfosRight = styled.div`
         padding: 7px 0px;
     }
 
+    a{
+        text-decoration: none;
+        color: white;
+
+        &:hover{
+            filter: brightness(80%);
+        }
+    }
     
 
 `

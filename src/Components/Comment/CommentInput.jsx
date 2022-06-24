@@ -1,20 +1,21 @@
 import axios from 'axios'
 import React, { useState } from 'react'
 import styled from 'styled-components'
+import { getComments } from './Comment'
 
 
 
-export default function CommentInput({postId, getComments}) {
+export default function CommentInput({postId, setComments, infosUser}) {
   const { picture, token} = JSON.parse(localStorage.getItem('userData'))
   const [message, setMessage] = useState('')
 
   function sendMessage(){
-    const URL = 'http://localhost:4000/comments'
+    const URL = 'https://abef-linkr-api.herokuapp.com/comments'
     const config = {headers: {authorization: token }}
     let comment = message
     const payload = {postId , comment}
     axios.post(URL, payload, config)
-    .then(res => console.log(res), getComments)
+    .then(res => getComments(setComments, infosUser))
     .catch(error => console.log(error))
   }
 
@@ -35,13 +36,15 @@ export default function CommentInput({postId, getComments}) {
 
 const Container = styled.div`
   min-height: 83px;
-  width: 100%;
+  width: 96%;
   border-bottom-left-radius: 16px;  
   border-bottom-right-radius: 16px;  
   background-color: #1E1E1E;
   margin-bottom: 1px;
   display: flex;
-  position: relative;
+  position: absolute;
+  bottom: 10px;
+  left: 2%;
   
   .profilePic{
     width: 40px;

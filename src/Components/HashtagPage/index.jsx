@@ -14,6 +14,7 @@ export default function HashtagPage() {
 
     const params = useParams()
     const [URL, setURL] = useState(`https://abef-linkr-api.herokuapp.com/hashtags/${params.hashtag}`)
+    const [userInfos, setuserInfos] = useState({ userName: "", following: false })
 
     return (
         <>
@@ -27,11 +28,15 @@ export default function HashtagPage() {
                     # {params.hashtag}
                 </h1>
                 <StyledSection className='section'>
-                    <RenderPosts rotaName={"hashtags"} URL={URL}/>
+                    <RenderPosts
+                        rotaName={"hashtags"}
+                        URL={URL}
+                        setuserInfos={setuserInfos}
+                    />
 
                 </StyledSection>
                 <StyledNavbar className='navBar'>
-                    <HashtagContainer setURL={setURL}/>
+                    <HashtagContainer setURL={setURL} />
                 </StyledNavbar>
 
             </StyledAuxBody>

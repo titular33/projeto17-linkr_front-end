@@ -1,16 +1,20 @@
 import axios from "axios";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import styled from "styled-components";
 import { ThreeDots } from 'react-loader-spinner';
+import ModalRedirectPerfil from "./ModalRedirectPerfil";
+import HashTagsContext from "../../Contexts/HashTagsContext";
+import { getHashTags } from "../HashtagBox";
 
 import HashtagContainer from "../HashtagBox";
+import { useNavigate } from "react-router-dom";
 
-export default function NewPost({setPosts, setNewHashtag}) {
+export default function NewPost({setPosts}) {
     const URL_POST = "https://abef-linkr-api.herokuapp.com/post"
     const URL_GET = "https://abef-linkr-api.herokuapp.com/timeline"
+    const navigate = useNavigate()
 
-
-    const { token, picture } = JSON.parse(localStorage.getItem('userData'))
+    const { token, picture, userId } = JSON.parse(localStorage.getItem('userData'))
     const config = {
         headers: { authorization: token }
     }
@@ -19,6 +23,9 @@ export default function NewPost({setPosts, setNewHashtag}) {
     const [infosTopost, setInfosToPost] = useState({ link: "", text: "" })
     const [disabled, setDisabled] = useState(false) 
     const [errorPost, setErrorPost] = useState(false)
+    const [createdNewPost, setCreatedNewPost] = useState(false)
+
+    const { hashTags, setHashTags } = useContext(HashTagsContext);
 
 
     async function tryPost() {
@@ -34,7 +41,12 @@ export default function NewPost({setPosts, setNewHashtag}) {
         if (!error) {
             setInfosToPost({ link: "", text: "" })
             const requestPosts = axios.get(URL_GET, config)
-            requestPosts.then(res => { setPosts(res.data); setErrorPost(false); const hash = "hashtag" + Date.now();  setNewHashtag(hash)})
+            requestPosts.then(res => { 
+                // setPosts(res.data); 
+                setErrorPost(false); 
+                getHashTags(setHashTags);
+                setCreatedNewPost(true)
+            })
             requestPosts.catch(e => { setPosts({ e }) })
             
         }
@@ -43,9 +55,10 @@ export default function NewPost({setPosts, setNewHashtag}) {
 
     return (
         <StyledAuxBody>
+            {createdNewPost ? <ModalRedirectPerfil setCreatedNewPost={setCreatedNewPost}/> : <></>}
 
             <StyledInfosLeft>
-                <StyledImg img={picture} />
+                <StyledImg img={picture} onClick={() =>{navigate(`/user/${userId}`)}}/>
             </StyledInfosLeft>
 
             <StyledInfosRight>
@@ -125,6 +138,7 @@ const StyledImg = styled.div`
     border-radius: 50%;
     background-image: url(${props => props.img});
     background-size: cover;
+    cursor: pointer;
 `
 
 
